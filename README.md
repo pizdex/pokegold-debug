@@ -1,8 +1,11 @@
 # Pokémon Gold and Silver Debug
 
-This is a disassembly of the Pokémon Gold and Silver Debug ROMs that were leaked on the 11th April 2020.
-It builds the following ROMs:
+This is a disassembly of Pokémon Gold (and Silver*) Debug.
 
-    MONSGD.gbc (MD5: d655820236b99ff0c1904d66240a795e)
+It builds the following ROM:
 
-See INSTALL.md for setup instructions. (TBD)
+    MONSGD.gbc (SHA1: 539245e162123ceac77f0615e0eabddd8efb8b7d)
+
+The original build date is the 3rd February 2000, at 21:50 and the ROM was leaked on the 11th April 2020
+
+\*Silver TBD
