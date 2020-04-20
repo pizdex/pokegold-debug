@@ -20,9 +20,9 @@ _LoadFontsExtra::
     jr LoadFrame
 
 _LoadFontsBattleExtra::
-    ld de, $46f2
+	ld de, FontBattleExtra
 	ld hl, vTiles2 tile $60
-    ld bc, $3e19
+	lb bc, BANK(FontBattleExtra), 25
     call Get2bpp
     jr LoadFrame
 
@@ -30,7 +30,7 @@ LoadFrame:
     ld a, [wTextboxFrame]
     and $07
 	ld bc, 6 * LEN_1BPP_TILE
-    ld hl, $48f2
+    ld hl, Frames
     call AddNTimes
 	ld d, h
 	ld e, l

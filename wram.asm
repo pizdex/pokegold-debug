@@ -2841,13 +2841,12 @@ wcfcc:: ds 1 ; cfcc
 wcfcd:: ds 1 ; cfcd
 wcfce:: ds 1 ; cfce
 wcfcf:: ds 1 ; cfcf
+
 wcfd0:: ds 1 ; cfd0
 wcfd1:: ds 1 ; cfd1
 
 wQueuedScriptBank:: ds 1 ; cfd2
-wQueuedScriptAddr:: ds 1 ; cfd3
-
-wcfd4:: ds 1 ; cfd4
+wQueuedScriptAddr:: ds 2 ; cfd3
 
 wPredefID:: ds 1 ; cfd5
 wPredefTemp:: dw ; cfd6
@@ -4205,9 +4204,10 @@ wd9e7:: ds 1 ; d9e7
 SECTION "Party", WRAMX, BANK[1]
 
 wPokemonData::
+
 wPartyCount:: ds 1 ; d9e8
 wPartySpecies:: ds PARTY_LENGTH ; d9ee
-wPartySpeciesEnd:: ds 1 ; d9ef
+wPartyEnd:: ds 1 ; d9ef
 
 wPartyMons::
 wPartyMon1:: party_struct wPartyMon1 ; d9f0
@@ -4586,31 +4586,18 @@ wdcb2:: ds 1 ; dcb2
 wdcb3:: ds 1 ; dcb3
 wdcb4:: ds 1 ; dcb4
 wdcb5:: ds 1 ; dcb5
-wdcb6:: ds 1 ; dcb6
-wdcb7:: ds 1 ; dcb7
-wdcb8:: ds 1 ; dcb8
-wdcb9:: ds 1 ; dcb9
-wdcba:: ds 1 ; dcba
-wdcbb:: ds 1 ; dcbb
-wdcbc:: ds 1 ; dcbc
-wdcbd:: ds 1 ; dcbd
-wdcbe:: ds 1 ; dcbe
-wdcbf:: ds 1 ; dcbf
-wdcc0:: ds 1 ; dcc0
-wdcc1:: ds 1 ; dcc1
-wdcc2:: ds 1 ; dcc2
-wdcc3:: ds 1 ; dcc3
-wdcc4:: ds 1 ; dcc4
-wdcc5:: ds 1 ; dcc5
-wdcc6:: ds 1 ; dcc6
-wdcc7:: ds 1 ; dcc7
-wdcc8:: ds 1 ; dcc8
-wdcc9:: ds 1 ; dcc9
-wdcca:: ds 1 ; dcca
-wdccb:: ds 1 ; dccb
-wdccc:: ds 1 ; dccc
-wdccd:: ds 1 ; dccd
 
+; enemy party
+wOTPlayerName:: ds NAME_LENGTH ; dcb6
+wOTPlayerID:: dw ; dcbc
+	ds 8
+
+wOTPartyCount::   db ; dcc6
+wDebugFightMonLevel::
+wOTPartySpecies:: ds PARTY_LENGTH ; dcc7
+wOTPartyEnd::     db ; dccd
+
+; ot party mons
 wOTPartyMons::
 wOTPartyMon1:: party_struct wOTPartyMon1 ; dcce
 wOTPartyMon2:: party_struct wOTPartyMon2 ; dcfe

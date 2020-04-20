@@ -38,31 +38,31 @@
 
 ; Actual characters (from gfx/font/font_extra.png)
 
-	charmap "<BOLD_A>",  $60
-	charmap "<BOLD_B>",  $61
-	charmap "<BOLD_C>",  $62
-	charmap "<BOLD_D>",  $63
-	charmap "<BOLD_E>",  $64
-	charmap "<BOLD_F>",  $65
-	charmap "<BOLD_G>",  $66
-	charmap "<BOLD_H>",  $67
-	charmap "<BOLD_I>",  $68
+	charmap "<BOLD_A>",  $60 ; unused
+	charmap "<BOLD_B>",  $61 ; unused
+	charmap "<BOLD_C>",  $62 ; unused
+	charmap "<BOLD_D>",  $63 ; unused
+	charmap "<BOLD_E>",  $64 ; unused
+	charmap "<BOLD_F>",  $65 ; unused
+	charmap "<BOLD_G>",  $66 ; unused
+	charmap "<BOLD_H>",  $67 ; unused
+	charmap "<BOLD_I>",  $68 ; unused
 	charmap "<BOLD_V>",  $69
 	charmap "<BOLD_S>",  $6a
-	charmap "<BOLD_L>",  $6b
-	charmap "<BOLD_M>",  $6c
+	charmap "<BOLD_L>",  $6b ; unused
+	charmap "<BOLD_M>",  $6c ; unused
 	charmap "<COLON>",   $6d ; colon with tinier dots than ":"
-	charmap "ぃ",         $6e ; hiragana small i
-	charmap "ぅ",         $6f ; hiragana small u
+	charmap "ぃ",         $6e ; hiragana small i, unused
+	charmap "ぅ",         $6f ; hiragana small u, unused
 	charmap "<PO>",      $70
 	charmap "<KE>",      $71
 	charmap "“",         $72 ; opening quote
 	charmap "”",         $73 ; closing quote
-	charmap "·",         $74 ; middle dot
+	charmap "·",         $74 ; middle dot, unused
 	charmap "…",         $75 ; ellipsis
-	charmap "ぁ",         $76 ; hiragana small a
-	charmap "ぇ",         $77 ; hiragana small e
-	charmap "ぉ",         $78 ; hiragana small o
+	charmap "ぁ",         $76 ; hiragana small a, unused
+	charmap "ぇ",         $77 ; hiragana small e, unused
+	charmap "ぉ",         $78 ; hiragana small o, unused
 
 	charmap "┌",         $79
 	charmap "─",         $7a
@@ -75,9 +75,10 @@
 ; Actual characters (from gfx/font/font_battle_extra.png)
 
 	charmap "<LV>",      $6e
-	charmap "<DO>",      $70 ; hiragana small do
+
+	charmap "<DO>",      $70 ; hiragana small do, unused
 	charmap "◀",         $71
-	charmap "『",         $72 ; Japanese opening quote
+	charmap "『",         $72 ; Japanese opening quote, unused
 	charmap "<ID>",      $73
 	charmap "№",         $74
 
@@ -223,7 +224,7 @@
 	charmap "<KOKO_WA>", $37 ; "ここは"
 	charmap "<GA>",      $4a ; "が　"
 
-; Japanese kana, for those bits of text that were not translated to English
+; Japanese kana
 
 	charmap "ガ", $05
 	charmap "ギ", $06
@@ -277,13 +278,6 @@
 	charmap "ぷ", $46
 	charmap "ぺ", $47
 	charmap "ぽ", $48
-
-	charmap "「", $70
-	charmap "」", $71
-	charmap "』", $73
-	charmap "⋯", $75
-
-	charmap "　", $7f
 
 	charmap "ア", $80
 	charmap "イ", $81

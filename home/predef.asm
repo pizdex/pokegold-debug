@@ -6,9 +6,9 @@ Predef::
 	ldh a, [hROMBank]
 	push af
 
-	ld a, 2
+	ld a, BANK(GetPredefPointer)
 	rst Bankswitch
-	call $4e69 ; stores hl in wPredefTemp
+	call GetPredefPointer ; stores hl in wPredefTemp
 
 ; Switch to the new function's bank
 	rst Bankswitch

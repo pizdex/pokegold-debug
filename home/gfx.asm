@@ -31,21 +31,15 @@ ReplacePlayerSprite::
     ret
 
 LoadStandardFont::
-    ld a, $3e
-    ld hl, $4000
-    rst $08
-    ret
+	farcall _LoadStandardFont
+	ret
 
 LoadFontsBattleExtra::
-    ld a, $3e
-    ld hl, $4032
-    rst $08
-    ret
+	farcall _LoadFontsBattleExtra
+	ret
 
 LoadFontsExtra::
-    ld a, $3e
-    ld hl, $400c
-    rst $08
+	farcall _LoadFontsExtra
     ret
 
 DecompressRequest2bpp::
