@@ -38,7 +38,7 @@ DebugMenu::
 	dw DebugMenuOptionMonster, .DebugMonsterText
 	dw DebugMenuOptionTrainer, .DebugTrainerText
 	dw DebugMenuOptionPassword, .DebugPasswordText
-	dw DebugMenuOptionRTC, .DebugRTCText
+	dw DebugMenuOptionClock, .DebugClockText
 
 .DebugFightText:	db "ファイト@"		; Fight
 .DebugLinkText:		db "つうしんよう@"	; Communication
@@ -47,7 +47,7 @@ DebugMenu::
 .DebugMonsterText:	db "モンスター@"	; Monster
 .DebugTrainerText:	db "トレーナー@"	; Trainer
 .DebugPasswordText:	db "パスワード@"	; Password
-.DebugRTCText		db "とけいきのう@"	; RTC Function
+.DebugClockText		db "とけいきのう@"	; Clock (RTC) Function
 
 FIGHT		EQU 0
 COMM		EQU 1
@@ -87,7 +87,7 @@ DebugMenuOptionFight:
 	ret
 
 DebugMenuOptionSound:
-	farcall _DebugSoundMenu
+	farcall DebugSoundMenu
 	ret
 
 DebugMenuOptionMonster:
@@ -114,8 +114,8 @@ DebugMenuOptionPassword:
 	rst FarCall
 	ret
 
-DebugMenuOptionRTC:
-	farcall unk_03f_40be
+DebugMenuOptionClock:
+	farcall DebugClockMenu
 	ret
 
 unk_03f_43ae:

@@ -3075,14 +3075,18 @@ wd0c1:: ds 1 ; d0c1
 wd0c2:: ds 1 ; d0c2
 wd0c3:: ds 1 ; d0c3
 wd0c4:: ds 1 ; d0c4
+
+; Debug Clock Function
+wDebugClockCurrentOption:: ; d0c5
 wd0c5:: ds 1 ; d0c5
-wd0c6:: ds 1 ; d0c6
+wDebugClockCurrentOptionBackup:: ds 1 ; d0c6
 wd0c7:: ds 1 ; d0c7
-wd0c8:: ds 1 ; d0c8
-wd0c9:: ds 1 ; d0c9
-wd0ca:: ds 1 ; d0ca
-wd0cb:: ds 1 ; d0cb
-wd0cc:: ds 1 ; d0cc
+wDebugClockDayLo:: ds 1 ; d0c8
+wDebugClockHours:: ds 1 ; d0c9
+wDebugClockMinutes:: ds 1 ; d0ca
+wDebugClockSeconds::  ds 1 ; d0cb
+wDebugClockResetValue:: ds 1 ; d0cc
+
 wd0cd:: ds 1 ; d0cd
 wd0ce:: ds 1 ; d0ce
 wd0cf:: ds 1 ; d0cf

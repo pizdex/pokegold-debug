@@ -10,54 +10,7 @@ Call_03f_403f:
 Call_03f_4064:
 	dr $fc064,$fc0be
 
-unk_03f_40be:
-	ld hl, wOptions
-	ld a, [hl]
-	push af
-	set 4, [hl]
-	xor a
-	ld [wd0c5], a
-	ld [wd0c6], a
-	call Call_03f_40da
-	call Call_03f_40f5
-	pop af
-	ld [wOptions], a
-	call ClearTilemap
-	ret
-
-Call_03f_40da:
-	dr $fc0da,$fc0f5
-
-Call_03f_40f5:
-	dr $fc0f5,$fc106
-
-Call_03f_4106:
-	dr $fc106,$fc171
-
-Call_03f_4171:
-	dr $fc171,$fc18f
-
-Call_03f_418f:
-	dr $fc18f,$fc199
-
-Call_03f_4199:
-	dr $fc199,$fc1a0
-
-Call_03f_41a0:
-	dr $fc1a0,$fc1c8
-
-Call_03f_41c8:
-	dr $fc1c8,$fc231
-
-Call_03f_4231:
-	dr $fc231,$fc242
-
-Call_03f_4242:
-	dr $fc242,$fc2b5
-
-Call_03f_42b5:
-	dr $fc2b5,$fc2ca
-
+INCLUDE "engine/debug_clock_menu.asm"
 INCLUDE "engine/debug_menu.asm"
 
 Call_03f_452b:
@@ -248,7 +201,7 @@ Call_03f_5be8:
 Call_03f_5c0e:
 	dr $fdc0e,$fdc29
 
-_DebugSoundMenu:
+DebugSoundMenu:
 	dr $fdc29,$fdcdc
 
 Call_03f_5cdc:

@@ -107,7 +107,7 @@ DebugFight_JoypadSpecies:
 	bit START_F, a
 	jp nz, DebugFight_StartButton
 	bit D_RIGHT_F, a
-	jp nz, DebugFight_ChangeLevel
+	jp nz, DebugFight_ChangeToLevelColumn
 	bit D_UP_F, a
 	jp nz, DebugFight_PreviousSpecies
 	bit D_DOWN_F, a
@@ -264,7 +264,7 @@ DebugFight_NextSpecies:
 	pop hl
 	jp DebugFight_JoypadSpecies
 
-DebugFight_ChangeLevel:
+DebugFight_ChangeToLevelColumn:
 	push hl
 	push bc
 	dec hl
@@ -602,7 +602,7 @@ Jump_03f_52ac:
 	ld c, a
 	ld a, [wBattleMode]
 	dec a
-	jr nz, .jr_03f_52e7
+	jr nz, .asm_52e7
 
 	ld a, $02
 	ld [wBattleMode], a
@@ -617,7 +617,7 @@ Jump_03f_52ac:
 	call ClearBox
 	jp Jump_03f_5291
 
-.jr_03f_52e7:
+.asm_52e7:
 	ld a, 1
 	ld [wBattleMode], a
 	ld a, " "
@@ -669,7 +669,7 @@ Jump_03f_533e:
 	pop bc
 	ld a, [wBattleMode]
 	dec a
-	jr z, jr_03f_538b
+	jr z, Function_03f_538b
 	inc b
 	ld a, b
 	cp $43
@@ -696,7 +696,7 @@ Jump_03f_5360:
 	pop bc
 	jp Jump_03f_5314
 
-jr_03f_538b:
+Function_03f_538b:
 	inc b
 	ld a, b
 	cp $fe
@@ -729,27 +729,27 @@ Jump_03f_53b4:
 	pop bc
 	ld a, [wBattleMode]
 	dec a
-	jr z, .jr_03f_53dd
+	jr z, .asm_53dd
 	dec b
 	ld a, b
 	cp $43
-	jr nc, .jr_03f_53d8
+	jr nc, .asm_53d8
 	and a
 	jp nz, Jump_03f_5360
 
-.jr_03f_53d8
+.asm_53d8
 	ld b, $3d
 	jp Jump_03f_5360
 
-.jr_03f_53dd
+.asm_53dd
 	dec b
 	ld a, b
 	cp $fe
-	jr nc, .jr_03f_53e7
+	jr nc, .asm_53e7
 	and a
 	jp nz, Jump_03f_5393
 
-.jr_03f_53e7
+.asm_53e7
 	ld b, $fd
 	jp Jump_03f_5393
 
@@ -783,9 +783,9 @@ Jump_03f_5420:
 	inc c
 	ld a, c
 	cp $65
-	jr c, .jr_03f_5428
+	jr c, .asm_5428
 	ld c, $01
-.jr_03f_5428:
+.asm_5428:
 	ld hl, $c450
 	ld a, c
 	ld de, wd03a
@@ -801,14 +801,14 @@ Jump_03f_543e:
 	dec c
 	ld a, c
 	cp $65
-	jr nc, .jr_03f_5448
+	jr nc, .asm_5448
 
 	and a
-	jp nz, Jump_03f_5420.jr_03f_5428
+	jp nz, Jump_03f_5420.asm_5428
 
-.jr_03f_5448:
+.asm_5448:
 	ld c, $64
-	jp Jump_03f_5420.jr_03f_5428
+	jp Jump_03f_5420.asm_5428
 
 Call_03f_544d:
 	ld a, [wBattleMode]
@@ -840,10 +840,10 @@ Call_03f_544d:
 	ld de, wd13b
 	ld b, $04
 
-.jr_03f_548e:
+.asm_548e:
 	ld a, [de]
 	and a
-	jr z, .jr_03f_54cb
+	jr z, .asm_54cb
 
 	push bc
 	push hl
@@ -875,9 +875,9 @@ Call_03f_544d:
 	add hl, bc
 	pop bc
 	dec b
-	jr nz, .jr_03f_548e
+	jr nz, .asm_548e
 
-.jr_03f_54cb
+.asm_54cb
 	pop bc
 	ret
 
@@ -916,19 +916,19 @@ Jump_03f_550c:
 	ld a, [de]
 	inc a
 	cp $fc
-	jr c, jr_03f_553d
-	jr Jump_03f_5514.jr_03f_551e
+	jr c, Function_03f_553d
+	jr Jump_03f_5514.asm_551e
 
 Jump_03f_5514:
 	ld a, [de]
 	and a
 	ld a, $fb
-	jr z, jr_03f_553d
+	jr z, Function_03f_553d
 	ld a, [de]
 	dec a
-	jr nz, jr_03f_553d
+	jr nz, Function_03f_553d
 
-.jr_03f_551e:
+.asm_551e:
 	xor a
 	ld [de], a
 	push de
@@ -950,7 +950,7 @@ Jump_03f_5514:
 	pop de
 	jp Jump_03f_54e9
 
-jr_03f_553d:
+Function_03f_553d:
 	ld [de], a
 	ld [wCurSpecies], a
 	push hl
@@ -1015,7 +1015,7 @@ Jump_03f_55ad:
 	inc b
 	ld a, b
 	cp $05
-	jr nc, .jr_03f_55c1
+	jr nc, .asm_55c1
 
 	inc de
 	ld [hl], $7f
@@ -1026,7 +1026,7 @@ Jump_03f_55ad:
 	ld [hl], $ed
 	jp Jump_03f_54e9
 
-.jr_03f_55c1:
+.asm_55c1
 	ld b, 4
 	jp Jump_03f_54e9
 
@@ -1043,13 +1043,12 @@ Call_03f_55ce:
 	ld de, $0027
 	ld b, $04
 	ld a, $3e
-
-.jr_03f_55d8:
+.asm_55d8
 	ld [hli], a
 	ld [hl], a
 	add hl, de
 	dec b
-	jr nz, .jr_03f_55d8
+	jr nz, .asm_55d8
 	ret
 
 Jump_03f_55df:
@@ -1063,21 +1062,21 @@ Jump_03f_55df:
 
 	ld a, [wBattleMode]
 	dec a
-	jr z, .jr_03f_55f9
+	jr z, .asm_55f9
 
 	ld a, b
 	ld [wOtherTrainerClass], a
 	ld a, c
 	ld [wd10d], a
-	jr .jr_03f_5601
+	jr .asm_5601
 
-.jr_03f_55f9:
+.asm_55f9:
 	ld a, c
 	ld [wd03a], a
 	ld a, b
 	ld [wd109], a
 
-.jr_03f_5601:
+.asm_5601:
 	call SetPalettes
 	ld a, $80
 	ld [wJohtoBadges], a
@@ -1135,11 +1134,9 @@ Jump_03f_5683:
 	ld de, wPartySpecies
 	add e
 	ld e, a
-	jr nc, .jr_03f_568e
-
+	jr nc, .asm_568e
 	inc d
-
-.jr_03f_568e:
+.asm_568e:
 	ld a, [de]
 	cp $ff
 	jp z, Jump_03f_56e9
@@ -1173,9 +1170,9 @@ Jump_03f_5683:
 	ld de, wDebugFightMonLevel
 	add e
 	ld e, a
-	jr nc, .jr_03f_56d6
+	jr nc, .asm_56d6
 	inc d
-.jr_03f_56d6:
+.asm_56d6:
 	ld a, [wd03a]
 	ld [de], a
 	pop hl
