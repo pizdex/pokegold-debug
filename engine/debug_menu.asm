@@ -295,7 +295,7 @@ Call_03f_44b0:
 	ld [$cb43], a
 
 	call Call_03f_44dd
-	ld [wd0df], a
+	ld [wTempEnemyMonSpecies], a
 	ld hl, wd03a
 	inc [hl]
 
@@ -303,7 +303,7 @@ Call_03f_44b0:
 	ld hl, $6802
 	rst FarCall
 
-	ld a, [wd0df]
+	ld a, [wTempEnemyMonSpecies]
 	ld [wCurPartySpecies], a
 
 	ld a, $03
@@ -350,7 +350,7 @@ Call_03f_44fb:
 	add hl, bc
 	ld a, $0e
 	call GetFarHalfword
-	ld de, wd1b5
+	ld de, wPlayerName
 	ld bc, $0006
 	ld a, $0e
 	call FarCopyBytes

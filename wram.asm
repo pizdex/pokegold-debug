@@ -2446,8 +2446,8 @@ wce4f:: ds 1 ; ce4f
 wce50:: ds 1 ; ce50
 wce51:: ds 1 ; ce51
 wce52:: ds 1 ; ce52
-wce53:: ds 1 ; ce53
 
+wMonType:: ds 1 ; ce53
 wCurSpecies:: ds 1 ; ce54
 wNamedObjectTypeBuffer:: ds 1 ; ce55
 
@@ -2465,10 +2465,10 @@ wRequested1bpp:: ds 1 ; ce60
 wRequested1bppSource:: dw ; ce61
 wRequested1bppDest:: dw ; ce63
 
-wce65:: ds 1 ; ce65
-wce66:: ds 1 ; ce66
-wce67:: ds 1 ; ce67
-wce68:: ds 1 ; ce68
+wSecondsSince:: ds 1 ; ce65
+wMinutesSince:: ds 1 ; ce66
+wHoursSince:: ds 1 ; ce67
+wDaysSince:: ds 1 ; ce68
 wce69:: ds 1 ; ce69
 wce6a:: ds 1 ; ce6a
 wce6b:: ds 1 ; ce6b
@@ -2664,44 +2664,34 @@ wcf1a:: ds 1 ; cf1a
 wcf1b:: ds 1 ; cf1b
 wMenuData3End::
 
-wcf1c:: ds 1 ; cf1c
+wOverworldDelay:: ds 1 ; cf1c
 wTextDelayFrames:: ds 1 ; cf1d
-wcf1e:: ds 1 ; cf1e
+wVBlankOccurred:: ds 1 ; cf1e
 
 wcf1f:: ds 1 ; cf1f
 wDefaultSpawnpoint:: ds 1 ; cf20
 
-wMovementBufferCount:: ; cf21
-wcf21:: ds 1 ; cf21
-wMovementBufferObject:: ; cf22
-wcf22:: ds 1 ; cf22
-wTemporaryBuffer:: ; cf23
-wcf23:: ds 1 ; cf23
-wcf24:: ds 1 ; cf24
-wcf25:: ds 1 ; cf25
-wMovementBuffer:: ; cf26
-wcf26:: ds 1 ; cf26
+UNION ; cf21
+; movement buffer data
+wMovementBufferCount:: db
+wMovementBufferObject:: db
+wUnusedMovementBufferBank:: db
+wUnusedMovementBufferPointer:: dw
+wMovementBuffer:: ds 1; cf26
 
-wcf27:: ds 1 ; cf27
-wcf28:: ds 1 ; cf28
-wcf29:: ds 1 ; cf29
-wcf2a:: ds 1 ; cf2a
-wcf2b:: ds 1 ; cf2b
-wcf2c:: ds 1 ; cf2c
-wcf2d:: ds 1 ; cf2d
-wcf2e:: ds 1 ; cf2e
-wcf2f:: ds 1 ; cf2f
-wcf30:: ds 1 ; cf30
-wcf31:: ds 1 ; cf31
-wcf32:: ds 1 ; cf32
-wcf33:: ds 1 ; cf33
-wcf34:: ds 1 ; cf34
-wcf35:: ds 1 ; cf35
-wcf36:: ds 1 ; cf36
-wcf37:: ds 1 ; cf37
-wcf38:: ds 1 ; cf38
-wcf39:: ds 1 ; cf39
-wcf3a:: ds 1 ; cf3a
+NEXTU ; cf21
+; bug-catching contest
+wBugContestResults::
+	bugcontestwinner wBugContestFirstPlace
+	bugcontestwinner wBugContestSecondPlace
+	bugcontestwinner wBugContestThirdPlace
+wBugContestWinnersEnd::
+	bugcontestwinner wBugContestTemp
+	ds 4
+wBugContestWinnerName:: ds NAME_LENGTH
+
+ENDU
+
 wcf3b:: ds 1 ; cf3b
 wcf3c:: ds 1 ; cf3c
 wcf3d:: ds 1 ; cf3d
@@ -3105,8 +3095,9 @@ wd0db:: ds 1 ; d0db
 wd0dc:: ds 1 ; d0dc
 wd0dd:: ds 1 ; d0dd
 wd0de:: ds 1 ; d0de
-wd0df:: ds 1 ; d0df
-wd0e0:: ds 1 ; d0e0
+
+wTempEnemyMonSpecies:: ds 1 ; d0df
+wTempBattleMonSpecies:: ds 1 ; d0e0
 
 wEnemyMon:: battle_struct wEnemyMon ; d0e1
 
@@ -3117,12 +3108,12 @@ wd104:: ds 1 ; d104
 wd105:: ds 1 ; d105
 wd106:: ds 1 ; d106
 wd107:: ds 1 ; d107
-
 wBattleMode:: ds 1 ; d108
 wd109:: ds 1 ; d109
-wOtherTrainerClass:: ds 1 ; d10a
-wBattleType:: ds 1 ; d10b
 
+wOtherTrainerClass:: ds 1 ; d10a
+
+wBattleType:: ds 1 ; d10b
 wd10c:: ds 1 ; d10c
 wd10d:: ds 1 ; d10d
 wd10e:: ds 1 ; d10e
@@ -3183,9 +3174,24 @@ wd140:: ds 1 ; d140
 wd141:: ds 1 ; d141
 wd142:: ds 1 ; d142
 
-wDeciramBuffer::
+; d143 has many different short-term uses
 wNamedObjectIndexBuffer::
-wNumSetBits:: ds 1 ; d143
+wDeciramBuffer::
+wTempByteValue::
+wNumSetBits::
+wTypeMatchup::
+wCurType::
+wTempSpecies::
+wTempIconSpecies::
+wTempTMHM::
+wTempPP::
+wNextBoxOrPartyIndex::
+wChosenCableClubRoom::
+wBreedingCompatibility::
+wMoveGrammar::
+wApplyStatLevelMultipliersToEnemy::
+wUsePPUp::
+wd143:: ds 1 ; d143
 
 wd144:: ds 1 ; d144
 wd145:: ds 1 ; d145
@@ -3222,7 +3228,9 @@ wd161:: ds 1 ; d161
 wd162:: ds 1 ; d162
 wd163:: ds 1 ; d163
 wd164:: ds 1 ; d164
-wd165:: ds 1 ; d165
+
+wScriptVar:: ds 1 ; d165
+
 wd166:: ds 1 ; d166
 wd167:: ds 1 ; d167
 wd168:: ds 1 ; d168
@@ -3254,8 +3262,10 @@ wd181:: ds 1 ; d181
 wd182:: ds 1 ; d182
 wd183:: ds 1 ; d183
 wd184:: ds 1 ; d184
-wd185:: ds 1 ; d185
-wd186:: ds 1 ; d186
+
+wBugContestMinsRemaining:: ds 1 ; d185
+wBugContestSecsRemaining:: ds 1 ; d186
+
 wd187:: ds 1 ; d187
 wd188:: ds 1 ; d188
 wd189:: ds 1 ; d189
@@ -3306,7 +3316,9 @@ wOptionsEnd::
 
 wd1b3:: ds 1 ; d1b3
 wd1b4:: ds 1 ; d1b4
-wd1b5:: ds 1 ; d1b5
+
+wPlayerName:: ds 1 ; d1b5
+
 wd1b6:: ds 1 ; d1b6
 wd1b7:: ds 1 ; d1b7
 wd1b8:: ds 1 ; d1b8
@@ -3371,20 +3383,27 @@ wd1ee:: ds 1 ; d1ee
 wd1ef:: ds 1 ; d1ef
 
 wObjectStructs:: ; d1f0
-	object_struct wPlayer ; d1f0
-	object_struct wObject1 ; d218
-	object_struct wObject2 ; d240
-	object_struct wObject3 ; d268
-	object_struct wObject4 ; d290
-	object_struct wObject5 ; d2b8
-	object_struct wObject6 ; d2e0
-	object_struct wObject7 ; d308
-	object_struct wObject8 ; d330
-	object_struct wObject9 ; d358
-	object_struct wObject10 ; d380
-	object_struct wObject11 ; d3a8
-	object_struct wObject12 ; d3d0
-wObjectStructsEnd:: ; d3f8
+wPlayerStruct::   object_struct wPlayer
+wObject1Struct::  object_struct wObject1
+wObject2Struct::  object_struct wObject2
+wObject3Struct::  object_struct wObject3
+wObject4Struct::  object_struct wObject4
+wObject5Struct::  object_struct wObject5
+wObject6Struct::  object_struct wObject6
+wObject7Struct::  object_struct wObject7
+wObject8Struct::  object_struct wObject8
+wObject9Struct::  object_struct wObject9
+wObject10Struct:: object_struct wObject10
+UNION
+	ds 18
+wPlayerData1End::
+wPlayerData2::
+	ds 1
+NEXTU
+wObject11Struct:: object_struct wObject11
+wObject12Struct:: object_struct wObject12
+wObjectStructsEnd::
+ENDU
 
 wd3f8:: ds 1 ; d3f8
 wd3f9:: ds 1 ; d3f9
@@ -4036,10 +4055,9 @@ wd941:: ds 1 ; d941
 wd942:: ds 1 ; d942
 wd943:: ds 1 ; d943
 wd944:: ds 1 ; d944
-wd945:: ds 1 ; d945
-wd946:: ds 1 ; d946
-wd947:: ds 1 ; d947
-wd948:: ds 1 ; d948
+
+wBugContestStartTime:: ds 4 ; d945
+
 wd949:: ds 1 ; d949
 wd94a:: ds 1 ; d94a
 wd94b:: ds 1 ; d94b
@@ -4104,7 +4122,9 @@ wd985:: ds 1 ; d985
 wd986:: ds 1 ; d986
 wd987:: ds 1 ; d987
 wd988:: ds 1 ; d988
-wd989:: ds 1 ; d989
+
+wParkBallsRemaining:: ds 1 ; d989
+
 wd98a:: ds 1 ; d98a
 wd98b:: ds 1 ; d98b
 wd98c:: ds 1 ; d98c
@@ -4500,55 +4520,10 @@ wdc58:: ds 1 ; dc58
 wdc59:: ds 1 ; dc59
 wdc5a:: ds 1 ; dc5a
 wdc5b:: ds 1 ; dc5b
-wdc5c:: ds 1 ; dc5c
-wdc5d:: ds 1 ; dc5d
-wdc5e:: ds 1 ; dc5e
-wdc5f:: ds 1 ; dc5f
-wdc60:: ds 1 ; dc60
-wdc61:: ds 1 ; dc61
-wdc62:: ds 1 ; dc62
-wdc63:: ds 1 ; dc63
-wdc64:: ds 1 ; dc64
-wdc65:: ds 1 ; dc65
-wdc66:: ds 1 ; dc66
-wdc67:: ds 1 ; dc67
-wdc68:: ds 1 ; dc68
-wdc69:: ds 1 ; dc69
-wdc6a:: ds 1 ; dc6a
-wdc6b:: ds 1 ; dc6b
-wdc6c:: ds 1 ; dc6c
-wdc6d:: ds 1 ; dc6d
-wdc6e:: ds 1 ; dc6e
-wdc6f:: ds 1 ; dc6f
-wdc70:: ds 1 ; dc70
-wdc71:: ds 1 ; dc71
-wdc72:: ds 1 ; dc72
-wdc73:: ds 1 ; dc73
-wdc74:: ds 1 ; dc74
-wdc75:: ds 1 ; dc75
-wdc76:: ds 1 ; dc76
-wdc77:: ds 1 ; dc77
-wdc78:: ds 1 ; dc78
-wdc79:: ds 1 ; dc79
-wdc7a:: ds 1 ; dc7a
-wdc7b:: ds 1 ; dc7b
-wdc7c:: ds 1 ; dc7c
-wdc7d:: ds 1 ; dc7d
-wdc7e:: ds 1 ; dc7e
-wdc7f:: ds 1 ; dc7f
-wdc80:: ds 1 ; dc80
-wdc81:: ds 1 ; dc81
-wdc82:: ds 1 ; dc82
-wdc83:: ds 1 ; dc83
-wdc84:: ds 1 ; dc84
-wdc85:: ds 1 ; dc85
-wdc86:: ds 1 ; dc86
-wdc87:: ds 1 ; dc87
-wdc88:: ds 1 ; dc88
-wdc89:: ds 1 ; dc89
-wdc8a:: ds 1 ; dc8a
-wdc8b:: ds 1 ; dc8b
-wdc8c:: ds 1 ; dc8c
+
+wBugContestSecondPartySpecies:: ds 1 ; dc5c
+wContestMon:: party_struct wContestMon ; dc5d
+
 wdc8d:: ds 1 ; dc8d
 wdc8e:: ds 1 ; dc8e
 wdc8f:: ds 1 ; dc8f

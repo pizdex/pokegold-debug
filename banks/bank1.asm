@@ -2441,7 +2441,7 @@ Call_001_5c85:
     call Call_001_5d82
 
     xor a
-    ld [wce53], a
+    ld [wMonType], a
     ld [wJohtoBadges], a
     ld [wKantoBadges], a
 

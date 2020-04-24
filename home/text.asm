@@ -286,7 +286,7 @@ print_name: MACRO
 ENDM
 
 PrintMomsName:   print_name wd1bb ; 1041
-PrintPlayerName: print_name wd1b5 ; 1048
+PrintPlayerName: print_name wPlayerName ; 1048
 PrintRivalName:  print_name wd1c1 ; 104f
 PrintRedsName:   print_name wd1c7 ; 1056
 PrintGreensName: print_name wd1cd ; 105d

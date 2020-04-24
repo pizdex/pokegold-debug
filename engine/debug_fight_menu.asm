@@ -438,7 +438,7 @@ DebugFight_StartButton:
 	jr z, .asm_51a3
 	ld [wd03a], a
 	xor a
-	ld [wce53], a
+	ld [wMonType], a
 	ld a, [wCurPartySpecies]
 	and a
 	jr z, .asm_51a3
@@ -1081,7 +1081,7 @@ Jump_03f_55df:
 	ld a, $80
 	ld [wJohtoBadges], a
 	ld hl, $57cf
-	ld de, wd1b5
+	ld de, wPlayerName
 	ld bc, $0006
 	call CopyBytes
 	ld a, $16

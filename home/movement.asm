@@ -3,11 +3,11 @@ InitMovementBuffer::
 	xor a
 	ld [wMovementBufferCount], a
 	ld a, 0 ; useless
-	ld [wTemporaryBuffer], a
+	ld [wUnusedMovementBufferBank], a
 	ld a, LOW(wMovementBuffer)
-	ld [wcf24], a
+	ld [wUnusedMovementBufferPointer], a
 	ld a, HIGH(wMovementBuffer)
-	ld [wcf25], a
+	ld [wUnusedMovementBufferPointer + 1], a
 	ret
 
 DecrementMovementBufferCount::
