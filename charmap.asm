@@ -130,14 +130,13 @@
 
 	charmap "?",         $e6
 	charmap "!",         $e7
-	charmap ".",         $e8
 
 	charmap "▷",         $ec
 	charmap "▶",         $ed
 	charmap "▼",         $ee
 	charmap "♂",         $ef
 	charmap "×",         $f1
-	charmap "<DOT>",     $f2 ; decimal point; same as "." in English
+	charmap ".",         $f2
 	charmap "/",         $f3
 	charmap "♀",         $f5
 

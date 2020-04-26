@@ -220,4 +220,6 @@ unkData_03f_5f21:
 	dr $fdf21,$fe927
 
 Call_03f_6927:
-	dr $fe927,$fffff
+	dr $fe927,$ff495
+
+INCLUDE "engine/debug_color_picker.asm"

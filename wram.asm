@@ -399,7 +399,7 @@ wTilemapEnd:: ; c508
 
 SECTION "Animated Objects", WRAM0
 wMisc:: ; c508
-wTempTileMap:: ; c508
+wTempTilemap:: ; c508
 	; ds SCREEN_HEIGHT * SCREEN_WIDTH
 
 wc508:: ds 1 ; c508
@@ -2363,7 +2363,9 @@ wcc99:: ds 1 ; cc99
 wcc9a:: ds 1 ; cc9a
 wcc9b:: ds 1 ; cc9b
 wcc9c:: ds 1 ; cc9c
-wcc9d:: ds 1 ; cc9d
+
+wSGBPals:: ds 1 ; cc9d
+
 wcc9e:: ds 1 ; cc9e
 wcc9f:: ds 1 ; cc9f
 wcca0:: ds 1 ; cca0
@@ -2452,7 +2454,7 @@ wCurSpecies:: ds 1 ; ce54
 wNamedObjectTypeBuffer:: ds 1 ; ce55
 
 wce56:: ds 1 ; ce56
-wce57:: ds 1 ; ce57
+wJumptableIndex:: ds 1 ; ce57
 wce58:: ds 1 ; ce58
 wce59:: ds 1 ; ce59
 wce5a:: ds 1 ; ce5a
@@ -2690,6 +2692,11 @@ wBugContestWinnersEnd::
 	ds 4
 wBugContestWinnerName:: ds NAME_LENGTH
 
+NEXTU ; cf21
+wcf21:: ds 1 ; cf21
+wcf22:: ds 1 ; cf22
+wcf23:: ds 1 ; cf23
+
 ENDU
 
 wcf3b:: ds 1 ; cf3b
@@ -2880,7 +2887,7 @@ wcff8:: ds 1 ; cff8
 wcff9:: ds 1 ; cff9
 wcffa:: ds 1 ; cffa
 wcffb:: ds 1 ; cffb
-wcffc:: ds 1 ; cffc
+wCurItem:: ds 1 ; cffc
 wcffd:: ds 1 ; cffd
 
 wCurPartySpecies:: ds 1 ; cffe
@@ -3117,8 +3124,11 @@ wBattleType:: ds 1 ; d10b
 wd10c:: ds 1 ; d10c
 wd10d:: ds 1 ; d10d
 wd10e:: ds 1 ; d10e
-wd10f:: ds 1 ; d10f
-wd110:: ds 1 ; d110
+
+wTrainerClass:: ds 1 ; d10f
+
+wUnownLetter:: ds 1 ; d110
+
 wd111:: ds 1 ; d111
 
 wCurBaseData::
@@ -3169,7 +3179,7 @@ wd13b:: ds 1 ; d13b
 wd13c:: ds 1 ; d13c
 wd13d:: ds 1 ; d13d
 wd13e:: ds 1 ; d13e
-wd13f:: ds 1 ; d13f
+wTMHMMove:: ds 1 ; d13f
 wd140:: ds 1 ; d140
 wd141:: ds 1 ; d141
 wd142:: ds 1 ; d142

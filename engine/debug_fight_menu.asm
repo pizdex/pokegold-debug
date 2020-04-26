@@ -29,7 +29,7 @@ DebugFightMenu:
 	cp $ff
 	jr z, .ChoosePlayerParty
 	inc de
-	ld [wcffc], a
+	ld [wCurItem], a
 	ld a, [de]
 	inc de
 	ld [wd003], a
@@ -64,7 +64,7 @@ DebugFightMenu:
 	ld [wCurPartyMon], a
 	ld [wEnemyMon], a
 	ld [wEnemyMonLevel], a
-	ld [wd10f], a
+	ld [wTrainerClass], a
 	ld [wdcb3], a
 	ld b, a
 	ld c, a
@@ -513,7 +513,7 @@ DebugFight_StartButton:
 	dec a
 	jr z, .asm_524c
 
-	ld a, [wd10f]
+	ld a, [wTrainerClass]
 	ld [wDeciramBuffer], a
 	ld b, a
 	ld de, wDeciramBuffer
@@ -526,7 +526,7 @@ DebugFight_StartButton:
 	ld de, DebugFight_EmptyText2
 	call PlaceString
 
-	ld a, [wd10f]
+	ld a, [wTrainerClass]
 	ld c, a
 	ld hl, $5534
 	ld a, $0e
@@ -685,7 +685,7 @@ Jump_03f_5360:
 	ld bc, $8103
 	call PrintNum
 	ld a, [wDeciramBuffer]
-	ld [wd10f], a
+	ld [wTrainerClass], a
 	ld c, a
 	ld hl, $5534
 	ld a, $0e

@@ -463,7 +463,7 @@ ContText::
 PlaceDexEnd::
 ; Ends a Pokédex entry in Gen 1.
 ; Dex entries are now regular strings.
-	ld [hl], "."
+	ld [hl], "。"
 	pop hl
 	ret
 

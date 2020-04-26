@@ -213,7 +213,7 @@ Call_03f_4445:
     ld a, [de]
     cp $ff
     ret z
-    ld [wcffc], a
+    ld [wCurItem], a
     inc de
     ld a, [de]
     inc de
