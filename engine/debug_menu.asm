@@ -93,9 +93,7 @@ DebugMenuOptionSound:
 DebugMenuOptionMonster:
 	xor a
 	ld [wMovementBufferCount], a
-	ld a, $3f
-	ld hl, $7495
-	rst FarCall
+	farcall DebugColorPicker
 	ld a, %11100100
 	call DmgToCgbBGPals
 	ret
@@ -103,9 +101,7 @@ DebugMenuOptionMonster:
 DebugMenuOptionTrainer:
 	ld a, 1
 	ld [wMovementBufferCount], a
-	ld a, $3f
-	ld hl, $7495
-	rst FarCall
+	farcall DebugColorPicker
 	ret
 
 DebugMenuOptionPassword:
