@@ -126,8 +126,6 @@
 
 ; Actual characters (from gfx/font/font.png)
 
-	charmap "-",         $e3
-
 	charmap "?",         $e6
 	charmap "!",         $e7
 

@@ -33,11 +33,11 @@ BugCatchingContestReturnToGateScript:
 	jumpstd bugcontestresultswarp
 
 BugCatchingContestTimeUpText:
-	text "アナウンス『ピンポ-ン!"
+	text "アナウンス『ピンポーン!"
 	para "じかんが きました!"
 	done
 
 BugCatchingContestIsOverText:
 	text "アナウンス『むしとりたいかい"
-	line "おわり で-す!"
+	line "おわり でーす!"
 	done

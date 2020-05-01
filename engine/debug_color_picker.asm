@@ -424,7 +424,7 @@ DebugColor_ShinyText:
 	db "レア", DEBUGTEST_BLACK, DEBUGTEST_BLACK, "@" ; Rare
 
 DebugColor_NormalText:
-	db "ノ-マル@" ; Normal
+	db "ノーマル@" ; Normal
 
 DebugColor_SwitchText:
 	db DEBUGTEST_A, "きりかえ▶@" ; Switch

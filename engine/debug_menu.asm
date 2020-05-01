@@ -105,9 +105,7 @@ DebugMenuOptionTrainer:
 	ret
 
 DebugMenuOptionPassword:
-	ld a, 2
-	ld hl, $461a
-	rst FarCall
+	farcall DebugPasswordMenu
 	ret
 
 DebugMenuOptionClock:

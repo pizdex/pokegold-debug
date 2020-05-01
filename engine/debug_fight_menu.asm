@@ -200,7 +200,7 @@ DebugFight_DisplaySpeciesID:
 	ld a, [wDeciramBuffer]
 	and a
 	jr nz, .print_monstername
-	ld de, DebugFight_HyphenText
+	ld de, DebugFight_ChouonpuText
 	jr .dex_zero
 
 .print_monstername
@@ -1201,18 +1201,18 @@ DebugFight_PlayerPartyHeaderText:
 	db "№．  なまえ    レべル@" ; No.  Name    Level
 
 DebugFight_DefaultPlayerPartyText:
-	db "1．▶000 -----  000<NEXT>"
-	db "2． 000 -----  000<NEXT>"
-	db "3． 000 -----  000<NEXT>"
-	db "4． 000 -----  000<NEXT>"
-	db "5． 000 -----  000<NEXT>"
-	db "6． 000 -----  000@"
+	db "1．▶000 ーーーーー  000<NEXT>"
+	db "2． 000 ーーーーー  000<NEXT>"
+	db "3． 000 ーーーーー  000<NEXT>"
+	db "4． 000 ーーーーー  000<NEXT>"
+	db "5． 000 ーーーーー  000<NEXT>"
+	db "6． 000 ーーーーー  000@"
 
 DebugFight_EmptyText:
 	db "     @"
 
-DebugFight_HyphenText:
-	db "-----@"
+DebugFight_ChouonpuText:
+	db "ーーーーー@"
 
 DebugFight_WildMonsterText:
 	db "ワイルドモンスター@" ; Wild Monster
@@ -1222,7 +1222,7 @@ DebugFight_TrainerText:
 
 DebugFight_OpponentPartyHeaderText:
 	db "№．  なまえ        レべル<NEXT>"
-	db "000 ---------- 000@"
+	db "000 ーーーーーーーーーー 000@"
 
 DebugFight_EmptyText2:
 	db "          @"
