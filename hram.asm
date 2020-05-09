@@ -22,7 +22,8 @@ hSeconds::  db ; ff9a
     ds 1
 
 hVBlankCounter:: db ; ff9d
-	ds 1
+
+hFF9E:: db ; ff9e
 
 hROMBank::  db ; ff9f
 hVBlank ::  db ; ffa0

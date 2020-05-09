@@ -20,14 +20,14 @@ SetMenuAttributes::
 	pop hl
 	ret
 
-StaticMenuJoypad:
+StaticMenuJoypad::
     ld hl, $4136
     ld a, $09
     rst $08
 	call GetMenuJoypad
 	ret
 
-ScrollingMenuJoypad:
+ScrollingMenuJoypad::
     ld hl, $4139
     ld a, $09
     rst $08

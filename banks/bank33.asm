@@ -1,10 +1,15 @@
 INCLUDE "engine/events/bug_contest/display_stats.asm"
 
+DummyPredef38::
+DummyPredef39::
+	ret
+
+unk_033_40e5:
     ld c, 6
-jr_033_40e7:
+.asm_40e7
     call Call_033_41ca
     dec c
-    jr nz, jr_033_40e7
+    jr nz, .asm_40e7
 
     call Call_033_47f7
     call Call_033_41b1

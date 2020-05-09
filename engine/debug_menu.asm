@@ -154,7 +154,7 @@ unk_03f_43ae:
 
 	ld a, $0a
 	ld hl, $688d
-	rst $08
+	rst FarCall
 	call Call_03f_44f3
 
 	ld a, 12 ; Hour
@@ -272,7 +272,7 @@ RandomizeFieldStarter:
 Call_03f_44a3:
     ld [wCurPartySpecies], a
     ld a, b
-    ld [wd03a], a
+    ld [wCurPartyLevel], a
     ld a, 6
     call Predef
     ret
@@ -282,7 +282,7 @@ Call_03f_44b0:
 	and a
 	ret z
 	ld a, b
-	ld [wd03a], a
+	ld [wCurPartyLevel], a
 .loop
 	push bc
 	xor a
@@ -290,7 +290,7 @@ Call_03f_44b0:
 
 	call Call_03f_44dd
 	ld [wTempEnemyMonSpecies], a
-	ld hl, wd03a
+	ld hl, wCurPartyLevel
 	inc [hl]
 
 	ld a, $0f
@@ -300,7 +300,7 @@ Call_03f_44b0:
 	ld a, [wTempEnemyMonSpecies]
 	ld [wCurPartySpecies], a
 
-	ld a, $03
+	ld a, $3
 	ld hl, $611b
 	rst FarCall
 
@@ -342,16 +342,16 @@ Call_03f_44fb:
 	ld hl, $595c
 	add hl, bc
 	add hl, bc
-	ld a, $0e
+	ld a, $e
 	call GetFarHalfword
 	ld de, wPlayerName
-	ld bc, $0006
-	ld a, $0e
+	ld bc, 6
+	ld a, $e
 	call FarCopyBytes
 
 	ld hl, .RivalName
 	ld de, wd1c1
-	ld bc, $0006
+	ld bc, 6
 	call CopyBytes
 	ret
 

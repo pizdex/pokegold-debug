@@ -227,9 +227,9 @@ Function20cd::
 
 Function20e8::
 	ld a, $98
-	ld [wd04e], a
+	ld [wBGMapAnchor + 1], a
 	xor a
-	ld [wd04d], a
+	ld [wBGMapAnchor], a
 	ldh [hSCY], a
 	ldh [hSCX], a
 	ld a, 1
@@ -1521,9 +1521,9 @@ ScrollMapDown::
 	call BackupBGMapRow
 	ld c, $28
 	call ScrollBGMapPalettes
-    ld a, [wd04d]
+    ld a, [wBGMapAnchor]
     ld e, a
-    ld a, [wd04e]
+    ld a, [wBGMapAnchor + 1]
 	ld d, a
 	call UpdateBGMapRow
 	ld a, 1
@@ -1536,9 +1536,9 @@ ScrollMapUp::
 	call BackupBGMapRow
 	ld c, $28
 	call ScrollBGMapPalettes
-    ld a, [wd04d]
+    ld a, [wBGMapAnchor]
     ld l, a
-    ld a, [wd04e]
+    ld a, [wBGMapAnchor + 1]
 	ld h, a
 	ld bc, $200
 	add hl, bc
@@ -1558,9 +1558,9 @@ ScrollMapRight::
     call BackupBGMapColumn
     ld c, $24
     call ScrollBGMapPalettes
-    ld a, [wd04d]
+    ld a, [wBGMapAnchor]
     ld e, a
-    ld a, [wd04e]
+    ld a, [wBGMapAnchor + 1]
     ld d, a
     call UpdateBGMapColumn
     ld a, 1
@@ -1573,7 +1573,7 @@ ScrollMapLeft::
 	call BackupBGMapColumn
 	ld c, $24
 	call ScrollBGMapPalettes
-    ld a, [wd04d]
+    ld a, [wBGMapAnchor]
     ld e, a
     and $e0
     ld b, a
@@ -1582,7 +1582,7 @@ ScrollMapLeft::
     and $1f
     or b
     ld e, a
-    ld a, [wd04e]
+    ld a, [wBGMapAnchor + 1]
     ld d, a
     call UpdateBGMapColumn
     ld a, 1

@@ -48,7 +48,7 @@ DisplayCaughtContestMonStats:
     ld [wTempMonLevel], a
     call PrintLevel
 
-    ld de, wcaf6
+    ld de, wEnemyMonNick
 	hlcoord 11, 6
     call PlaceString
 
@@ -103,6 +103,3 @@ DisplayAlreadyCaughtText:
 	text_ram wStringBuffer1
 	text "を つかまえています"
 	prompt
-
-unk_033_40e4:
-	ret

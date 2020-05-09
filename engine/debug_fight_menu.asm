@@ -436,7 +436,7 @@ DebugFight_StartButton:
 	ld a, [de]
 	and a
 	jr z, .asm_51a3
-	ld [wd03a], a
+	ld [wCurPartyLevel], a
 	xor a
 	ld [wMonType], a
 	ld a, [wCurPartySpecies]
@@ -788,7 +788,7 @@ Jump_03f_5420:
 .asm_5428:
 	ld hl, $c450
 	ld a, c
-	ld de, wd03a
+	ld de, wCurPartyLevel
 	ld [de], a
 	push bc
 	ld bc, $8103
@@ -824,10 +824,10 @@ Call_03f_544d:
 	call ClearBox
 	xor a
 	ld [wd0c5], a
-	ld hl, wd13b
+	ld hl, $d13b
 	ld bc, $0004
 	call ByteFill
-	ld de, wd13b
+	ld de, $d13b
 	ld a, $1b
 	call Predef
 	ld a, $28
@@ -837,7 +837,7 @@ Call_03f_544d:
 	call Predef
 	call Call_03f_55ce
 	ld hl, $c469
-	ld de, wd13b
+	ld de, $d13b
 	ld b, $04
 
 .asm_548e:
@@ -893,7 +893,7 @@ Jump_03f_54cd:
 	push bc
 	ld hl, $c468
 	ld [hl], $ed
-	ld de, wd13b
+	ld de, $d13b
 	ld b, 1
 
 Jump_03f_54e9:
@@ -1072,7 +1072,7 @@ Jump_03f_55df:
 
 .asm_55f9:
 	ld a, c
-	ld [wd03a], a
+	ld [wCurPartyLevel], a
 	ld a, b
 	ld [wd109], a
 
@@ -1162,7 +1162,7 @@ Jump_03f_5683:
 	ld d, h
 	ld e, l
 	ld a, [de]
-	ld [wd03a], a
+	ld [wCurPartyLevel], a
 	pop hl
 	ld bc, $8103
 	call PrintNum
@@ -1173,7 +1173,7 @@ Jump_03f_5683:
 	jr nc, .asm_56d6
 	inc d
 .asm_56d6:
-	ld a, [wd03a]
+	ld a, [wCurPartyLevel]
 	ld [de], a
 	pop hl
 	ld a, [wCurPartyMon]

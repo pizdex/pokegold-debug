@@ -145,7 +145,7 @@ while count != 0:
         elif byte == 0x05:
             print("\ttext_low")
         elif byte == 0x06:
-            print("\ttext_waitbutton")
+            print("\ttext_promptbutton")
         elif byte == 0x07:
             print("\ttext_scroll")
         elif byte == 0x08:

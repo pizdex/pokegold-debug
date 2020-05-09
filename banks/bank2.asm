@@ -77,20 +77,20 @@ add_predef: MACRO
 ENDM
 
 PredefPointers::
-	db $0F, $68, $01 ; $0
-	db $31, $40, $01
-	db $B3, $46, $03
-	db $77, $46, $03
-	db $F4, $46, $03
-	db $1A, $5D, $03
-	db $39, $5B, $03
-	db $43, $5D, $03
-	db $EC, $5D, $03 ; $8
-	db $1B, $61, $03
-	db $39, $62, $03
-	db $3B, $47, $03
-	db $15, $64, $03
-	db $29, $64, $03
+	add_predef LearnMove ; $0
+	add_predef unk_001_4031
+	add_predef unk_003_46b3
+	add_predef unk_003_4677
+	add_predef unk_003_46f4
+	add_predef unk_003_5d1a
+	add_predef TryAddMonToParty
+	add_predef unk_003_5d43
+	add_predef unk_003_5dec ; $8
+	add_predef unk_003_611b
+	add_predef unk_003_6239
+	add_predef unk_003_473b
+	add_predef unk_003_6415
+	add_predef unk_003_6429
 	db $F6, $59, $04
 	db $27, $5A, $04
 	db $8E, $4D, $0A ; $10
@@ -125,16 +125,16 @@ PredefPointers::
 	db $4B, $57, $14
 	db $06, $7C, $32
 	db $E4, $40, $32
-	db $84, $5F, $02 ; $30
-	db $55, $4F, $02
-	db $A5, $5D, $24
-	db $91, $53, $02
-	db $76, $45, $23
-	db $B8, $43, $23
-	db $B8, $43, $23
-	db $E5, $40, $33
-	db $E4, $40, $33 ; $38
-	db $E4, $40, $33
+	add_predef unk_002_5f84 ; $30
+	add_predef unk_002_4f55
+	add_predef unk_024_5da5
+	add_predef unk_002_5391
+	add_predef unk_023_4576
+	add_predef DummyPredef35
+	add_predef DummyPredef36
+	add_predef unk_033_40e5
+	add_predef DummyPredef38 ; $38
+	add_predef DummyPredef39
 	add_predef DebugFightMenu
 	db $B1, $6D, $04
 	db $82, $57, $14
@@ -150,4 +150,10 @@ unk_002_4f55:
 	dr $8f55, $8fbd
 
 unk_002_4fbd:
-	dr $8fbd, $c000
+	dr $8fbd, $9391
+
+unk_002_5391:
+	dr $9391, $9f84
+
+unk_002_5f84:
+	dr $9f84, $c000

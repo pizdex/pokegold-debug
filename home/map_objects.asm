@@ -82,7 +82,7 @@ GetPlayerStandingTile::
 CheckOnWater::
 	ld a, [$d1fe]
 	call GetTileCollision
-	sub WATERTILE
+	sub WATER_TILE
 	ret z
 	and a
 	ret
@@ -607,7 +607,7 @@ UpdateSprites::
     rst $08
     ret
 
-GetObjectStruct:
+GetObjectStruct::
     ld bc, $0028
     ld hl, $d1f0
     call $3210
