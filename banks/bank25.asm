@@ -20,4 +20,7 @@ OverworldLoop::
 	dw $660B
 
 Call_025_6614:
-	dr $96614,$98000
+	dr $96614,$97ad4
+
+LoadScriptBDE::
+	dr $97ad4,$98000

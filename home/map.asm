@@ -207,7 +207,7 @@ Function20a7::
 	rst FarCall
 	ld a, 3
 	call RunMapCallback
-	call GetMapHeaderTimeOfDayNybble
+	call GetMapTimeOfDay
 	ld [wMapTimeOfDay], a
 	ret
 
@@ -2469,17 +2469,16 @@ GetMapMusic::
 	ld de, MUSIC_CHERRYGROVE_CITY
 	jr .load
 
-GetMapHeaderTimeOfDayNybble::
+GetMapTimeOfDay::
 	call GetPhoneServiceTimeOfDayByte
 	and $f
 	ret
 
-GetMapHeaderPhoneServiceNybble::
+GetMapPhoneService::
 	call GetPhoneServiceTimeOfDayByte
 	and $f0
 	swap a
 	ret
-
 
 GetPhoneServiceTimeOfDayByte::
     push hl

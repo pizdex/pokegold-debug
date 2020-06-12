@@ -753,7 +753,7 @@ unk_03f_7984:
 	ld a, [hl]
 	and B_BUTTON
 	jr nz, .cancel
-;	ld a,(hl)
+;	ld a, [hl]
 ;	and A_BUTTON
 ;	jr nz, .exit
 	call DebugColor_TMHMJoypad

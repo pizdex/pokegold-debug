@@ -1,3 +1,122 @@
+DebugClockMenu_Overworld:
+	ld hl, wStringBuffer2
+	ld a, [wCurDay]
+	ld [hli], a
+	ldh a, [hHours]
+	ld [hli], a
+	ldh a, [hMinutes]
+	ld [hli], a
+	ldh a, [hSeconds]
+	ld [hli], a
+	ld hl, wOptions
+	ld a, [hl]
+	push af
+	set NO_TEXT_SCROLL, [hl]
+	call DebugClockOW_Init
+	pop af
+	ld [wOptions], a
+	ret
+
+DebugClockOW_Init:
+	ld hl, DebugClockOW_HourMinText
+	call PrintText
+	call DebugClockOW_PlaceHourMin
+	call WaitBGMap
+.joypad_loop
+	call DebugClockOW_Joypad
+	push af
+	call DebugClockOW_PlaceHourMin
+	call WaitBGMap
+	pop af
+	jr nc, .joypad_loop
+	cp 1
+	ret z
+	call InitTime
+	ret
+
+DebugClockOW_PlaceHourMin:
+	hlcoord 1, 14
+	ld de, wStringBuffer2 + 1 ; Hours
+	lb bc, PRINTNUM_LEADINGZEROS | 1, 2
+	call PrintNum
+
+	hlcoord 1, 16
+	ld de, wStringBuffer2 + 2 ; Minutes
+	lb bc, PRINTNUM_LEADINGZEROS | 1, 2
+	call PrintNum
+	ret
+
+DebugClockOW_HourMinText:
+	text "   じ"		; Hours
+	line "   ふん"	; Minutes
+	done
+
+DebugClockOW_Joypad:
+	call JoyTextDelay_ForcehJoyDown
+	ld a, c
+	bit D_UP_F, a
+	jr nz, .increment_hours
+	bit D_DOWN_F, a
+	jr nz, .decrement_hours
+	bit D_LEFT_F, a
+	jr nz, .decrement_minutes
+	bit D_RIGHT_F, a
+	jr nz, .increment_minutes
+	bit A_BUTTON_F, a
+	jr nz, .confirm_time
+	bit B_BUTTON_F, a
+	jr nz, .exit
+	jr .loop
+
+.exit
+	ld a, 1
+	scf
+	ret
+
+.confirm_time
+	ld a, 2
+	scf
+	ret
+
+.increment_hours
+	ld hl, wStringBuffer2 + 1
+	inc [hl]
+	ld a, [hl]
+	cp 24
+	jr c, .loop
+	ld [hl], 0
+	jr .loop
+
+.decrement_hours
+	ld hl, wStringBuffer2 + 1
+	dec [hl]
+	ld a, [hl]
+	cp -1
+	jr nz, .loop
+	ld [hl], 23
+	jr .loop
+
+.increment_minutes
+	ld hl, wStringBuffer2 + 2
+	inc [hl]
+	ld a, [hl]
+	cp 60
+	jr c, .loop
+	ld [hl], 0
+	jr .loop
+
+.decrement_minutes
+	ld hl, wStringBuffer2 + 2
+	dec [hl]
+	ld a, [hl]
+	cp -1
+	jr nz, .loop
+	ld [hl], 59
+
+.loop
+	xor a
+	ret
+
 DebugClockMenu:
 	ld hl, wOptions
 	ld a, [hl]

@@ -21,8 +21,8 @@ INCLUDE "banks/bank4.asm"
 
 
 SECTION "bank5",ROMX,BANK[$05]
-	dr $14000, $18000
 
+INCLUDE "banks/bank5.asm"
 
 SECTION "bank6",ROMX,BANK[$06]
 	dr $18000, $1C000
@@ -37,8 +37,8 @@ SECTION "bank8",ROMX,BANK[$08]
 
 
 SECTION "bank9",ROMX,BANK[$09]
-	dr $24000, $28000
 
+INCLUDE "banks/bank9.asm"
 
 SECTION "bankA",ROMX,BANK[$0A]
 	dr $28000, $2C000

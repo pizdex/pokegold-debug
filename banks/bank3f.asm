@@ -1,74 +1,303 @@
-unk_03f_4000:
-	dr $fc000,$fc01f
+INCLUDE "engine/debug/debug_clock_menu.asm"
+INCLUDE "engine/debug/debug_menu.asm"
 
-Call_03f_401f:
-	dr $fc01f,$fc03f
+Call_03f_452b::
+	ld hl, wStatusFlags
+	set 0, [hl]
+	ld hl, wd66f
+	set 7, [hl]
+	ld hl, wd66f
+	set 1, [hl]
+	ld hl, wd66f
+	set 2, [hl]
+	ld hl, wd66f
+	set 0, [hl]
+	ret
 
-Call_03f_403f:
-	dr $fc03f,$fc064
+	nop
 
-Call_03f_4064:
-	dr $fc064,$fc0be
-
-INCLUDE "engine/debug_clock_menu.asm"
-INCLUDE "engine/debug_menu.asm"
-
-Call_03f_452b:
-	dr $fc52b,$fc629
-
-unk_03f_4629:
-	dr $fc629,$fc685
-
-unk_03f_4685:
-	dr $fc685,$fc6a4
-
-Call_03f_46a4:
-	dr $fc6a4,$fc6df
-
-Call_03f_46df:
-	dr $fc6df,$fc6eb
-
-Call_03f_46eb:
-	dr $fc6eb,$fc729
-
-Call_03f_4729:
-	dr $fc729,$fc732
-
-Call_03f_4732:
-	dr $fc732,$fc748
-
-Call_03f_4748:
-	dr $fc748,$fc797
+INCLUDE "engine/debug/debug_menu_overworld.asm"
 
 Call_03f_4797:
-	dr $fc797,$fc7ef
+.loop:
+	call JoyTextDelay_ForcehJoyDown
+	ld a, c
+	bit 6, a
+	jr nz, jr_03f_47b5
+	bit 7, a
+	jr nz, jr_03f_47c4
+	bit 5, a
+	jr nz, jr_03f_47d3
+	bit 4, a
+	jr nz, jr_03f_47dd
+	bit 1, a
+	jr nz, jr_03f_47e9
+	bit 0, a
+	jr nz, jr_03f_47eb
+	jr .loop
+
+jr_03f_47b5:
+	ld hl, wDebugClockCurrentOption
+	ld a, [hl]
+	cp $fb
+	jr z, jr_03f_47c0
+
+	inc [hl]
+	xor a
+	ret
+
+jr_03f_47c0:
+	ld [hl], 1
+	xor a
+	ret
+
+jr_03f_47c4:
+	ld hl, wDebugClockCurrentOption
+	ld a, [hl]
+	cp $01
+	jr z, jr_03f_47cf
+	dec [hl]
+	xor a
+	ret
+
+jr_03f_47cf:
+	ld [hl], $fb
+	xor a
+	ret
+
+jr_03f_47d3:
+	ld hl, wDebugClockCurrentOptionBackup
+	dec [hl]
+	jr nz, jr_03f_47db
+	ld [hl], $63
+jr_03f_47db:
+	xor a
+	ret
+
+jr_03f_47dd:
+	ld hl, wDebugClockCurrentOptionBackup
+	inc [hl]
+	cp $64
+	jr c, jr_03f_47e7
+	ld [hl], 1
+jr_03f_47e7:
+	xor a
+	ret
+
+jr_03f_47e9:
+	scf
+	ret
+
+jr_03f_47eb:
+	ld a, 1
+	and a
+	ret
 
 Call_03f_47ef:
-	dr $fc7ef,$fc82d
+	ld hl, wOptions
+	ld a, [hl]
+	push af
+	set 4, [hl]
+	ldh a, [hBGMapMode]
+	push af
+	xor a
+	ldh [hBGMapMode], a
+	ld a, [wDebugClockCurrentOption]
+	ld [wd143], a
+	call GetItemName
+
+	ld hl, .unkData_03f_4813
+	call PrintText
+	pop af
+	ldh [hBGMapMode], a
+	pop af
+	ld [wOptions], a
+	ret
+
+.unkData_03f_4813:
+	text "ばんごう@"
+	text_decimal $d0c5, $1, $3 ; TEMP
+	text ""
+	line "@"
+	text_ram $cf87 ; TEMP
+	text "  ×@"
+	text_decimal $d0c6, $1, $2 ; TEMP
+	text_end
 
 unk_03f_482d:
-	dr $fc82d,$fc876
+	ld hl, .unkData_03f_4866
+	call MenuTextbox
+.asm_4833:
+	call UpdateTime
+	ld a, 4
+	ld hl, $5861
+	rst FarCall
+	ld hl, $c4e5
+	ld de, wBugContestMinsRemaining
+	ld bc, $8102
+	call PrintNum
+	ld hl, $c4e8
+	ld de, wBugContestSecsRemaining
+	lb bc, $81, 2
+	call PrintNum
+	call WaitBGMap
+	call GetJoypad
+	ldh a, [hJoyPressed]
+	and $03
+	jr z, .asm_4833
+	call ExitMenu
+	ld a, 0
+	ret
+
+.unkData_03f_4866:
+	text "たいかい のこりじかん"
+	done
+
+.asm_4873:
+	ld a, 0
+	ret
 
 unk_03f_4876:
-	dr $fc876,$fc893
+	call Call_03f_48e4
+	jr c, .asm_4890
+	ld a, [wMenuCursorY]
+	dec a
+	ld hl, .unkData_03f_4884
+	rst JumpTable
+	ret
+
+.unkData_03f_4884:
+	dw $48c4
+	dw $48d5
+	dw $48a1
+	dw $4893
+	dw $489a
+	dw $48cf
+
+.asm_4890:
+	ld a, 0
+	ret
 
 unk_03f_4893:
-	dr $fc893,$fc8c4
+	ld hl, wd55c
+	set 7, [hl]
+	jr jr_03f_48a7
+
+unk_03f_489a:
+	ld hl, wd55c
+	res 7, [hl]
+	jr jr_03f_48a7
+
+unk_03f_48a1:
+	ld a, $3f
+	ld hl, $4000
+	rst FarCall
+
+jr_03f_48a7:
+	ld a, $23
+	ld hl, $440e
+	rst FarCall
+	ld a, $23
+	ld hl, $43b9
+	rst FarCall
+	ld b, 9
+	call GetSGBLayout
+	ld a, $23
+	ld hl, $4403
+	rst FarCall
+	call UpdateTimePals
+	ld a, 1
+	ret
 
 unk_03f_48c4:
-	dr $fc8c4,$fc8db
+	call Function1e7c
+	ld hl, wd55c
+	res 0, [hl]
+	ld a, 1
+	ret
+
+unk_03f_48cf:
+	call Function1e82
+	ld a, 1
+	ret
+
+unk_03f_48d5:
+	call Call_03f_48db
+	ld a, 1
+	ret
 
 Call_03f_48db:
-	dr $fc8db,$fc8e4
+	call Function1e7c
+	ld hl, wd55c
+	set 0, [hl]
+	ret
 
 Call_03f_48e4:
-	dr $fc8e4,$fc8f7
+	ld hl, unkData_03f_490a
+	call LoadMenuHeader
+	call Call_03f_48f7
+	ld [wMenuCursorBuffer], a
+	call VerticalMenu
+	call CloseWindow
+	ret
 
 Call_03f_48f7:
-	dr $fc8f7,$fc954
+	ld a, [wEnteredMapFromContinue]
+	bit 0, a
+	ld a, 3
+	ret nz
+	ld hl, wd55c
+	bit 0, [hl]
+	ld a, 1
+	ret nz
+	ld a, 2
+	ret
+
+unkData_03f_490a:
+	dr $fc90a,$fc954
 
 unk_03f_4954:
-	dr $fc954,$fc9b8
+	xor a
+	ldh [hMapAnims], a
+	call LoadStandardMenuHeader
+	call ClearSprites
+
+	ld a, 0
+	ld [wCurPartyMon], a
+	ld a, $24
+	ld hl, $6398
+	rst FarCall
+
+	ld a, e
+	ld [wMenuSelection], a
+	call CloseSubmenu
+	ld a, [wMenuSelection]
+	cp -1
+	jr z, .asm_499d
+	ld a, [wMenuSelection]
+	cp -1
+	jr z, .asm_499d
+	cp $1c
+	jr nc, .asm_499d
+
+	ld [wDefaultSpawnpoint], a
+	ld hl, wVramState
+	set 6, [hl]
+	ldh a, [hROMBank]
+	ld hl, $4a5b
+	call FarQueueScript
+	ld de, $27
+	call PlaySFX
+	call DelayFrame
+	ld a, 4
+	ret
+
+.asm_499d:
+	ld a, 0
+	ret
+
+unkData_03f_49a0:
+	dr $fc9a0,$fc9b8
 
 unk_03f_49b8:
 	dr $fc9b8,$fc9c4
@@ -133,7 +362,7 @@ unk_03f_4da7:
 Call_03f_4ebb:
 	dr $fcebb,$fcee2
 
-INCLUDE "engine/debug_fight_menu.asm"
+INCLUDE "engine/debug/debug_fight_menu.asm"
 
 unkData_03f_57d4:
 	dr $fd7d4,$fd7e6
@@ -220,6 +449,8 @@ unkData_03f_5f21:
 	dr $fdf21,$fe927
 
 Call_03f_6927:
-	dr $fe927,$ff495
+	dr $fe927,$feebb
 
-INCLUDE "engine/debug_color_picker.asm"
+INCLUDE "engine/events/mom_phone.asm"
+INCLUDE "engine/link/mystery_gift_3.asm"
+INCLUDE "engine/debug/debug_color_picker.asm"

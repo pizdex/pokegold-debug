@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 file = "baserom.gbc"
 
-offset = 0x13a53
+offset = 0xfefcc
 count = 2
 
 file = open(file, "rb")

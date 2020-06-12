@@ -909,6 +909,7 @@ wc6fd:: ds 1 ; c6fd
 wc6fe:: ds 1 ; c6fe
 wc6ff:: ds 1 ; c6ff
 
+wMysteryGiftStaging::
 wOverworldMap::
 wOverworldMapBlocks::
 wLYOverrides::
@@ -2714,6 +2715,7 @@ wcf52:: ds 1 ; cf52
 
 wSeenTrainerBank:: ; cf53
 wcf53:: ds 1 ; cf53
+wCallerContact::
 wSeenTrainerDistance:: ds 1 ; cf54
 wSeenTrainerDirection:: ds 1 ; cf55
 
@@ -2876,7 +2878,7 @@ SECTION "WRAM1", WRAMX, BANK[$1]
 wd000:: ds 1 ; d000
 wd001:: ds 1 ; d001
 wPokemonWithdrawDepositParameter:: ds 1 ; d002
-wd003:: ds 1 ; d003
+wItemQuantityChangeBuffer:: ds 1 ; d003
 wd004:: ds 1 ; d004
 wd005:: ds 1 ; d005
 wd006:: ds 1 ; d006
@@ -3232,6 +3234,7 @@ wd171:: ds 1 ; d171
 wd172:: ds 1 ; d172
 wd173:: ds 1 ; d173
 wd174:: ds 1 ; d174
+wMapReentryScriptQueueFlag::
 wd175:: ds 1 ; d175
 wd176:: ds 1 ; d176
 wd177:: ds 1 ; d177
@@ -3526,7 +3529,7 @@ wStatusFlags2:: ds 1 ; d565
 
 wMoney:: ds 3 ; d566
 
-wd569:: ds 1 ; d569
+wMomsMoney:: ds 1 ; d569
 wd56a:: ds 1 ; d56a
 wd56b:: ds 1 ; d56b
 wd56c:: ds 1 ; d56c
@@ -3552,6 +3555,7 @@ wNumBalls:: ds 1 ; d5ef
 wBalls:: ds MAX_BALLS * 2 + 1 ; d5f0
 wBallsEnd::
 
+wNumPCItems::
 wPCItems:: ds MAX_PC_ITEMS * 2 + 1 ; d609
 wPCItemsEnd::
 
@@ -3980,6 +3984,7 @@ wBikeFlags:: ds 1 ; d905
 wd906:: ds 1 ; d906
 wCurrentMapTriggerPointer:: ds 2 ; d907
 
+wCurCaller::
 wd909:: ds 1 ; d909
 wd90a:: ds 1 ; d90a
 
@@ -4011,8 +4016,11 @@ wd923:: ds 1 ; d923
 wd924:: ds 1 ; d924
 wd925:: ds 1 ; d925
 wd926:: ds 1 ; d926
+wWhichMomItem::
 wd927:: ds 1 ; d927
+wWhichMomItemSet::
 wd928:: ds 1 ; d928
+wMomItemTriggerBalance::
 wd929:: ds 1 ; d929
 wd92a:: ds 1 ; d92a
 wd92b:: ds 1 ; d92b

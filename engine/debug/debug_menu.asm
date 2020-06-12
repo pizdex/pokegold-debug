@@ -211,7 +211,7 @@ Call_03f_4445:
     inc de
     ld a, [de]
     inc de
-    ld [wd003], a
+    ld [wItemQuantityChangeBuffer], a
     call ReceiveItem
     jr .loop
     ret

@@ -32,7 +32,7 @@ DebugFightMenu:
 	ld [wCurItem], a
 	ld a, [de]
 	inc de
-	ld [wd003], a
+	ld [wItemQuantityChangeBuffer], a
 	push de
 	call ReceiveItem
 	pop de
