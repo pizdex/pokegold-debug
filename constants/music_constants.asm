@@ -93,6 +93,7 @@
 	const MUSIC_LAKE_OF_RAGE_ROCKET_RADIO    ; 5a
 	const MUSIC_PRINTER                      ; 5b
 	const MUSIC_POST_CREDITS                 ; 5c
+NUM_MUSIC EQU const_value
 
 MUSIC_MAHOGANY_MART EQU $64
 

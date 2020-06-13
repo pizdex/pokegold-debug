@@ -430,17 +430,7 @@ Call_03f_5be8:
 Call_03f_5c0e:
 	dr $fdc0e,$fdc29
 
-DebugSoundMenu:
-	dr $fdc29,$fdcdc
-
-Call_03f_5cdc:
-	dr $fdcdc,$fdd0b
-
-Call_03f_5d0b:
-	dr $fdd0b,$fdd17
-
-unkData_03f_5d17:
-	dr $fdd17,$fdf06
+INCLUDE "engine/debug/debug_sound_menu.asm"
 
 unk_03f_5f06:
 	dr $fdf06,$fdf21

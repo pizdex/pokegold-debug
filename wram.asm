@@ -2658,6 +2658,11 @@ wBugContestWinnersEnd::
 wBugContestWinnerName:: ds NAME_LENGTH
 
 NEXTU ; cf21
+wDebugMusicTrack:: db
+	ds 2
+wDebugSFXTrack:: db
+
+NEXTU ; cf21
 wcf21:: ds 1 ; cf21
 wcf22:: ds 1 ; cf22
 wcf23:: ds 1 ; cf23
