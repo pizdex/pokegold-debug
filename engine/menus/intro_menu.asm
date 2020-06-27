@@ -1,25 +1,4 @@
-unk_001_5a55:
-	dr $5a55,$5b18
-
-Call_001_5b18:
-	dr $5b18,$5bfb
-
-Call_001_5bfb:
-	xor a
-	ldh [hMapAnims], a
-	call ClearTilemap
-	call LoadFontsExtra
-	call LoadStandardFont
-	call ClearWindowData
-	ret
-
-unk_001_5c0b:
-	dr $5c0b,$5c1b
-
-unk_001_5c1b:
-	dr $5c1b,$5c22
-
-unk_001_5c22:
+NewGame:
 	dr $5c22,$5c3e
 
 unk_001_5c3e:
@@ -29,7 +8,7 @@ unk_001_5c3e:
 
 	farcall unk_03f_43ae
 
-	call Call_001_5bfb
+	call ClearTilemapEtc
 	call Call_001_5dd5
 
 	ld a, SPAWN_HOME
@@ -46,7 +25,7 @@ unk_001_5c5e:
 
 	farcall unk_03f_43ae
 
-	call Call_001_5bfb
+	call ClearTilemapEtc
 	call Call_001_5dd5
 	ld a, SPAWN_DEBUG
 	ld [wDefaultSpawnpoint], a
@@ -83,7 +62,7 @@ Call_001_5c85:
     ld [wd1b4], a
 
     ld hl, wPartyCount
-    call .clear
+    call .InitList
 
     xor a
     ld [wd8af], a
@@ -93,17 +72,17 @@ Call_001_5c85:
     ld a, BANK(s1_ad10)
     call OpenSRAM
     ld hl, s1_ad10
-    call .clear
+    call .InitList
     call CloseSRAM
 
     ld hl, wNumItems
-    call .clear
+    call .InitList
     ld hl, wNumKeyItems
-    call .clear
+    call .InitList
     ld hl, wNumBalls
-    call .clear
+    call .InitList
     ld hl, wPCItems
-    call .clear
+    call .InitList
 
     xor a
     ld [wdc90], a
@@ -146,29 +125,34 @@ Call_001_5c85:
 
     xor a
     ld [wd927], a
+
     ld hl, wd929
     ld [hl], 0
     inc hl
     ld [hl], 8
     inc hl
     ld [hl], $fc
-    call Call_001_5d9a
+
+    call InitializeNPCNames
 
     ld a, 9
     ld hl, $6c93
     rst FarCall
+
     ld a, $11
     ld hl, $7d06
     rst FarCall
-    call ResetGameTime
-    ret
 
-.clear
-    xor a
-    ld [hli], a
-    dec a
-    ld [hl], a
-    ret
+	call ResetGameTime
+	ret
+
+.InitList:
+; Loads 0 in the count and -1 in the first item or mon slot.
+	xor a
+	ld [hli], a
+	dec a
+	ld [hl], a
+	ret
 
 Call_001_5d5e:
 	dr $5d5e,$5d82
@@ -176,14 +160,17 @@ Call_001_5d5e:
 Call_001_5d82:
 	dr $5d82,$5d9a
 
-Call_001_5d9a:
+InitializeNPCNames:
 	dr $5d9a,$5dd5
 
 Call_001_5dd5:
 	dr $5dd5,$5de5
 
 Call_001_5de5:
-	dr $5de5,$5e8b
+	dr $5de5,$5e17
+
+Continue:
+	dr $5e17,$5e8b
 
 Call_001_5e8b:
 	dr $5e8b,$5ece
@@ -215,7 +202,7 @@ Call_001_5fd9:
 Call_001_5ff2:
 	dr $5ff2,$6451
 
-unk_001_6451:
+StartTitleScreen:
 	dr $6451,$676d
 
 unk_001_676d:

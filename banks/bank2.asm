@@ -80,7 +80,7 @@ PredefPointers::
 	add_predef LearnMove ; $0
 	add_predef unk_001_4031
 	add_predef unk_003_46b3
-	add_predef unk_003_4677
+	add_predef SmallFarFlagAction
 	add_predef unk_003_46f4
 	add_predef unk_003_5d1a
 	add_predef TryAddMonToParty
@@ -107,7 +107,7 @@ PredefPointers::
 	db $7F, $66, $10
 	db $57, $63, $10
 	db $28, $4E, $0A
-	db $F0, $4D, $0A
+	add_predef TradeAnimation
 	db $70, $49, $14
 	db $7A, $54, $14 ; $20
 	db $3F, $54, $14

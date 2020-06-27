@@ -2,7 +2,23 @@ INCLUDE "constants.asm"
 
 SECTION "bank1", ROMX
 
-INCLUDE "banks/bank1.asm"
+INCLUDE "engine/link/place_waiting_text.asm"
+INCLUDE "engine/gfx/load_push_oam.asm"
+INCLUDE "engine/overworld/map_objects.asm"
+INCLUDE "engine/menus/main_menu.asm"
+INCLUDE "engine/menus/intro_menu.asm"
+INCLUDE "engine/overworld/init_map.asm"
+INCLUDE "engine/pokemon/learn.asm"
+INCLUDE "engine/pokemon/correct_nick_errors.asm"
+INCLUDE "engine/math/math.asm"
+
+ItemAttributes:
+	dr $6bb9,$7a11
+
+INCLUDE "engine/overworld/npc_movement.asm"
+INCLUDE "engine/events/happiness_egg.asm"
+INCLUDE "engine/events/shuckle.asm"
+INCLUDE "engine/events/haircut.asm"
 
 
 SECTION "bank2",ROMX,BANK[$02]
@@ -24,6 +40,7 @@ SECTION "bank5",ROMX,BANK[$05]
 
 INCLUDE "banks/bank5.asm"
 
+
 SECTION "bank6",ROMX,BANK[$06]
 	dr $18000, $1C000
 
@@ -40,8 +57,10 @@ SECTION "bank9",ROMX,BANK[$09]
 
 INCLUDE "banks/bank9.asm"
 
+
 SECTION "bankA",ROMX,BANK[$0A]
-	dr $28000, $2C000
+
+INCLUDE "banks/banka.asm"
 
 
 SECTION "bankB",ROMX,BANK[$0B]
@@ -81,7 +100,8 @@ INCBIN "baserom.gbc",$4C000,$4000
 
 
 SECTION "bank14",ROMX,BANK[$14]
-INCBIN "baserom.gbc",$50000,$4000
+
+INCLUDE "banks/bank14.asm"
 
 
 SECTION "bank15",ROMX,BANK[$15]

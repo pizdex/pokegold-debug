@@ -1,9 +1,10 @@
 roms := MONSGD.gbc
 
-rom_obj := \
+gold_obj := \
 home.o \
 main.o \
 wram.o \
+
 
 ### Build tools
 
@@ -19,27 +20,21 @@ RGBFIX  ?= $(RGBDS)rgbfix
 RGBGFX  ?= $(RGBDS)rgbgfx
 RGBLINK ?= $(RGBDS)rgblink
 
-PYTHON := python
-gfx := $(PYTHON) tools/gfx.py
-
 
 ### Build targets
 
 .SUFFIXES:
-.PHONY: all clean tidy pngs compare tools
+.PHONY: all gold clean compare tools
 .SECONDEXPANSION:
 .PRECIOUS:
 .SECONDARY:
 
 all: $(roms)
-
-tidy:
-	rm -f $(roms) $(rom_obj) $(roms:.gbc=.map) $(roms:.gbc=.sym)
-	$(MAKE) clean -C tools/
+gold: MONSGD.gbc
 
 clean:
-	rm -f $(roms) $(rom_obj) $(roms:.gbc=.map) $(roms:.gbc=.sym)
-	find gfx -iname "*.png" -delete
+	rm -f $(roms) $(gold_obj) $(silver_obj) $(roms:.gbc=.map) $(roms:.gbc=.sym) rgbdscheck.o
+	find gfx \( -iname "*.png" -not -iname "big_onix.png" \) -delete
 	$(MAKE) clean -C tools/
 
 compare: $(roms)
@@ -48,14 +43,23 @@ compare: $(roms)
 tools:
 	$(MAKE) -C tools/
 
+
 RGBASMFLAGS = -L -Weverything
-$(rom_obj):    RGBASMFLAGS +=
+# Create a sym/map for debug purposes if `make` run with `DEBUG=1`
+ifeq ($(DEBUG),1)
+RGBASMFLAGS += -E
+endif
+
+$(gold_obj):   RGBASMFLAGS += -E
+
+rgbdscheck.o: rgbdscheck.asm
+	$(RGBASM) -o $@ $<
 
 # The dep rules have to be explicit or else missing files won't be reported.
 # As a side effect, they're evaluated immediately instead of when the rule is invoked.
 # It doesn't look like $(shell) can be deferred so there might not be a better way.
 define DEP
-$1: $2 $$(shell tools/scan_includes $2)
+$1: $2 $$(shell tools/scan_includes $2) | rgbdscheck.o
 	$$(RGBASM) $$(RGBASMFLAGS) -o $$@ $$<
 endef
 
@@ -65,17 +69,11 @@ ifeq (,$(filter clean tools,$(MAKECMDGOALS)))
 
 $(info $(shell $(MAKE) -C tools))
 
-$(foreach obj, $(rom_obj), $(eval $(call DEP,$(obj),$(obj:.o=.asm))))
+$(foreach obj, $(gold_obj), $(eval $(call DEP,$(obj),$(obj:.o=.asm))))
 
 endif
 
-MONSGD.gbc: $(rom_obj) MONSGD.link
-	$(RGBLINK) -n MONSGD.sym -m MONSGD.map -l MONSGD.link -o $@ $(rom_obj)
-	$(RGBFIX) -csv -i AAUJ -k 01 -l 0x33 -m 0x10 -p 0 -r 3 -t "POKEMON_GLD" $@
 
-pngs:
-	find gfx -iname "*.lz"      -exec $(gfx) unlz {} +
-	find gfx -iname "*.[12]bpp" -exec $(gfx) png  {} +
-	find gfx -iname "*.[12]bpp" -exec touch {} +
-	find gfx -iname "*.lz"      -exec touch {} +
-	find gfx/pokemon gfx/trainers -iname "*.[1,2]bpp" -delete
+MONSGD.gbc: $(gold_obj) layout.link
+	$(RGBLINK) -n MONSGD.sym -m MONSGD.map -l layout.link -o $@ $(gold_obj)
+	$(RGBFIX) -csv -i AAUJ -k 01 -l 0x33 -m 0x10 -p 0 -r 3 -t "POKEMON_GLD" $@

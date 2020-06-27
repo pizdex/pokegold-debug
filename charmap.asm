@@ -282,6 +282,7 @@
 	charmap "ゆ",	$d5
 	charmap "よ",	$d6
 	charmap "ら",	$d7
+	charmap "リ",	$d8
 	charmap "り",	$d8
 	charmap "る",	$d9
 	charmap "れ",	$da

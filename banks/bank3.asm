@@ -13,7 +13,7 @@ unk_003_4381:
 Call_003_44f4:
 	dr $c4f4, $c677
 
-unk_003_4677:
+SmallFarFlagAction:
 	dr $c677, $c6b3
 
 unk_003_46b3:

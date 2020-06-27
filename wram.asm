@@ -3299,10 +3299,11 @@ wd1aa:: ds 1 ; d1aa
 
 wOptions:: ds 1 ; d1ab
 
-wd1ac:: ds 1 ; d1ac
+wSaveFileExists:: ds 1 ; d1ac
 
 wTextboxFrame:: ds 1 ; d1ad
 wTextboxFlags:: ds 1 ; d1ae
+
 wGBPrinter:: ds 1 ; d1af
 wOptions2:: ds 3 ; d1b0
 
@@ -3576,7 +3577,7 @@ wPlayerState:: ds 1 ; d675
 
 wd676:: ds 1 ; d676
 wd677:: ds 1 ; d677
-wd678:: ds 1 ; d678
+wTradeFlags:: ds 1 ; d678
 wd679:: ds 1 ; d679
 wd67a:: ds 1 ; d67a
 wd67b:: ds 1 ; d67b

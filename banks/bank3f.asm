@@ -303,10 +303,22 @@ unk_03f_49b8:
 	dr $fc9b8,$fc9c4
 
 Call_03f_49c4:
-	dr $fc9c4,$fca67
+	ld hl, unkData_03f_49cd
+	call GetNthString
+	ld d, h
+	ld e, l
+	ret
+
+unkData_03f_49cd:
+	dr $fc9cd,$fca67
 
 Call_03f_4a67:
-	dr $fca67,$fca95
+	ld hl, unkData_03f_4a6e
+	call Call_03f_46df
+	ret
+
+unkData_03f_4a6e:
+	dr $fca6e,$fca95
 
 Call_03f_4a95:
 	dr $fca95,$fcaea
@@ -436,11 +448,18 @@ unk_03f_5f06:
 	dr $fdf06,$fdf21
 
 unkData_03f_5f21:
-	dr $fdf21,$fe927
+	dr $fdf21,$fe3cd
+
+Jump_03f_63cd:
+	dr $fe3cd,$fe927
 
 Call_03f_6927:
-	dr $fe927,$feebb
+	dr $fe927,$fe94b
 
+Call_03f_694b:
+	dr $fe94b,$fe952
+
+INCLUDE "engine/events/npc_trade.asm"
 INCLUDE "engine/events/mom_phone.asm"
 INCLUDE "engine/link/mystery_gift_3.asm"
 INCLUDE "engine/debug/debug_color_picker.asm"

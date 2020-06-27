@@ -1,6 +1,6 @@
 unk_001_4031:
 	farcall DebugMenu
-	jp unk_001_6451
+	jp StartTitleScreen
 
 WriteOAMDMACodeToHRAM::
 	ld c, LOW(hTransferVirtualOAM)
