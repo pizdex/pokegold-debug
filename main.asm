@@ -23,22 +23,22 @@ INCLUDE "engine/events/haircut.asm"
 
 SECTION "bank2",ROMX,BANK[$02]
 
-INCLUDE "banks/bank2.asm"
+INCLUDE "banks/bank02.asm"
 
 
 SECTION "bank3",ROMX,BANK[$03]
 
-INCLUDE "banks/bank3.asm"
+INCLUDE "banks/bank03.asm"
 
 
 SECTION "bank4",ROMX,BANK[$04]
 
-INCLUDE "banks/bank4.asm"
+INCLUDE "banks/bank04.asm"
 
 
 SECTION "bank5",ROMX,BANK[$05]
 
-INCLUDE "banks/bank5.asm"
+INCLUDE "banks/bank05.asm"
 
 
 SECTION "bank6",ROMX,BANK[$06]
@@ -55,12 +55,12 @@ SECTION "bank8",ROMX,BANK[$08]
 
 SECTION "bank9",ROMX,BANK[$09]
 
-INCLUDE "banks/bank9.asm"
+INCLUDE "banks/bank09.asm"
 
 
 SECTION "bankA",ROMX,BANK[$0A]
 
-INCLUDE "banks/banka.asm"
+INCLUDE "banks/bank0a.asm"
 
 
 SECTION "bankB",ROMX,BANK[$0B]

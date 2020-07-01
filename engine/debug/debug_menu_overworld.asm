@@ -1,85 +1,126 @@
-unkData_03f_4546:
-	db $40
+QuickDebug_MenuHeader:
+	db MENU_BACKUP_TILES ; flags
 	menu_coords 0, 0, 7, 17
-	dw unkData_03f_454e
+	dw .MenuData
 	db 1
 
-unkData_03f_454e:
-	db STATICMENU_ENABLE_LEFT_RIGHT | STATICMENU_ENABLE_START | STATICMENU_WRAP | STATICMENU_CURSOR
-	db 0
-	dw unk_03f_460f
-	dw $1dc4
+.MenuData:
+	db STATICMENU_ENABLE_LEFT_RIGHT | STATICMENU_ENABLE_START | STATICMENU_WRAP | STATICMENU_CURSOR ; flags
+	db 0 ; items
+	dw QuickDebug_MenuItems
+	dw PlaceNthMenuStrings
 	dw unk_03f_4556
 
+	const_def
+	const DEBUG_CANCEL ; 0
+	const DEBUG_NEXT
+	const DEBUG_GAME
+	const DEBUG_CHARACTER
+	const DEBUG_POKEGEAR
+	const DEBUG_TEST1 ; 5
+	const DEBUG_TEST2
+	const DEBUG_TEST3
+	const DEBUG_TEST4
+	const DEBUG_RECOVERY
+	const DEBUG_WARP ; 10
+	const DEBUG_PC
+	const DEBUG_EXPERIMENT
+	const DEBUG_BUILD
+	const DEBUG_TIMER
+	const DEBUG_ELEVATOR ; 15
+	const DEBUG_RECORD
+	const DEBUG_ITEM
+	const DEBUG_BUGCATCHING
+	const DEBUG_BREEDING
+	const DEBUG_HATCH ; 20
+
 unk_03f_4556:
-	dw unk_03f_46a1, unkData_03f_45aa
-	dw unk_03f_46c8, unkData_03f_45cf
-	dw unk_03f_4bd5, unkData_03f_45ae
-	dw unk_03f_4873, unkData_03f_45d8
-	dw unk_03f_4876, unkData_03f_45dc
-	dw unk_03f_4da7, unkData_03f_45b6
-	dw unk_03f_4dae, unkData_03f_45bb
-	dw unk_03f_4db5, unkData_03f_45c0
-	dw unk_03f_4dbc, unkData_03f_45c5
-	dw unk_03f_4932, unkData_03f_45ca
-	dw unk_03f_4954, unkData_03f_45b2
-	dw unk_03f_4ba0, unkData_03f_45d3
-	dw OTID_Editor,  unkData_03f_45e2
-	dw unk_03f_4b91, unkData_03f_45e7
-	dw unk_03f_4c65, unkData_03f_45f7
-	dw unk_03f_4ba9, unkData_03f_45eb
-	dw unk_03f_4c7a, unkData_03f_45f3
-	dw unk_03f_4718, unkData_03f_45fc
-	dw unk_03f_482d, unkData_03f_4600
-	dw unk_03f_4cd1, unkData_03f_4605
-	dw unk_03f_4d59, unkData_03f_460a
+	dw QuickDebug_CloseOption,       .QuickDebug_Cancel
+	dw QuickDebug_NextPageOption,    .QuickDebug_Next
+	dw QuickDebug_MinigameOption,    .QuickDebug_Game ; unused
+	dw QuickDebug_CharacterOption,   .QuickDebug_Character
+	dw QuickDebug_ToolgearOption,    .QuickDebug_Toolgear
+	dw QuickDebug_Test1Option,       .QuickDebug_Test1
+	dw QuickDebug_Test2Option,       .QuickDebug_Test2
+	dw QuickDebug_Test3Option,       .QuickDebug_Test3
+	dw QuickDebug_Test4Option,       .QuickDebug_Test4
+	dw QuickDebug_RecoverHPOption,   .QuickDebug_Recovery
+	dw QuickDebug_WarpOption,        .QuickDebug_Warp
+	dw QuickDebug_PCOption,          .QuickDebug_PC
+	dw QuickDebug_OTIDOption,        .QuickDebug_Experiment
+	dw QuickDebug_BuildOption,       .QuickDebug_Build
+	dw QuickDebug_TimerOption,       .QuickDebug_Timer
+	dw QuickDebug_ElevatorOption,    .QuickDebug_Elevator
+	dw QuickDebug_RecordOption,      .QuickDebug_Record ; unused
+	dw QuickDebug_ItemOption,        .QuickDebug_Item
+	dw QuickDebug_BugCatchingOption, .QuickDebug_BugCatching ; unused
+	dw QuickDebug_BreedingOption,    .QuickDebug_Breeding
+	dw QuickDebug_HatchOption,       .QuickDebug_Hatch
 
-unkData_03f_45aa: db "とじる@" ; Cancel
-unkData_03f_45ae: db "ゲーム@" ; Game
-unkData_03f_45b2: db "ワープ@" ; Warp
-unkData_03f_45b6: db "テスト1@" ; Test 1
-unkData_03f_45bb: db "テスト2@" ; Test 2
-unkData_03f_45c0: db "テスト3@" ; Test 3
-unkData_03f_45c5: db "テスト4@" ; Test 4
-unkData_03f_45ca: db "かいふく@" ; Recovery
-unkData_03f_45cf: db "つぎ▶@" ; Next
-unkData_03f_45d3: db "パソコン@" ; PC
-unkData_03f_45d8: db "キャラ@" ; Character
-unkData_03f_45dc: db "ツールギア@" ; Pokegear
-unkData_03f_45e2: db "じっけん@" ; Experiment​ (OT ID Editor)
-unkData_03f_45e7: db "つくる@" ; Build a Pokemon
-unkData_03f_45eb: db "フロア@" ; Floor
-unkData_03f_45ef: db "たまご@" ; Egg
-unkData_03f_45f3: db "きろく@" ; Record
-unkData_03f_45f7: db "タイマー@" ; Timer
-unkData_03f_45fc: db "どうぐ@" ; Item
-unkData_03f_4600: db "むしとり@" ; Bug Catching
-unkData_03f_4605: db "こづくり@" ; Breeding
-unkData_03f_460a: db "うまれる@" ; Hatch
+.QuickDebug_Cancel:      db "とじる@" ; Cancel
+.QuickDebug_Game:        db "ゲーム@" ; Game
+.QuickDebug_Warp:        db "ワープ@" ; Warp
+.QuickDebug_Test1:       db "テスト1@" ; Test 1
+.QuickDebug_Test2:       db "テスト2@" ; Test 2
+.QuickDebug_Test3:       db "テスト3@" ; Test 3
+.QuickDebug_Test4:       db "テスト4@" ; Test 4
+.QuickDebug_Recovery:    db "かいふく@" ; Recovery
+.QuickDebug_Next:        db "つぎ▶@" ; Next
+.QuickDebug_PC:          db "パソコン@" ; PC
+.QuickDebug_Character:   db "キャラ@" ; Character
+.QuickDebug_Toolgear:    db "ツールギア@" ; Toolgear
+.QuickDebug_Experiment:  db "じっけん@" ; Experiment​ (OT ID Editor)
+.QuickDebug_Build:       db "つくる@" ; Build a Pokemon
+.QuickDebug_Elevator:    db "フロア@" ; Floor
+.QuickDebug_Egg:         db "たまご@" ; Egg
+.QuickDebug_Record:      db "きろく@" ; Record
+.QuickDebug_Timer:       db "タイマー@" ; Timer
+.QuickDebug_Item:        db "どうぐ@" ; Item
+.QuickDebug_BugCatching: db "むしとり@" ; Bug Catching
+.QuickDebug_Breeding:    db "こづくり@" ; Breeding
+.QuickDebug_Hatch:       db "うまれる@" ; Hatch
 
-unk_03f_460f:
+QuickDebug_MenuItems:
+; First Page
 	db 7
-	db 1, 10, 19, 13, 4, 11, 0
-	db -1
+	db DEBUG_NEXT
+	db DEBUG_WARP
+	db DEBUG_BREEDING
+	db DEBUG_BUILD
+	db DEBUG_POKEGEAR
+	db DEBUG_PC
+	db DEBUG_CANCEL
+	db -1 ; end
 
+; Second Page
 	db 7
-	db 1, 17, 9, 12, 2, 14, 0
-	db -1
+	db DEBUG_NEXT
+	db DEBUG_ITEM
+	db DEBUG_RECOVERY
+	db DEBUG_EXPERIMENT
+	db DEBUG_GAME
+	db DEBUG_TIMER
+	db DEBUG_CANCEL
+	db -1 ; end
 
+; Third Page
 	db 7
-	db 1, 5, 6, 7, 8, 20, 0
-	db -1
+	db DEBUG_NEXT
+	db DEBUG_TEST1
+	db DEBUG_TEST2
+	db DEBUG_TEST3
+	db DEBUG_TEST4
+	db DEBUG_HATCH
+	db DEBUG_CANCEL
+	db -1 ; end
 
 ; Overworld Debug Menu
 unk_03f_462a:
 	call RefreshScreen
-
-	ld de, 6
+	ld de, SFX_MENU
 	call PlaySFX
-
-	ld hl, unkData_03f_4546
+	ld hl, QuickDebug_MenuHeader
 	call LoadMenuHeader
-
 	ld a, 0
 	ld [wWhichIndexSet], a
 
@@ -98,7 +139,7 @@ unk_03f_463e:
 	cp 1
 	jr z, jr_03f_4664
 
-	call Call_03f_46a4
+	call QuickDebug_SwitchPage
 	jr jr_03f_466d
 
 jr_03f_4664:
@@ -145,48 +186,50 @@ unk_03f_468e:
 	ldh [hMenuReturn], a
 	jr unk_03f_467f
 
-unk_03f_46a1:
+QuickDebug_CloseOption:
 	ld a, 1
 	ret
 
-Call_03f_46a4:
+QuickDebug_SwitchPage:
 	ld a, [wMenuJoypad]
-	cp $20
-	jr z, .asm_46b9
+	cp D_LEFT
+	jr z, .decrement_page
+
 	ld a, [wWhichIndexSet]
 	inc a
 	cp 3
-	jr nz, .asm_46b4
+	jr nz, .not_max
 	xor a
-.asm_46b4
+.not_max
 	ld [wWhichIndexSet], a
-	jr unk_03f_46d6
+	jr QuickDebug_ChangePageSFX
 
-.asm_46b9
+.decrement_page
 	ld a, [wWhichIndexSet]
 	dec a
 	cp -1
-	jr nz, .asm_46c3
+	jr nz, .not_min
 	ld a, 2
-.asm_46c3
+.not_min
 	ld [wWhichIndexSet], a
-	jr unk_03f_46d6
+	jr QuickDebug_ChangePageSFX
 
-unk_03f_46c8:
+QuickDebug_NextPageOption:
+; It is impossible to switch to the third page using this function.
 	ld a, [wWhichIndexSet]
 	and a
-	jr z, .asm_46d1
+	jr z, .second_page
 	xor a
-	jr .asm_46d3
+	jr .first_page
 
-.asm_46d1
+.second_page
 	ld a, 1
 
-.asm_46d3
+.first_page
 	ld [wWhichIndexSet], a
 
-unk_03f_46d6:
-	ld de, $06
+QuickDebug_ChangePageSFX:
+	ld de, SFX_MENU
 	call PlaySFX
 	ld a, 0
 	ret
@@ -219,10 +262,9 @@ unk_03f_46f7:
 	line "つかうことが できません"
 	prompt
 
-unk_03f_4718:
+QuickDebug_ItemOption:
 	call LoadStandardMenuHeader
 	call Call_03f_4729
-
 .asm_471e:
 	call Call_03f_4732
 	jr nc, .asm_471e
@@ -232,8 +274,8 @@ unk_03f_4718:
 
 Call_03f_4729:
 	ld a, 1
-	ld [wDebugClockCurrentOption], a
-	ld [wDebugClockCurrentOptionBackup], a
+	ld [wDebugItem], a
+	ld [wDebugItemQuantity], a
 	ret
 
 Call_03f_4732:
@@ -244,7 +286,7 @@ Call_03f_4732:
 	ret c
 	jr z, .loop
 
-	ld a, [wDebugClockCurrentOption]
+	ld a, [wDebugItem]
 	and a
 	ret z
 	call Call_03f_4748
@@ -253,9 +295,9 @@ Call_03f_4732:
 
 Call_03f_4748:
 	ld hl, wNumItems
-	ld a, [wDebugClockCurrentOption]
-	ld [wCurItem], a ; ?
-	ld a, [wDebugClockCurrentOptionBackup]
+	ld a, [wDebugItem]
+	ld [wCurItem], a
+	ld a, [wDebugItemQuantity]
 	ld [wItemQuantityChangeBuffer], a
 	call ReceiveItem
 	jr c, .asm_4763
@@ -265,7 +307,7 @@ Call_03f_4748:
 	ret
 
 .asm_4763:
-	ld de, $05
+	ld de, SFX_FULL_HEAL
 	call PlaySFX
 	ld hl, .unkData_03f_4785
 	call MenuTextboxWaitButton
@@ -277,7 +319,7 @@ Call_03f_4748:
 	done
 
 .unkData_03f_4785:
-	text_ram $cf87 ; TEMP
+	text_ram wStringBuffer1
 	text "を "
 	line "りュックにいれました"
 	done
@@ -301,7 +343,7 @@ Call_03f_4797:
 	jr .loop
 
 jr_03f_47b5:
-	ld hl, wDebugClockCurrentOption
+	ld hl, wDebugItem
 	ld a, [hl]
 	cp $fb
 	jr z, jr_03f_47c0
@@ -316,7 +358,7 @@ jr_03f_47c0:
 	ret
 
 jr_03f_47c4:
-	ld hl, wDebugClockCurrentOption
+	ld hl, wDebugItem
 	ld a, [hl]
 	cp $01
 	jr z, jr_03f_47cf
@@ -330,7 +372,7 @@ jr_03f_47cf:
 	ret
 
 jr_03f_47d3:
-	ld hl, wDebugClockCurrentOptionBackup
+	ld hl, wDebugItemQuantity
 	dec [hl]
 	jr nz, jr_03f_47db
 	ld [hl], $63
@@ -339,7 +381,7 @@ jr_03f_47db:
 	ret
 
 jr_03f_47dd:
-	ld hl, wDebugClockCurrentOptionBackup
+	ld hl, wDebugItemQuantity
 	inc [hl]
 	cp $64
 	jr c, jr_03f_47e7
@@ -366,10 +408,9 @@ Call_03f_47ef:
 	push af
 	xor a
 	ldh [hBGMapMode], a
-	ld a, [wDebugClockCurrentOption]
+	ld a, [wDebugItem]
 	ld [wd143], a
 	call GetItemName
-
 	ld hl, .unkData_03f_4813
 	call PrintText
 	pop af
@@ -379,17 +420,17 @@ Call_03f_47ef:
 	ret
 
 .unkData_03f_4813:
-	text "ばんごう@"
-	text_decimal $d0c5, $1, $3 ; TEMP
+	text "ばんごう@" ; Number
+	text_decimal wDebugItem, 1, 3
 	text ""
 	line "@"
-	text_ram $cf87 ; TEMP
+	text_ram wStringBuffer1
 	text "  ×@"
-	text_decimal $d0c6, $1, $2 ; TEMP
+	text_decimal wDebugItemQuantity, 1, 2
 	text_end
 
-unk_03f_482d:
-	ld hl, .unkData_03f_4866
+QuickDebug_BugCatchingOption:
+	ld hl, .RemainingTimeText
 	call MenuTextbox
 .asm_4833:
 	call UpdateTime
@@ -413,15 +454,15 @@ unk_03f_482d:
 	ld a, 0
 	ret
 
-.unkData_03f_4866:
+.RemainingTimeText:
 	text "たいかい のこりじかん"
 	done
 
-unk_03f_4873:
+QuickDebug_CharacterOption:
 	ld a, 0
 	ret
 
-unk_03f_4876:
+QuickDebug_ToolgearOption:
 	call Call_03f_48e4
 	jr c, .asm_4890
 	ld a, [wMenuCursorY]
@@ -533,7 +574,7 @@ MenuData_03f_4912:
 	db "24じかん@" ; 24 Hours
 	db "けす@" ; Erase
 
-unk_03f_4932:
+QuickDebug_RecoverHPOption:
 	ld a, 2
 	call Predef
 	ld hl, unkData_03f_4940
@@ -542,11 +583,11 @@ unk_03f_4932:
 	ret
 
 unkData_03f_4940:
-	text "#の たいリょくを"
+	text "#の たいりょくを"
 	line "かいふくしました"
 	prompt
 
-unk_03f_4954:
+QuickDebug_WarpOption:
 	xor a
 	ldh [hMapAnims], a
 	call LoadStandardMenuHeader
@@ -573,7 +614,7 @@ unk_03f_4954:
 	ldh a, [hROMBank]
 	ld hl, unk_03f_4a5b
 	call FarQueueScript
-	ld de, $27
+	ld de, SFX_ELEVATOR_END
 	call PlaySFX
 	call DelayFrame
 	ld a, 4
@@ -596,6 +637,7 @@ MenuData_03f_49a8:
 	db 1 ; spacing
 	dba unkData_03f_4a43
 	dba unk_03f_49b8
+	; placeholders
 	db $00
 	dw $0000
 	db $00
@@ -640,7 +682,7 @@ unkData_03f_49cd:
 	db "アサギ@" ; Olivine City
 	db "エンジュ@" ; Ecruteak City
 	db "チョウジ@" ; Mahogany Town
-	db "イカリの みずうみ@" ; Lake of Rage
+	db "イカりの みずうみ@" ; Lake of Rage
 	db "フスべ@" ; Blackthorn City
 	db "シロガネ@" ; Mt. Silver
 
@@ -681,7 +723,7 @@ unkScript_03f_4a77:
 	teleport_to
 	step_end
 
-OTID_Editor:
+QuickDebug_OTIDOption:
 	call LoadStandardMenuHeader
 	call OTID_Init
 	call CloseWindow
@@ -857,59 +899,390 @@ OTID_ConvertToHex:
 	add hl, bc
 	ret
 
-unk_03f_4b91:
-	dr $fcb91,$fcba0
+QuickDebug_BuildOption:
+	call LoadStandardMenuHeader
+	ld a, $3f
+	ld hl, unk_03f_57e6
+	rst $08
+	call CloseWindow
+	ld a, $00
+	ret
 
-unk_03f_4ba0:
-	dr $fcba0,$fcba9
+QuickDebug_PCOption:
+	ld a, $05
+	ld hl, $57e5
+	rst FarCall
+	ld a, 0
+	ret
 
-unk_03f_4ba9:
-	dr $fcba9,$fcbaf
+QuickDebug_ElevatorOption:
+	call DebugElevator
+	ld a, 0
+	ret
 
-Call_03f_4baf:
-	dr $fcbaf,$fcbd5
+DebugElevator:
+	ld b, BANK(DebugElevator_FloorData)
+	ld de, DebugElevator_FloorData
+	farcall Elevator
+	ret
 
-unk_03f_4bd5:
-	dr $fcbd5,$fcbdb
+DebugElevator_FloorData:
+	db 6 ; floors
+	elevfloor FLOOR_6F, 2, CELADON_DEPT_STORE_6F
+	elevfloor FLOOR_5F, 3, CELADON_DEPT_STORE_5F
+	elevfloor FLOOR_4F, 3, CELADON_DEPT_STORE_4F
+	elevfloor FLOOR_3F, 3, CELADON_DEPT_STORE_3F
+	elevfloor FLOOR_2F, 3, CELADON_DEPT_STORE_2F
+	elevfloor FLOOR_1F, 4, CELADON_DEPT_STORE_1F
+	db -1 ; end
+
+QuickDebug_MinigameOption:
+	call Call_03f_4bdb
+	ld a, 0
+	ret
 
 Call_03f_4bdb:
-	dr $fcbdb,$fcc07
+	ld hl, MenuHeader_03f_4c28
+	call LoadMenuHeader
+	call VerticalMenu
+	push af
+	call Call_03f_4c07
+	pop af
+	call CloseWindow
+	ret c
+
+	ld hl, unkData_03f_4c56
+	call MenuTextbox
+	call YesNoBox
+	call CloseWindow
+	ret c
+
+	call FadeToMenu
+	ld hl, wQueuedScriptBank
+	call CallPointerAt
+	call CloseSubmenu
+	ret
 
 Call_03f_4c07:
-	dr $fcc07,$fcc65
+	ld a, [wMenuCursorY]
+	dec a
+	call CopyNameFromMenu
+	ld a, [wMenuCursorY]
 
-unk_03f_4c65:
-	dr $fcc65,$fcc7a
+Call_03f_4c11:
+	dec a
+	ld e, a
+	ld d, 0
+	ld hl, unkData_03f_4c4d
+	add hl, de
+	add hl, de
+	add hl, de
+	ld a, [hli]
+	ld [wQueuedScriptBank], a
+	ld a, [hli]
+	ld [wQueuedScriptAddr], a
+	ld a, [hl]
+	ld [wQueuedScriptAddr + 1], a
+	ret
 
-unk_03f_4c7a:
-	dr $fcc7a,$fccc0
+MenuHeader_03f_4c28:
+	db $40
+	db 0, 0, 10, 10
+	dw MenuData_03f_4c30
+	db 1
+
+MenuData_03f_4c30:
+	db STATICMENU_CURSOR ; flags
+	db 3 ; # items
+	db "スロットマシン@" ; Slot Machine
+	db "ポーカーゲーム@" ; Poker Game (Card Flip)
+	db "ぺアゲーム@" ; Pair Game
+	db "ピクロス@" ; Picross (Unused)
+
+unkData_03f_4c4d:
+	dba unk_024_6b85
+	dbw $38, $48bd
+	dbw $38, $667a
+
+unkData_03f_4c56:
+	text_ram wStringBuffer2
+	text "で "
+	line "あそびますか?"
+	done
+
+QuickDebug_TimerOption:
+	call FadeToMenu
+	farcall unk_002_45f1
+	farcall DebugClockMenu
+	call CloseSubmenu
+	ld a, 0
+	ret
+
+QuickDebug_RecordOption:
+	ld hl, unkData_03f_4c9a
+	call MenuTextbox
+	ld a, 0
+	call OpenSRAM
+	ld a, [s0_b000]
+	call CloseSRAM
+	hlcoord 2, 16
+	call Call_03f_4cc0
+	call PromptButton
+	call CloseWindow
+	ld a, 0
+	ret
+
+unkData_03f_4c9a:
+	text "やせいの#とたたかった"
+	line "かいすう @"
+	text_decimal wd91d, 2, 5
+	text "かい"
+
+	para "タイマーのステータス"
+	done
 
 Call_03f_4cc0:
-	dr $fccc0,$fccd1
+	push bc
+	ld c, a
+	ld b, 8
+.asm_4cc4
+	sla c
+	ld a, "0"
+	jr nc, .asm_4ccb
+	inc a
+.asm_4ccb
+	ld [hli], a
+	dec b
+	jr nz, .asm_4cc4
+	pop bc
+	ret
 
-unk_03f_4cd1:
-	dr $fccd1,$fcd51
+QuickDebug_BreedingOption:
+	ld a, [wDayCareMan]
+	bit 0, a
+	jr z, jr_03f_4d03
+
+	ld a, [wDayCareLady]
+	bit 0, a
+	jr z, jr_03f_4d03
+
+	ld a, $05
+	ld hl, $78f0
+	rst FarCall
+
+	ld a, [wApplyStatLevelMultipliersToEnemy]
+	and a
+	jr z, jr_03f_4d22
+	cp $ff
+	jr z, jr_03f_4d22
+
+	ld hl, unkData_03f_4d36
+	call MenuTextbox
+	call YesNoBox
+	call ExitMenu
+	jr c, jr_03f_4d00
+	call Call_03f_4d51
+jr_03f_4d00:
+	ld a, 0
+	ret
+
+jr_03f_4d03:
+	ld hl, unkData_03f_4d0c
+	call MenuTextboxBackup
+	ld a, 0
+	ret
+
+unkData_03f_4d0c:
+; You need two POKéMON for breeding.
+	text "2たい いないので"
+	line "こづくり できません"
+	prompt
+
+jr_03f_4d22:
+	ld hl, unkData_03f_4d2b
+	call MenuTextboxBackup
+	ld a, 0
+	ret
+
+unkData_03f_4d2b:
+; Breeding is not possible.
+	text "こづくりできません"
+	prompt
+
+unkData_03f_4d36:
+	text "あいしょう @"
+	text_decimal $d143, 1, 3 ; TEMP
+	text "です"
+	line "こづくり しますか?"
+	done
 
 Call_03f_4d51:
-	dr $fcd51,$fcd59
+	ld hl, wDayCareMan
+	res 5, [hl]
+	set 6, [hl]
+	ret
 
-unk_03f_4d59:
-	dr $fcd59,$fcd81
+QuickDebug_HatchOption:
+	call Call_03f_4d81
+	jr c, jr_03f_4d67
+
+	ld hl, unkData_03f_4d70
+	call MenuTextboxBackup
+	ld a, 0
+	ret
+
+jr_03f_4d67:
+	ld hl, unkData_03f_4d7a
+	call MenuTextboxBackup
+	ld a, 0
+	ret
+
+unkData_03f_4d70:
+	text "タマゴが ない!"
+	prompt
+
+unkData_03f_4d7a:
+	text "うまれる!"
+	prompt
 
 Call_03f_4d81:
-	dr $fcd81,$fcda7
+	ld hl, wPartySpecies
+	ld c, 0
+jr_03f_4d86:
+	ld a, [hli]
+	cp $ff
+	jr z, jr_03f_4da5
+	cp $fd
+	jr z, jr_03f_4d92
+	inc c
+	jr jr_03f_4d86
 
-unk_03f_4da7:
-	dr $fcda7,$fcdae
+jr_03f_4d92:
+	ld a, c
+	ld bc, $30
+	ld hl, wPartyMon1Happiness
+	call AddNTimes
+	ld [hl], 1
+	ld a, $7f
+	ld [wd983], a
+	scf
+	ret
 
-unk_03f_4dae:
-	dr $fcdae,$fcdb5
+jr_03f_4da5:
+	xor a
+	ret
 
-unk_03f_4db5:
-	dr $fcdb5,$fcdbc
+QuickDebug_Test1Option:
+	ld a, 1
+	ld de, unkData_03f_4df9
+	jr jr_03f_4dc3
 
-unk_03f_4dbc:
-	dr $fcdbc,$fcebb
+QuickDebug_Test2Option:
+	ld a, 2
+	ld de, unkData_03f_4dfc
+	jr jr_03f_4dc3
 
-Call_03f_4ebb:
-	dr $fcebb,$fcee2
+QuickDebug_Test3Option:
+	ld a, 3
+	ld de, unkData_03f_4dff
+	jr jr_03f_4dc3
+
+QuickDebug_Test4Option:
+	ld a, 4
+	ld de, unkData_03f_4e02
+	jr jr_03f_4dc3
+
+jr_03f_4dc3:
+	ld [wStringBuffer2], a
+	push de
+	ld hl, unkData_03f_4de3
+	call MenuTextbox
+	call YesNoBox
+	call CloseWindow
+	pop de
+	jr c, jr_03f_4de0
+	ld h, d
+	ld l, e
+	ld a, BANK(unk_03f_4e05)
+	call FarQueueScript
+	ld a, 3
+	ret
+
+jr_03f_4de0:
+	ld a, 0
+	ret
+
+unkData_03f_4de3:
+	text "イべント@"
+	text_decimal wStringBuffer2, 1, 2
+	text "を テストしますか?"
+	done
+
+unkData_03f_4df9:
+	sjump $4e7a
+
+unkData_03f_4dfc:
+	sjump $4ea7
+
+unkData_03f_4dff:
+	sjump $4eba
+
+unkData_03f_4e02:
+	sjump $4ec8
+
+unk_03f_4e05:
+	opentext
+	loadmenu $4e4f ; TEMP
+	writetext $4e45 ; TEMP
+	verticalmenu
+	ifequal $00, $4e17 ; TEMP
+	scall unk_03f_4e1a
+	sjump $4e09 ; TEMP
+	closewindow
+	closetext
+	end
+
+unk_03f_4e1a:
+	ifequal $01, $4e2f ; TEMP
+	ifequal $02, $4e33 ; TEMP
+	ifequal $03, $4e37 ; TEMP
+	ifequal $04, $4e3b ; TEMP
+	ifequal $05, $4e3f ; TEMP
+	end
+
+; Special script stuff (to-do)
+	db $0F, $29, $00
+	end
+	db $0F, $2A, $00
+	end
+	db $0F, $2B, $00
+	end
+	db $0F, $2C, $00
+	end
+	db $0F, $2D, $00
+	reloadmap
+	db $48
+	end
+
+unkData_03f_4e45:
+	text "どれで あそぶ?"
+	done
+
+; Script bytes
+	db $40, $00, $00, $0C, $0A, $57, $4E, $01, $80, $05, $F7, $FB, $40, $0C, $A6, $50, $8C, $A8, $AC, $93, $9D, $8B, $AB, $50, $43, $E3, $85, $E3, $08, $E3, $9F, $50, $47, $80, $08, $E3, $9F, $50, $41, $87, $A8, $8C, $50, $5C, $13, $05, $60, $03, $90, $9F, $1B, $D4, $D1, $01, $90, $47, $0F, $64, $00, $49, $90, $2E, $3F, $14, $90, $47, $4C, $99, $4E, $9D, $9E, $63, $49, $90, $00, $BA, $DA, $DD, $7F, $B1, $29, $D6, $B3, $58, $9E, $03, $46, $90, $A1, $01, $10, $08, $04, $03, $7E, $00, $00, $48, $00, $15, $02, $0F, $3D, $00, $49, $9F, $90, $0D, $13, $00, $0D, $12, $00, $90, $A1, $01, $03, $29, $04, $0E, $90, $0E, $3F, $CD, $4E, $90
+
+unk_03f_4ecd:
+	ld hl, wNumPCItems
+	ld [hl], 50
+	inc hl
+	ld a, 1
+	ld c, 50
+.asm_4ed7
+	ld [hli], a
+	ld [hl], 99
+	inc hl
+	inc a
+	dec c
+	jr nz, .asm_4ed7
+	ld [hl], -1
+	ret

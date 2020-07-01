@@ -1,5 +1,8 @@
 unk_002_4000:
-	dr $8000,$861a
+	dr $8000,$85f1
+
+unk_002_45f1:
+	dr $85f1,$861a
 
 INCLUDE "engine/debug/debug_password_menu.asm"
 

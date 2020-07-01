@@ -88,7 +88,10 @@ Call_004_5998:
 	dr $11998, $119d0
 
 CopyDayHourMinSecToHL:
-	dr $119d0, $13a43
+	dr $119d0, $13877
+
+Elevator::
+	dr $13877, $13a43
 
 INCLUDE "engine/events/bug_contest/contest.asm"
 

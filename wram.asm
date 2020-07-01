@@ -3059,9 +3059,11 @@ wd0c2:: ds 1 ; d0c2
 wd0c3:: ds 1 ; d0c3
 wd0c4:: ds 1 ; d0c4
 
-; Debug Clock Function
+; Debug
+wDebugItem::
 wDebugClockCurrentOption:: ; d0c5
 wd0c5:: ds 1 ; d0c5
+wDebugItemQuantity::
 wDebugClockCurrentOptionBackup:: ds 1 ; d0c6
 wd0c7:: ds 1 ; d0c7
 wDebugClockDayLo:: ds 1 ; d0c8
