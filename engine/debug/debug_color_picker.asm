@@ -195,7 +195,7 @@ DebugColor_InitPalettes:
 	ret z
 
 	ld hl, Palette_DebugBG
-	ld de, wBGPals
+	ld de, wBGPals2
 	ld bc, 16 palettes
 	call CopyBytes
 
@@ -505,7 +505,7 @@ unk_03f_7812:
 	jr z, .SGB
 
 .CGB:
-	ld hl, wBGPals
+	ld hl, wBGPals2
 	ld de, wc508
 	ld c, 1
 	call Call_03f_7ab8
@@ -1270,7 +1270,7 @@ Call_03f_7de4:
 	add hl, hl
 	add hl, hl
 	add hl, hl
-	ld de, wTempBGPals
+	ld de, wBGPals1
 	add hl, de
 	ld de, wc508
 	ld bc, 8
@@ -1312,7 +1312,7 @@ DebugColorMain2:
 	ld de, $24
 	call Call_03f_7dad
 
-	ld hl, wBGPals
+	ld hl, wBGPals2
 	ld a, [wce58]
 	ld bc, 8
 	call AddNTimes
@@ -1336,7 +1336,7 @@ DebugColorMain2:
 	ret
 
 Call_03f_7e64:
-	ld hl, wBGPals
+	ld hl, wBGPals2
 	ld a, [wce58]
 	ld bc, 1 palettes
 	call AddNTimes

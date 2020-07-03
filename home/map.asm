@@ -1680,12 +1680,12 @@ Function29a6::
     ret
 
 LoadTileset::
-    ld hl, wd0b5
+    ld hl, wTilesetAddress
     ld a, [hli]
     ld h, [hl]
     ld l, a
     ld de, vTiles5
-    ld a, [wd0b4]
+    ld a, [wTilesetBank]
     call FarDecompress
     ld a, [wd074]
     cp 1
@@ -2004,9 +2004,9 @@ GetCoordTile::
     ld h, $00
     add hl, hl
     add hl, hl
-    ld a, [wd0bb]
+    ld a, [wTilesetCollisionAddress]
     ld c, a
-    ld a, [wd0bc]
+    ld a, [wTilesetCollisionAddress + 1]
     ld b, a
     add hl, bc
     rr d
@@ -2018,7 +2018,7 @@ GetCoordTile::
     inc hl
     inc hl
 .asm_2bae
-    ld a, [wd0ba]
+    ld a, [wTilesetCollisionBank]
     call GetFarByte
     ret
 
@@ -2509,7 +2509,7 @@ LoadTilesetHeader::
     ld bc, $f
     ld a, [wd074]
     call $3210
-    ld de, wd0b4
+    ld de, wTilesetBank
 	ld bc, $f
 	ld a, 5
 	call FarCopyBytes

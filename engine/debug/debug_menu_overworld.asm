@@ -1,3 +1,5 @@
+	db 0
+
 QuickDebug_MenuHeader:
 	db MENU_BACKUP_TILES ; flags
 	menu_coords 0, 0, 7, 17
@@ -434,9 +436,7 @@ QuickDebug_BugCatchingOption:
 	call MenuTextbox
 .asm_4833:
 	call UpdateTime
-	ld a, 4
-	ld hl, $5861
-	rst FarCall
+	farcall CheckBugContestTimer
 	ld hl, $c4e5
 	ld de, wBugContestMinsRemaining
 	lb bc, $81, 2
@@ -448,7 +448,7 @@ QuickDebug_BugCatchingOption:
 	call WaitBGMap
 	call GetJoypad
 	ldh a, [hJoyPressed]
-	and $03
+	and 3
 	jr z, .asm_4833
 	call ExitMenu
 	ld a, 0
@@ -494,22 +494,14 @@ unk_03f_489a:
 	jr jr_03f_48a7
 
 unk_03f_48a1:
-	ld a, $3f
-	ld hl, $4000
-	rst FarCall
+	farcall DebugClockMenu_Overworld
 
 jr_03f_48a7:
-	ld a, $23
-	ld hl, $440e
-	rst FarCall
-	ld a, $23
-	ld hl, $43b9
-	rst FarCall
+	farcall unk_023_440e
+	farcall unk_023_43b9
 	ld b, 9
 	call GetSGBLayout
-	ld a, $23
-	ld hl, $4403
-	rst FarCall
+	farcall unk_023_4403
 	call UpdateTimePals
 	ld a, 1
 	ret
@@ -594,9 +586,7 @@ QuickDebug_WarpOption:
 	call ClearSprites
 	ld a, 0
 	ld [wCurPartyMon], a
-	ld a, $24
-	ld hl, $6398
-	rst FarCall
+	farcall unk_024_6398
 	ld a, e
 	ld [wMenuSelection], a
 	call CloseSubmenu
@@ -901,17 +891,13 @@ OTID_ConvertToHex:
 
 QuickDebug_BuildOption:
 	call LoadStandardMenuHeader
-	ld a, $3f
-	ld hl, unk_03f_57e6
-	rst $08
+	farcall unk_03f_57e6
 	call CloseWindow
-	ld a, $00
+	ld a, 0
 	ret
 
 QuickDebug_PCOption:
-	ld a, $05
-	ld hl, $57e5
-	rst FarCall
+	farcall unk_005_57e5
 	ld a, 0
 	ret
 
@@ -1001,8 +987,8 @@ MenuData_03f_4c30:
 
 unkData_03f_4c4d:
 	dba unk_024_6b85
-	dbw $38, $48bd
-	dbw $38, $667a
+	dba unk_038_48bd
+	dba unk_038_667a
 
 unkData_03f_4c56:
 	text_ram wStringBuffer2
@@ -1060,33 +1046,27 @@ Call_03f_4cc0:
 QuickDebug_BreedingOption:
 	ld a, [wDayCareMan]
 	bit 0, a
-	jr z, jr_03f_4d03
-
+	jr z, .asm_4d03
 	ld a, [wDayCareLady]
 	bit 0, a
-	jr z, jr_03f_4d03
-
-	ld a, $05
-	ld hl, $78f0
-	rst FarCall
-
+	jr z, .asm_4d03
+	farcall unk_005_78f0
 	ld a, [wApplyStatLevelMultipliersToEnemy]
 	and a
 	jr z, jr_03f_4d22
 	cp $ff
 	jr z, jr_03f_4d22
-
 	ld hl, unkData_03f_4d36
 	call MenuTextbox
 	call YesNoBox
 	call ExitMenu
-	jr c, jr_03f_4d00
+	jr c, .asm_4d00
 	call Call_03f_4d51
-jr_03f_4d00:
+.asm_4d00:
 	ld a, 0
 	ret
 
-jr_03f_4d03:
+.asm_4d03:
 	ld hl, unkData_03f_4d0c
 	call MenuTextboxBackup
 	ld a, 0
@@ -1243,22 +1223,32 @@ unk_03f_4e05:
 	end
 
 unk_03f_4e1a:
-	ifequal $01, $4e2f ; TEMP
-	ifequal $02, $4e33 ; TEMP
-	ifequal $03, $4e37 ; TEMP
-	ifequal $04, $4e3b ; TEMP
-	ifequal $05, $4e3f ; TEMP
+	ifequal 1, unk_03f_4e2f
+	ifequal 2, unk_03f_4e33
+	ifequal 3, unk_03f_4e37
+	ifequal 4, unk_03f_4e3b
+	ifequal 5, unk_03f_4e3f
 	end
 
 ; Special script stuff (to-do)
+
+unk_03f_4e2f:
 	db $0F, $29, $00
 	end
+
+unk_03f_4e33:
 	db $0F, $2A, $00
 	end
+
+unk_03f_4e37:
 	db $0F, $2B, $00
 	end
+
+unk_03f_4e3b:
 	db $0F, $2C, $00
 	end
+
+unk_03f_4e3f:
 	db $0F, $2D, $00
 	reloadmap
 	db $48
@@ -1268,8 +1258,69 @@ unkData_03f_4e45:
 	text "どれで あそぶ?"
 	done
 
-; Script bytes
-	db $40, $00, $00, $0C, $0A, $57, $4E, $01, $80, $05, $F7, $FB, $40, $0C, $A6, $50, $8C, $A8, $AC, $93, $9D, $8B, $AB, $50, $43, $E3, $85, $E3, $08, $E3, $9F, $50, $47, $80, $08, $E3, $9F, $50, $41, $87, $A8, $8C, $50, $5C, $13, $05, $60, $03, $90, $9F, $1B, $D4, $D1, $01, $90, $47, $0F, $64, $00, $49, $90, $2E, $3F, $14, $90, $47, $4C, $99, $4E, $9D, $9E, $63, $49, $90, $00, $BA, $DA, $DD, $7F, $B1, $29, $D6, $B3, $58, $9E, $03, $46, $90, $A1, $01, $10, $08, $04, $03, $7E, $00, $00, $48, $00, $15, $02, $0F, $3D, $00, $49, $9F, $90, $0D, $13, $00, $0D, $12, $00, $90, $A1, $01, $03, $29, $04, $0E, $90, $0E, $3F, $CD, $4E, $90
+unkData_03f_4e4f:
+	db $40, $00
+	db $00, $0C, $0A, $57
+	next "イ゛アガ15パズル@"
+
+	db "スロットマシン@"
+	db "ポーカーゲーム@"
+	db "ぺアゲーム@"
+	db "ピクロス@"
+
+unk_03f_4e7a:
+	loadwildmon $13, $05 ; TEMP
+	catchtutorial $03 ; TEMP
+	end
+
+unk_03f_4e80:
+	halloffame
+	loadmem $d1d4, $01 ; TEMP
+	end
+
+unk_03f_4e86:
+	opentext
+	db $0F, $64, $00
+	closetext
+	end
+
+unk_03f_4e8c:
+	giveegg $3f, $14 ; TEMP
+	end
+
+unk_03f_4e90:
+	opentext
+	writetext $4e99 ; TEMP
+	verbosegiveitem $9e, $63 ; TEMP
+	closetext
+	end
+
+unkData_03f_4e99:
+	db $00, $BA, $DA, $DD, $7F, $B1, $29, $D6, $B3, $58, $9E, $03, $46
+	end
+
+unk_03f_4ea7:
+	warpfacing FACING_STEP_DOWN_1, HALL_OF_FAME, 4, 3
+	playmusic MUSIC_NONE
+	refreshscreen 0
+	setval 2
+	db $0F, $3D, $00
+	closetext
+	halloffame
+	end
+
+unk_03f_4eba:
+	db $0D, $13, $00
+	db $0D, $12, $00
+	end
+
+unk_03f_4ec1:
+	warpfacing FACING_STEP_DOWN_1, TEAM_ROCKET_BASE_B1F, 4, 14 ; TEMP
+	end
+
+unk_03f_4ec8:
+	callasm unk_03f_4ecd
+	end
 
 unk_03f_4ecd:
 	ld hl, wNumPCItems

@@ -1229,3 +1229,467 @@ DebugFight_EmptyText2:
 
 unkData_03f_57cf:
 	db "ゴールド@" ; GOLD
+
+unkData_03f_57d4:
+	dr $fd7d4,$fd7e6
+
+unk_03f_57e6:
+	ld a, 1
+	call OpenSRAM
+	ld a, [s1_ad10]
+	cp $1e
+	call CloseSRAM
+	jp nc, Jump_03f_5b51
+	call ClearTilemap
+	call UpdateSprites
+	ld a, [wOptions]
+	push af
+	set 4, a
+	ld [wOptions], a
+	xor a
+	ld hl, wddee
+	ld [hli], a
+	ld [hli], a
+	ld [hl], a
+	inc a
+	ldh [hInMenu], a
+	ld [wCurItem], a
+	ld a, [wCurPartySpecies]
+	cp $fc
+	jr c, jr_03f_581e
+	ld a, 1
+	ld [wCurPartySpecies], a
+jr_03f_581e:
+	ld a, [wCurPartyLevel]
+	dec a
+	cp 100
+	jr c, Jump_03f_582b
+	ld a, 1
+	ld [wCurPartyLevel], a
+Jump_03f_582b:
+	ld hl, $c3dc
+	ld [hl], $7f
+	ld hl, $c3b4
+	ld [hl], $ed
+	call Call_03f_5868
+jr_03f_5838:
+	call DelayFrame
+	call JoyTextDelay
+	ldh a, [hJoyLast]
+	bit 0, a
+	jp nz, Jump_03f_5851
+	bit 1, a
+	jp nz, Jump_03f_585e
+	bit 7, a
+	jp nz, Jump_03f_5897
+	jr jr_03f_5838
+
+Jump_03f_5851:
+	ld hl, wCurPartySpecies
+	inc [hl]
+	ld a, [hl]
+	cp $fc
+	jr c, Jump_03f_582b
+	ld [hl], 1
+	jr Jump_03f_582b
+
+Jump_03f_585e:
+	ld hl, wCurPartySpecies
+	dec [hl]
+	jr nz, Jump_03f_582b
+	ld [hl], $fb
+	jr Jump_03f_582b
+
+Call_03f_5868::
+	hlcoord 1, 0
+	ld b, 2
+	ld c, 9
+	call ClearBox
+	hlcoord 1, 1
+	ld de, wCurPartySpecies
+	lb bc, PRINTNUM_LEADINGZEROS | 1, 3
+	call PrintNum
+	inc hl
+	push hl
+	ld a, [wCurPartySpecies]
+	ld [wTempSpecies], a
+	call GetPokemonName
+	pop hl
+	call PlaceString
+	ld a, [wTempSpecies]
+	ld [wCurSpecies], a
+	call GetBaseData
+	ret
+
+Jump_03f_5897:
+	ld hl, $c3b4
+	ld [hl], $7f
+	ld hl, $c3dc
+	ld [hl], $ed
+	ld hl, $c404
+	ld [hl], $7f
+	call Call_03f_58e3
+	call Call_03f_58f0
+jr_03f_58ac:
+	call DelayFrame
+	call JoyTextDelay
+	ld hl, wCurPartyLevel
+	ldh a, [hJoyLast]
+	bit 0, a
+	jp nz, Jump_03f_58d2
+	bit 1, a
+	jp nz, Jump_03f_58dc
+	bit 3, a
+	jp nz, Jump_03f_5ae4
+	bit 6, a
+	jp nz, Jump_03f_582b
+	bit 7, a
+	jp nz, Jump_03f_593e
+	jr jr_03f_58ac
+
+Jump_03f_58d2:
+	inc [hl]
+	ld a, [hl]
+	cp 101
+	jr c, Jump_03f_5897
+	ld [hl], 1
+	jr Jump_03f_5897
+
+Jump_03f_58dc:
+	dec [hl]
+	jr nz, Jump_03f_5897
+	ld [hl], 100
+	jr Jump_03f_5897
+
+Call_03f_58e3:
+	hlcoord 1, 3
+	ld de, wCurPartyLevel
+	lb bc, PRINTNUM_LEADINGZEROS | 1, 3
+	call PrintNum
+	ret
+
+Call_03f_58f0:
+	ld hl, $c3f1
+	ld b, $08
+	ld c, $0b
+	call ClearBox
+	ld hl, wListMoves_MoveIndicesBuffer
+	ld bc, 4
+	xor a
+	call ByteFill
+	xor a
+	ld [wDebugClockCurrentOption], a
+	ld de, wListMoves_MoveIndicesBuffer
+	ld a, $1b
+	call Predef
+	ld hl, $c405
+	ld de, wListMoves_MoveIndicesBuffer
+	ld b, $04
+jr_03f_5918:
+	ld a, [de]
+	inc de
+	and a
+	jr z, jr_03f_593d
+	push de
+	push bc
+	push hl
+	ld [wApplyStatLevelMultipliersToEnemy], a
+	ld de, wApplyStatLevelMultipliersToEnemy
+	lb bc, PRINTNUM_LEADINGZEROS | 1, 3
+	call PrintNum
+	inc hl
+	call GetMoveName
+	call PlaceString
+	pop hl
+	ld bc, $28
+	add hl, bc
+	pop bc
+	pop de
+	dec b
+	jr nz, jr_03f_5918
+
+jr_03f_593d:
+	ret
+
+Jump_03f_593e:
+	ld de, wListMoves_MoveIndicesBuffer
+	ld hl, $c404
+	ld b, $01
+
+Jump_03f_5946:
+jr_03f_5946:
+	call Call_03f_59a3
+
+jr_03f_5949:
+	call DelayFrame
+	push de
+	push bc
+	call JoyTextDelay
+	pop bc
+	pop de
+	ldh a, [hJoyLast]
+	bit 0, a
+	jp nz, Jump_03f_5970
+	bit 1, a
+	jp nz, Jump_03f_597c
+	bit 3, a
+	jp nz, Jump_03f_5ae4
+	bit 6, a
+	jp nz, Jump_03f_5986
+	bit 7, a
+	jp nz, Jump_03f_5993
+	jr jr_03f_5949
+
+Jump_03f_5970:
+	ld a, [de]
+	inc a
+	ld [de], a
+	cp $fc
+	jr c, jr_03f_5946
+	ld a, $01
+	ld [de], a
+	jr jr_03f_5946
+
+Jump_03f_597c:
+	ld a, [de]
+	dec a
+	ld [de], a
+	jr nz, jr_03f_5946
+
+	ld a, $fb
+	ld [de], a
+	jr jr_03f_5946
+
+Jump_03f_5986:
+	dec de
+	dec b
+	jp z, Jump_03f_5897
+
+	push bc
+	ld bc, hBGMapAddress
+	add hl, bc
+	pop bc
+	jr jr_03f_5946
+
+Jump_03f_5993:
+	inc de
+	inc b
+	ld a, b
+	cp $05
+	jp z, Jump_03f_59ee
+
+	push bc
+	ld bc, $0028
+	add hl, bc
+	pop bc
+	jr jr_03f_5946
+
+Call_03f_59a3:
+	push hl
+	push de
+	push bc
+	push hl
+	push de
+	ld bc, hClockResetTrigger
+	add hl, bc
+	ld bc, $020b
+	call ClearBox
+	pop de
+	pop hl
+	push hl
+	ld [hl], $ed
+	ld bc, hBGMapAddress
+	add hl, bc
+	ld [hl], $7f
+	ld bc, $0050
+	add hl, bc
+	ld [hl], $7f
+	pop hl
+	inc hl
+	ld a, [de]
+	ld de, wApplyStatLevelMultipliersToEnemy
+	ld [de], a
+	lb bc, PRINTNUM_LEADINGZEROS | 1, 3
+	call PrintNum
+	ld a, [wApplyStatLevelMultipliersToEnemy]
+	and a
+	jr z, jr_03f_59e0
+
+	call Call_03f_59e4
+	inc hl
+	call GetMoveName
+	call PlaceString
+
+jr_03f_59e0:
+	pop bc
+	pop de
+	pop hl
+	ret
+
+Call_03f_59e4:
+	push hl
+	call Call_03f_5b65
+	pop hl
+	jr c, jr_03f_59ed
+	ld [hl], $f1
+jr_03f_59ed:
+	ret
+
+Jump_03f_59ee:
+	ld de, wddee
+	ld hl, $c4a4
+	ld b, $01
+
+jr_03f_59f6:
+	call Call_03f_5a51
+jr_03f_59f9:
+	call DelayFrame
+	push de
+	push bc
+	call JoyTextDelay
+	pop bc
+	pop de
+	ldh a, [hJoyLast]
+	bit 0, a
+	jp nz, Jump_03f_5a20
+	bit 1, a
+	jp nz, Jump_03f_5a25
+	bit 3, a
+	jp nz, Jump_03f_5ae4
+	bit 6, a
+	jp nz, Jump_03f_5a2a
+	bit 7, a
+	jp nz, Jump_03f_5a42
+	jr jr_03f_59f9
+
+Jump_03f_5a20:
+	ld a, [de]
+	inc a
+	ld [de], a
+	jr jr_03f_59f6
+
+Jump_03f_5a25:
+	ld a, [de]
+	dec a
+	ld [de], a
+	jr jr_03f_59f6
+
+Jump_03f_5a2a:
+	dec de
+	dec b
+	jp z, Jump_03f_5a37
+	push bc
+	ld bc, hBGMapAddress
+	add hl, bc
+	pop bc
+	jr jr_03f_59f6
+
+Jump_03f_5a37:
+	ld de, $d13e
+	ld hl, $c47c
+	ld b, $04
+	jp Jump_03f_5946
+
+Jump_03f_5a42:
+	ld a, b
+	cp 3
+	jr z, jr_03f_59f6
+	inc b
+	inc de
+	push bc
+	ld bc, $28
+	add hl, bc
+	pop bc
+	jr jr_03f_59f6
+
+Call_03f_5a51:
+	push hl
+	push de
+	push bc
+	push hl
+	ld [hl], $ed
+	ld bc, hBGMapAddress
+	add hl, bc
+	ld [hl], $7f
+	ld bc, $50
+	add hl, bc
+	ld [hl], $7f
+	pop hl
+	inc hl
+	ld a, [de]
+	ld de, wApplyStatLevelMultipliersToEnemy
+	ld [de], a
+	lb bc, PRINTNUM_LEADINGZEROS | 1, 3
+	call PrintNum
+	call Call_03f_5a77
+	pop bc
+	pop de
+	pop hl
+	ret
+
+Call_03f_5a77::
+	hlcoord 12, 0
+	ld b, 18
+	ld c, 8
+	call ClearBox
+	hlcoord 13, 1
+	ld de, unkData_03f_5ac9
+	call PlaceString
+	ld b, $a
+	ld hl, wd010
+	ld a, [wddf0]
+.asm_5a92
+	ld [hli], a
+	dec b
+	jr nz, .asm_5a92
+	ld a, [wddee]
+	ld [hli], a
+	ld a, [wddef]
+	ld [hl], a
+	ld hl, wd00f
+	ld de, wd029
+	ld b, 1
+	ld a, 12
+	call Predef
+	hlcoord 17, 1
+	ld de, wd029
+	ld b, 6
+.asm_5ab3
+	push bc
+	push de
+	push hl
+	lb bc, PRINTNUM_LEADINGZEROS | 2, 3
+	call PrintNum
+	pop hl
+	ld bc, $28
+	add hl, bc
+	pop de
+	inc de
+	inc de
+	pop bc
+	dec b
+	jr nz, .asm_5ab3
+	ret
+
+unkData_03f_5ac9:
+	db "たいリき"
+	next "<KOUGEKI>"
+	next "ぼうぎょ"
+	next "すばやさ"
+	next "とくこう"
+	next "とくぼう@"
+
+Jump_03f_5ae4:
+	dr $fdae4,$fdb51
+
+Jump_03f_5b51:
+	ld hl, unkData_03f_5b58
+	call PrintText
+
+jr_03f_5b57:
+	ret
+
+unkData_03f_5b58:
+; The BOX is full!
+	text "ボックスが いっぱい!"
+	done

@@ -331,21 +331,13 @@ wc1fe:: ds 1 ; c1fe
 wc1ff:: ds 1 ; c1ff
 
 SECTION "GBC Palettes", WRAM0
-palbuffer: MACRO
-\1Pal0:: ds 8
-\1Pal1:: ds 8
-\1Pal2:: ds 8
-\1Pal3:: ds 8
-\1Pal4:: ds 8
-\1Pal5:: ds 8
-\1Pal6:: ds 8
-\1Pal7:: ds 8
-ENDM
 
-wTempBGPals:: palbuffer wTempBG ; c200
-wTempOBPals:: palbuffer wTempOB ; c240
-wBGPals::     palbuffer wBG     ; c280
-wOBPals::     palbuffer wOB     ; c2c0
+; eight 4-color palettes each
+wBGPals1:: ds 8 palettes
+wOBPals1:: ds 8 palettes
+wBGPals2:: ds 8 palettes
+wOBPals2:: ds 8 palettes
+
 
 SECTION "Sprites", WRAM0
 
@@ -2383,6 +2375,7 @@ wAttrmap:: ; cccd
 	ds SCREEN_HEIGHT * SCREEN_WIDTH
 wAttrmapEnd:: ; ce35
 
+wTileAnimBuffer::
 wce35:: ds 1 ; ce35
 wce36:: ds 1 ; ce36
 wce37:: ds 1 ; ce37
@@ -2749,7 +2742,7 @@ wcf68:: ds 1 ; cf68
 wcf69:: ds 1 ; cf69
 wcf6a:: ds 1 ; cf6a
 wcf6b:: ds 1 ; cf6b
-wcf6c:: ds 1 ; cf6c
+wTileAnimationTimer:: ds 1 ; cf6c
 wcf6d:: ds 1 ; cf6d
 wcf6e:: ds 1 ; cf6e
 wcf6f:: ds 1 ; cf6f
@@ -3040,22 +3033,19 @@ wd0b0:: ds 1 ; d0b0
 wd0b1:: ds 1 ; d0b1
 wd0b2:: ds 1 ; d0b2
 wd0b3:: ds 1 ; d0b3
-wd0b4:: ds 1 ; d0b4
-wd0b5:: ds 1 ; d0b5
-wd0b6:: ds 1 ; d0b6
 
-wTilesetBlocksBank:: ds 1 ; d0b7
-wTilesetBlocksAddress:: ds 2 ; d0b8
+wTileset::
+wTilesetBank:: db ; d0b4
+wTilesetAddress:: dw ; d0b5
+wTilesetBlocksBank:: db ; d0b7
+wTilesetBlocksAddress:: dw ; d0b8
+wTilesetCollisionBank:: db ; d0ba
+wTilesetCollisionAddress:: dw ; d0bb
+wTilesetAnim:: dw ; d0bd
+wd0bf:: ds 2 ; d0bf
+wTilesetPalettes:: dw ; d0c1
+wTilesetEnd::
 
-wd0ba:: ds 1 ; d0ba
-wd0bb:: ds 1 ; d0bb
-wd0bc:: ds 1 ; d0bc
-wd0bd:: ds 1 ; d0bd
-wd0be:: ds 1 ; d0be
-wd0bf:: ds 1 ; d0bf
-wd0c0:: ds 1 ; d0c0
-wd0c1:: ds 1 ; d0c1
-wd0c2:: ds 1 ; d0c2
 wd0c3:: ds 1 ; d0c3
 wd0c4:: ds 1 ; d0c4
 
@@ -3528,7 +3518,7 @@ wd55d:: ds 1 ; d55d
 wd55e:: ds 1 ; d55e
 wd55f:: ds 1 ; d55f
 wd560:: ds 1 ; d560
-wd561:: ds 1 ; d561
+wTimeOfDayPalset:: ds 1 ; d561
 wd562:: ds 1 ; d562
 wd563:: ds 1 ; d563
 

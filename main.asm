@@ -249,7 +249,8 @@ INCBIN "baserom.gbc",$DC000,$4000
 
 
 SECTION "bank38",ROMX,BANK[$38]
-INCBIN "baserom.gbc",$E0000,$4000
+
+INCLUDE "banks/bank38.asm"
 
 
 SECTION "bank39",ROMX,BANK[$39]
@@ -279,4 +280,11 @@ INCLUDE "banks/bank3e.asm"
 
 SECTION "bank3F",ROMX,BANK[$3F]
 
+INCLUDE "engine/debug/debug_clock_menu.asm"
+INCLUDE "engine/debug/debug_menu.asm"
+INCLUDE "engine/debug/debug_menu_overworld.asm"
 INCLUDE "banks/bank3f.asm"
+INCLUDE "engine/events/npc_trade.asm"
+INCLUDE "engine/events/mom_phone.asm"
+INCLUDE "engine/link/mystery_gift_3.asm"
+INCLUDE "engine/debug/debug_color_picker.asm"

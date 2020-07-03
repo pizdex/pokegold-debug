@@ -1,182 +1,205 @@
-INCLUDE "engine/debug/debug_clock_menu.asm"
-INCLUDE "engine/debug/debug_menu.asm"
-
-Call_03f_452b::
-	ld hl, wStatusFlags
-	set 0, [hl]
-	ld hl, wd66f
-	set 7, [hl]
-	ld hl, wd66f
-	set 1, [hl]
-	ld hl, wd66f
-	set 2, [hl]
-	ld hl, wd66f
-	set 0, [hl]
-	ret
-
-	nop
-
-INCLUDE "engine/debug/debug_menu_overworld.asm"
 INCLUDE "engine/debug/debug_fight_menu.asm"
 
-unkData_03f_57d4:
-	dr $fd7d4,$fd7e6
-
-unk_03f_57e6:
-	dr $fd7e6,$fd82b
-
-Jump_03f_582b:
-	dr $fd82b,$fd851
-
-Jump_03f_5851:
-	dr $fd851,$fd85e
-
-Jump_03f_585e:
-	dr $fd85e,$fd868
-
-Call_03f_5868::
-	hlcoord 1, 0
-	ld b, 2
-	ld c, 9
-	call ClearBox
-	hlcoord 1, 1
-	ld de, wCurPartySpecies
-	lb bc, PRINTNUM_LEADINGZEROS | 1, 3
-	call PrintNum
-	inc hl
-	push hl
-	ld a, [wCurPartySpecies]
-	ld [wTempSpecies], a
-	call GetPokemonName
-	pop hl
-	call PlaceString
-	ld a, [wTempSpecies]
-	ld [wCurSpecies], a
-	call GetBaseData
-	ret
-
-Jump_03f_5897:
-	dr $fd897,$fd8d2
-
-Jump_03f_58d2:
-	dr $fd8d2,$fd8dc
-
-Jump_03f_58dc:
-	dr $fd8dc,$fd8e3
-
-Call_03f_58e3:
-	hlcoord 1, 3
-	ld de, wCurPartyLevel
-	lb bc, PRINTNUM_LEADINGZEROS | 1, 3
-	call PrintNum
-	ret
-
-Call_03f_58f0:
-	dr $fd8f0,$fd93e
-
-Jump_03f_593e:
-	dr $fd93e,$fd9e4
-
-Call_03f_59e4:
-	dr $fd9e4,$fd9ee
-
-Jump_03f_59ee:
-	dr $fd9ee,$fda42
-
-Jump_03f_5a42:
-	dr $fda42,$fda51
-
-Call_03f_5a51:
-	dr $fda51,$fda77
-
-Call_03f_5a77::
-	hlcoord 12, 0
-	ld b, 18
-	ld c, 8
-	call ClearBox
-	hlcoord 13, 1
-	ld de, unkData_03f_5ac9
-	call PlaceString
-
-	ld b, $a
-	ld hl, wd010
-	ld a, [wddf0]
-.asm_5a92
-	ld [hli], a
-	dec b
-	jr nz, .asm_5a92
-
-	ld a, [wddee]
-	ld [hli], a
-	ld a, [wddef]
-	ld [hl], a
-	ld hl, wd00f
-	ld de, wd029
-	ld b, 1
-	ld a, 12
-	call Predef
-
-	hlcoord 17, 1
-	ld de, wd029
-	ld b, 6
-.asm_5ab3
-	push bc
-	push de
-	push hl
-	lb bc, PRINTNUM_LEADINGZEROS | 2, 3
-	call PrintNum
-	pop hl
-	ld bc, $28
-	add hl, bc
-	pop de
-	inc de
-	inc de
-	pop bc
-	dec b
-	jr nz, .asm_5ab3
-	ret
-
-unkData_03f_5ac9:
-	db "たいリき"
-	next "<KOUGEKI>"
-	next "ぼうぎょ"
-	next "すばやさ"
-	next "とくこう"
-	next "とくぼう@"
-
-Jump_03f_5ae4:
-	dr $fdae4,$fdb65
-
 Call_03f_5b65:
-	dr $fdb65,$fdb99
+	ld a, [wCurPartySpecies]
+	push af
+	call Call_03f_5b99
+	jr c, .asm_5b93
+	ld a, $10
+	ld hl, $692f
+	rst FarCall
+	jr nc, .asm_5b88
+	call Call_03f_5b99
+	jr c, .asm_5b93
+
+	ld a, $10
+	ld hl, $692f
+	rst FarCall
+	jr nc, .asm_5b88
+	call Call_03f_5b99
+	jr c, .asm_5b93
+
+.asm_5b88:
+	call Call_03f_5be8
+	jr c, .asm_5b93
+	pop af
+	ld [wCurPartySpecies], a
+	and a
+	ret
+
+.asm_5b93:
+	pop af
+	ld [wCurPartySpecies], a
+	scf
+	ret
 
 Call_03f_5b99:
-	dr $fdb99,$fdbe8
+	ld a, [wApplyStatLevelMultipliersToEnemy]
+	ld [wTMHMMove], a
+	ld a, $0e
+	call Predef
+	ld a, c
+	and a
+	jr nz, .asm_5bc5
+	ld a, [wApplyStatLevelMultipliersToEnemy]
+	ld d, a
+	call Call_03f_5c0e
+.asm_5baf:
+	ld a, $10
+	call GetFarByte
+	inc hl
+	and a
+	jr z, .asm_5bc3
+	ld a, $10
+	call GetFarByte
+	inc hl
+	cp d
+	jr z, .asm_5bc5
+	jr .asm_5baf
+
+.asm_5bc3:
+	and a
+	ret
+
+.asm_5bc5:
+	scf
+	ret
+
+unkData_03f_5bc7:
+	db 007, 009, 010, 014, 016, 020, 022, 028
+	db 049, 066, 083, 089, 091, 099, 100, 103
+	db 104, 105, 114, 125, 126, 139, 142, 149
+	db 152, 154, 155, 178, 179, 180, 187, 190
+	db -1
 
 Call_03f_5be8:
-	dr $fdbe8,$fdc0e
+	ld hl, $7b07
+	ld a, [wCurPartySpecies]
+	dec a
+	ld c, a
+	ld b, 0
+	add hl, bc
+	add hl, bc
+	ld a, $08
+	call GetFarHalfword
+.asm_5bf9:
+	ld a, $08
+	call GetFarByte
+	inc hl
+	cp $ff
+	jr z, .asm_5c0c
+	ld b, a
+	ld a, [wApplyStatLevelMultipliersToEnemy]
+	cp b
+	jr nz, .asm_5bf9
+	scf
+	ret
+
+.asm_5c0c:
+	and a
+	ret
 
 Call_03f_5c0e:
-	dr $fdc0e,$fdc29
+	ld hl, $695f
+	ld b, 0
+	ld a, [wCurPartySpecies]
+	dec a
+	ld c, a
+	add hl, bc
+	add hl, bc
+	ld a, $10
+	call GetFarHalfword
+.asm_5c1f:
+	ld a, $10
+	call GetFarByte
+	inc hl
+	and a
+	jr nz, .asm_5c1f
+	ret
 
 INCLUDE "engine/debug/debug_sound_menu.asm"
+INCLUDE "engine/tilesets/tileset_anims.asm"
 
-unk_03f_5f06:
-	dr $fdf06,$fdf21
+Call_03f_68b4:
+	ld a, [wEnteredMapFromContinue]
+	bit 0, a
+	ret z
+	ld hl, wcebc
+	ld bc, $0014
+	ld a, $7f
+	call ByteFill
+	ld hl, wd55c
+	bit 0, [hl]
+	jr z, jr_03f_68e2
+	ld hl, wXCoord
+	ld de, wcec0
+	ld c, $01
+	call Call_03f_6927
+	ld hl, wYCoord
+	ld de, wcec4
+	ld c, $01
+	call Call_03f_6927
+	ret
 
-unkData_03f_5f21:
-	dr $fdf21,$fe3cd
+jr_03f_68e2:
+	ld hl, wCurDay
+	ld de, wcebc
+	call Call_03f_6936
+	ld a, $70
+	ld [wcec0], a
+	ld hl, hHours
+	ld de, wcec1
+	call Call_03f_6936
+	ld a, $70
+	ld [wcec3], a
+	ld hl, hMinutes
+	ld de, wcec4
+	call Call_03f_6936
+	ld hl, hSeconds
+	ld de, wcec7
+	call Call_03f_6936
+	call GetWeekday
+	add $71
+	ld [wceca], a
+	ld a, $78
+	ld [wcecc], a
+	inc a
+	ld [wcecd], a
+	ldh a, [hSeconds]
+	and $01
+	ret z
+	ret
 
-Jump_03f_63cd:
-	dr $fe3cd,$fe927
+Call_03f_6927::
+	ld a, [hli]
+	ld b, a
+	swap a
+	call Call_03f_694b
+	ld a, b
+	call Call_03f_694b
+	dec c
+	jr nz, Call_03f_6927
+	ret
 
-Call_03f_6927:
-	dr $fe927,$fe94b
+Call_03f_6936:
+	ld a, [hli]
+	ld b, 0
+.asm_6939:
+	inc b
+	sub 10
+	jr nc, .asm_6939
+	dec b
+	add 10
+	push af
+	ld a, b
+	call Call_03f_694b
+	pop af
+	call Call_03f_694b
+	ret
 
 Call_03f_694b:
-	dr $fe94b,$fe952
-
-INCLUDE "engine/events/npc_trade.asm"
-INCLUDE "engine/events/mom_phone.asm"
-INCLUDE "engine/link/mystery_gift_3.asm"
-INCLUDE "engine/debug/debug_color_picker.asm"
+	and $0f
+	add $66
+	ld [de], a
+	inc de
+	ret

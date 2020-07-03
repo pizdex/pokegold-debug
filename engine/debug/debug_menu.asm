@@ -357,3 +357,16 @@ Call_03f_44fb:
 
 .RivalName:
 	db "レッド@" ; Red
+
+Call_03f_452b::
+	ld hl, wStatusFlags
+	set 0, [hl]
+	ld hl, wd66f
+	set 7, [hl]
+	ld hl, wd66f
+	set 1, [hl]
+	ld hl, wd66f
+	set 2, [hl]
+	ld hl, wd66f
+	set 0, [hl]
+	ret

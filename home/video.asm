@@ -367,6 +367,7 @@ AnimateTileset::
 	set 1, [hl]
 	ret
 
+Function15ef::
     ld a, [$d558]
     bit 0, a
     ret z

@@ -1,3 +1,4 @@
+unk_014_4000:
 	dr $50000,$5001d
 
 SelectTradeOrDayCareMon::
