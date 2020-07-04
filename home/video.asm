@@ -351,10 +351,10 @@ AnimateTileset::
 
 	ldh a, [hROMBank]
 	push af
-	ld a, $3f
+	ld a, BANK(_AnimateTileset)
 	rst Bankswitch
 
-    call $5f06
+    call _AnimateTileset
 
 	pop af
 	rst Bankswitch
