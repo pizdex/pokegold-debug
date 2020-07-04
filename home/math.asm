@@ -47,7 +47,7 @@ Divide::
 
     ldh a, [hROMBank]
     push af
-    ld a, 1
+    ld a, $01
     rst $10
     call $6b36
     pop af

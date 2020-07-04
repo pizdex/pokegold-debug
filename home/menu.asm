@@ -846,9 +846,7 @@ Function1ea0:
     ld bc, $14
     call ByteFill
 
-    ld a, $3f
-    ld hl, $68b3
-    rst FarCall
+    farcall UpdateDebugToolgear
 
     ld hl, $9c00
     ld bc, 4
