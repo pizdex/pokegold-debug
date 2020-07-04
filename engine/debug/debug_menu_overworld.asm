@@ -18,7 +18,7 @@ QuickDebug_MenuHeader:
 	const DEBUG_NEXT
 	const DEBUG_GAME
 	const DEBUG_CHARACTER
-	const DEBUG_POKEGEAR
+	const DEBUG_TOOLGEAR
 	const DEBUG_TEST1 ; 5
 	const DEBUG_TEST2
 	const DEBUG_TEST3
@@ -89,7 +89,7 @@ QuickDebug_MenuItems:
 	db DEBUG_WARP
 	db DEBUG_BREEDING
 	db DEBUG_BUILD
-	db DEBUG_POKEGEAR
+	db DEBUG_TOOLGEAR
 	db DEBUG_PC
 	db DEBUG_CANCEL
 	db -1 ; end

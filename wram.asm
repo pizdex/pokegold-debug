@@ -2517,26 +2517,9 @@ wceb8:: ds 1 ; ceb8
 wceb9:: ds 1 ; ceb9
 wceba:: ds 1 ; ceba
 wcebb:: ds 1 ; cebb
-wcebc:: ds 1 ; cebc
-wcebd:: ds 1 ; cebd
-wcebe:: ds 1 ; cebe
-wcebf:: ds 1 ; cebf
-wcec0:: ds 1 ; cec0
-wcec1:: ds 1 ; cec1
-wcec2:: ds 1 ; cec2
-wcec3:: ds 1 ; cec3
-wcec4:: ds 1 ; cec4
-wcec5:: ds 1 ; cec5
-wcec6:: ds 1 ; cec6
-wcec7:: ds 1 ; cec7
-wcec8:: ds 1 ; cec8
-wcec9:: ds 1 ; cec9
-wceca:: ds 1 ; ceca
-wcecb:: ds 1 ; cecb
-wcecc:: ds 1 ; cecc
-wcecd:: ds 1 ; cecd
-wcece:: ds 1 ; cece
-wcecf:: ds 1 ; cecf
+
+wToolgearBuffer:: ds SCREEN_WIDTH ; cebc
+
 wced0:: ds 1 ; ced0
 wced1:: ds 1 ; ced1
 wced2:: ds 1 ; ced2
