@@ -1,7 +1,12 @@
 unk_005_4000:
-	dr $14000, $157e5
+	dr $14000, $153f8
 
-unk_005_57e5:
+RunMapSetupScript::
+	dr $153f8, $15632
+
+INCLUDE "data/tilesets.asm"
+
+PokemonCenterPC:
 	dr $157e5, $16542
 
 TakeMoney::

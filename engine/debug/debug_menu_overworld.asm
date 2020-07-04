@@ -897,7 +897,7 @@ QuickDebug_BuildOption:
 	ret
 
 QuickDebug_PCOption:
-	farcall unk_005_57e5
+	farcall PokemonCenterPC
 	ld a, 0
 	ret
 

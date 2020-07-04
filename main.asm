@@ -81,7 +81,8 @@ INCLUDE "banks/bank0e.asm"
 
 
 SECTION "bankF",ROMX,BANK[$0F]
-	dr $3c000, $40000
+
+INCLUDE "banks/bank0f.asm"
 
 
 SECTION "bank10",ROMX,BANK[$10]

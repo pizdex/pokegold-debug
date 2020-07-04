@@ -272,7 +272,7 @@ Function2118::
 	ret
 
 Function2133::
-	call LoadTilesetHeader
+	call LoadMapTileset
 	call LoadTileset
 	xor a
 	ldh [hMapAnims], a
@@ -2502,13 +2502,13 @@ GetFishingGroup::
     pop de
     ret
 
-LoadTilesetHeader::
+LoadMapTileset::
     push hl
     push bc
     ld hl, $5632
     ld bc, $f
     ld a, [wd074]
-    call $3210
+    call AddNTimes
     ld de, wTilesetBank
 	ld bc, $f
 	ld a, 5
