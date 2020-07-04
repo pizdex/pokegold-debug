@@ -136,7 +136,7 @@ unk_03f_43ae:
 	call Call_03f_44b0
 	call Debug_GiveTMsHMs
 
-	ld de, $445b
+	ld de, Call_03f_4445.KeyItemData
 	call Call_03f_4445
 	ld hl, wPokedexCaught
 	call Call_03f_442d
@@ -152,9 +152,7 @@ unk_03f_43ae:
 	call Call_03f_452b
 	call Call_03f_44ec
 
-	ld a, $0a
-	ld hl, $688d
-	rst FarCall
+	farcall unk_00a_688d
 	call Call_03f_44f3
 
 	ld a, 12 ; Hour
@@ -286,24 +284,18 @@ Call_03f_44b0:
 .loop
 	push bc
 	xor a
-	ld [$cb43], a
-
+	ld [wEnemySubStatus5], a
 	call Call_03f_44dd
+
 	ld [wTempEnemyMonSpecies], a
 	ld hl, wCurPartyLevel
 	inc [hl]
-
 	ld a, $0f
 	ld hl, $6802
 	rst FarCall
-
 	ld a, [wTempEnemyMonSpecies]
 	ld [wCurPartySpecies], a
-
-	ld a, $3
-	ld hl, $611b
-	rst FarCall
-
+	farcall unk_003_611b
 	pop bc
 	dec c
 	jr nz, .loop
@@ -321,13 +313,11 @@ Call_03f_44dd:
     ret
 
 Call_03f_44ec:
-    ld a, 9
-    ld hl, $7450
-    rst FarCall
+    farcall unk_009_7450
     ret
 
 Call_03f_44f3:
-    ld de, $001f
+    ld de, EVENT_GAVE_MYSTERY_EGG_TO_ELM
     ld b, 1
     jp EventFlagAction
 
@@ -339,14 +329,15 @@ Call_03f_44fb:
 
 	ld c, a
 	ld b, 0
-	ld hl, $595c
+	ld hl, unkData_00e_595c
 	add hl, bc
 	add hl, bc
-	ld a, $e
+	ld a, BANK(unkData_00e_595c)
 	call GetFarHalfword
+
 	ld de, wPlayerName
 	ld bc, 6
-	ld a, $e
+	ld a, BANK(unkData_00e_595c)
 	call FarCopyBytes
 
 	ld hl, .RivalName

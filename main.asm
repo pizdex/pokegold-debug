@@ -76,7 +76,8 @@ SECTION "bankD",ROMX,BANK[$0D]
 
 
 SECTION "bankE",ROMX,BANK[$0E]
-	dr $38000, $3C000
+
+INCLUDE "banks/bank0e.asm"
 
 
 SECTION "bankF",ROMX,BANK[$0F]
@@ -283,7 +284,7 @@ SECTION "bank3F",ROMX,BANK[$3F]
 INCLUDE "engine/debug/debug_clock_menu.asm"
 INCLUDE "engine/debug/debug_menu.asm"
 INCLUDE "engine/debug/debug_menu_overworld.asm"
-INCLUDE "banks/bank3f.asm"
+INCLUDE "engine/debug/debug_fight_menu.asm"
 INCLUDE "engine/debug/debug_sound_menu.asm"
 INCLUDE "engine/tilesets/tileset_anims.asm"
 INCLUDE "engine/debug/debug_toolgear_update.asm"

@@ -73,7 +73,7 @@ DebugColor_InitMonColor:
 	and a
 	jr nz, DebugColor_InitTrainerColor
 
-	ld hl, $6ff1 ; PokemonPalettes
+	ld hl, unkData_002_6ff1 ; PokemonPalettes
 DebugColor_InitMonColor2:
 	ld de, wOverworldMapBlocks
 	ld c, NUM_POKEMON + 1
@@ -93,7 +93,7 @@ DebugColor_InitMonColor2:
 	ret
 
 DebugColor_InitTrainerColor:
-	ld hl, $77f1 ; TrainerPalettes
+	ld hl, unkData_002_77f1 ; TrainerPalettes
 	ld de, wOverworldMapBlocks
 	ld c, NUM_TRAINER_CLASSES
 .loop
@@ -112,25 +112,25 @@ DebugColor_InitTrainerColor:
 	ret
 
 DebugColor_InitColor:
-	ld a, 2 ; BANK(PokemonPalettes)
+	ld a, BANK(unkData_002_6ff1) ; BANK(PokemonPalettes)
 	call GetFarByte
 	ld [de], a
 	inc de
 	inc hl
 
-	ld a, 2
+	ld a, BANK(unkData_002_6ff1)
 	call GetFarByte
 	ld [de], a
 	inc de
 	inc hl
 
-	ld a, 2
+	ld a, BANK(unkData_002_6ff1)
 	call GetFarByte
 	ld [de], a
 	inc de
 	inc hl
 
-	ld a, 2
+	ld a, BANK(unkData_002_6ff1)
 	call GetFarByte
 	ld [de], a
 	inc de
@@ -395,17 +395,13 @@ DebugColor_InitScreen:
 .Trainer:
 	ld a, [wDeciramBuffer]
 	ld [wTrainerClass], a
-	ld hl, $555f
-	ld a, $e
-	rst FarCall
+	callfar unk_00e_555f
 	ld de, wStringBuffer1
 	hlcoord 4, 1
 	call PlaceString
 
 	ld de, vTiles2
-	ld hl, $588d
-	ld a, $14
-	rst FarCall
+	callfar unk_014_588d
 
 	xor a
 	ld [wTempEnemyMonSpecies], a
@@ -597,7 +593,7 @@ unk_03f_7897:
 	and 3
 	ld e, a
 	ld d, 0
-	ld hl, $78d7
+	ld hl, Jumptable_03f_78d7
 	add hl, de
 	add hl, de
 	ld a, [hli]
@@ -620,7 +616,7 @@ unk_03f_7897:
 	ld [wcf22], a
 	ld c, a
 	ld b, 0
-	ld hl, $6ff1
+	ld hl, unkData_002_6ff1
 	add hl, bc
 	call DebugColor_InitMonColor2
 	ld a, 0
@@ -842,7 +838,7 @@ unk_03f_7a11:
 	ld de, DebugColor_NotAbleText
 
 jr_03f_7a14:
-	ld hl, $c4c2
+	hlcoord 10, 14
 	call PlaceString
 	ret
 

@@ -159,4 +159,10 @@ unk_002_5391:
 	dr $9391, $9f84
 
 unk_002_5f84:
-	dr $9f84, $c000
+	dr $9f84, $aff1
+
+unkData_002_6ff1:
+	dr $aff1, $b7f1
+
+unkData_002_77f1:
+	dr $b7f1, $c000

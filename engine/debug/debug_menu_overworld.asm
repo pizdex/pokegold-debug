@@ -437,11 +437,11 @@ QuickDebug_BugCatchingOption:
 .asm_4833:
 	call UpdateTime
 	farcall CheckBugContestTimer
-	ld hl, $c4e5
+	hlcoord 5, 16
 	ld de, wBugContestMinsRemaining
 	lb bc, $81, 2
 	call PrintNum
-	ld hl, $c4e8
+	hlcoord 8, 16
 	ld de, wBugContestSecsRemaining
 	lb bc, $81, 2
 	call PrintNum
@@ -1091,7 +1091,7 @@ unkData_03f_4d2b:
 
 unkData_03f_4d36:
 	text "あいしょう @"
-	text_decimal $d143, 1, 3 ; TEMP
+	text_decimal wd143, 1, 3
 	text "です"
 	line "こづくり しますか?"
 	done
@@ -1199,25 +1199,29 @@ unkData_03f_4de3:
 	done
 
 unkData_03f_4df9:
-	sjump $4e7a
+	sjump unk_03f_4e7a
 
 unkData_03f_4dfc:
-	sjump $4ea7
+	sjump unk_03f_4ea7
 
 unkData_03f_4dff:
-	sjump $4eba
+	sjump unk_03f_4eba
 
 unkData_03f_4e02:
-	sjump $4ec8
+	sjump unk_03f_4ec8
 
 unk_03f_4e05:
 	opentext
-	loadmenu $4e4f ; TEMP
-	writetext $4e45 ; TEMP
+	loadmenu unkData_03f_4e4f
+
+unk_03f_4e09:
+	writetext unkData_03f_4e45
 	verticalmenu
-	ifequal $00, $4e17 ; TEMP
+	ifequal 0, unk_03f_4e17
 	scall unk_03f_4e1a
-	sjump $4e09 ; TEMP
+	sjump unk_03f_4e09
+
+unk_03f_4e17:
 	closewindow
 	closetext
 	end
@@ -1270,12 +1274,12 @@ unkData_03f_4e4f:
 
 unk_03f_4e7a:
 	loadwildmon $13, $05 ; TEMP
-	catchtutorial $03 ; TEMP
+	catchtutorial 3
 	end
 
 unk_03f_4e80:
 	halloffame
-	loadmem $d1d4, $01 ; TEMP
+	loadmem wd1d4, 1
 	end
 
 unk_03f_4e86:
@@ -1290,7 +1294,7 @@ unk_03f_4e8c:
 
 unk_03f_4e90:
 	opentext
-	writetext $4e99 ; TEMP
+	writetext unkData_03f_4e99
 	verbosegiveitem $9e, $63 ; TEMP
 	closetext
 	end

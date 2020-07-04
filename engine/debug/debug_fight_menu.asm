@@ -499,7 +499,7 @@ DebugFight_StartButton:
 	call PlaceString
 
 	ld hl, wTilemap + 121
-	ld de, DebugFight_OpponentPartyHeaderText
+	ld de, DebugFight_OpponentPartyHeaderText1
 	call PlaceString
 
 	ld hl, wTilemap + 180
@@ -528,9 +528,7 @@ DebugFight_StartButton:
 
 	ld a, [wTrainerClass]
 	ld c, a
-	ld hl, $5534
-	ld a, $0e
-	rst FarCall
+	callfar unk_00e_5534
 
 	ld hl, wTilemap + 165
 	ld de, wcb2a
@@ -571,10 +569,10 @@ DebugFight_StartButton:
 
 Jump_03f_5284:
 	ld a, " "
-	ld [$c440], a
-	ld [$c44f], a
+	ldcoord_a 0, 8
+	ldcoord_a 15, 8
 	ld a, "▶"
-	ld [$c3f0], a
+	ldcoord_a 0, 4
 
 Jump_03f_5291:
 	push bc
@@ -591,11 +589,11 @@ Jump_03f_5291:
 	jr Jump_03f_5291
 
 Jump_03f_52ac:
-	ld hl, $c441
-	ld de, $57b1
+	hlcoord 1, 8
+	ld de, DebugFight_OpponentPartyHeaderText2
 	call PlaceString
-	ld hl, $c431
-	ld de, $57c4
+	hlcoord 5, 7
+	ld de, DebugFight_EmptyText2
 	call PlaceString
 	xor a
 	ld b, a
@@ -604,14 +602,15 @@ Jump_03f_52ac:
 	dec a
 	jr nz, .asm_52e7
 
-	ld a, $02
+	ld a, 2
 	ld [wBattleMode], a
-	ld a, $7f
-	ld [$c3e0], a
-	ld hl, $c3f1
-	ld de, $5794
+	ld a, " "
+	ldcoord_a 4, 3
+	hlcoord 1, 4
+	ld de, DebugFight_TrainerText
 	call PlaceString
-	ld hl, $c454
+
+	hlcoord 0, 9
 	ld b, $09
 	ld c, $14
 	call ClearBox
@@ -621,22 +620,23 @@ Jump_03f_52ac:
 	ld a, 1
 	ld [wBattleMode], a
 	ld a, " "
-	ld [$c3dd], a
-	ld hl, $c3f1
-	ld de, $578a
+	ldcoord_a 1, 3
+	hlcoord 1, 4
+	ld de, DebugFight_WildMonsterText
 	call PlaceString
-	ld hl, $c454
+
+	hlcoord 0, 9
 	ld b, $09
 	ld c, $14
 	call ClearBox
 	jp Jump_03f_5291
 
 Jump_03f_5307:
-	ld a, $ed
-	ld [$c440], a
-	ld a, $7f
-	ld [$c44f], a
-	ld [$c3f0], a
+	ld a, "▶"
+	ldcoord_a 0, 8
+	ld a, " "
+	ldcoord_a 15, 8
+	ldcoord_a 0, 4
 
 Jump_03f_5314:
 	push bc
@@ -661,10 +661,10 @@ Jump_03f_5314:
 Jump_03f_533e:
 	push bc
 	ld hl, $c431
-	ld de, $57c4
+	ld de, DebugFight_EmptyText2
 	call PlaceString
 	ld hl, $c445
-	ld de, $57c4
+	ld de, DebugFight_EmptyText2
 	call PlaceString
 	pop bc
 	ld a, [wBattleMode]
@@ -682,14 +682,12 @@ Jump_03f_5360:
 	ld de, wDeciramBuffer
 	ld hl, $c441
 	push bc
-	ld bc, $8103
+	lb bc, PRINTNUM_LEADINGZEROS | 1, 3
 	call PrintNum
 	ld a, [wDeciramBuffer]
 	ld [wTrainerClass], a
 	ld c, a
-	ld hl, $5534
-	ld a, $0e
-	rst $08
+	callfar unk_00e_5534
 	ld hl, $c445
 	ld de, wcb2a
 	call PlaceString
@@ -709,7 +707,7 @@ Jump_03f_5393:
 	ld de, wDeciramBuffer
 	ld hl, $c441
 	push bc
-	ld bc, $8103
+	lb bc, PRINTNUM_LEADINGZEROS | 1, 3
 	call PrintNum
 	call GetPokemonName
 	ld hl, $c445
@@ -721,10 +719,10 @@ Jump_03f_5393:
 Jump_03f_53b4:
 	push bc
 	ld hl, $c431
-	ld de, $57c4
+	ld de, DebugFight_EmptyText2
 	call PlaceString
 	ld hl, $c445
-	ld de, $57c4
+	ld de, DebugFight_EmptyText2
 	call PlaceString
 	pop bc
 	ld a, [wBattleMode]
@@ -754,9 +752,9 @@ Jump_03f_53b4:
 	jp Jump_03f_5393
 
 Jump_03f_53ec:
-	ld a, $7f
+	ld a, " "
 	ld [$c440], a
-	ld a, $ed
+	ld a, "▶"
 	ld [$c44f], a
 
 Jump_03f_53f6:
@@ -791,7 +789,7 @@ Jump_03f_5420:
 	ld de, wCurPartyLevel
 	ld [de], a
 	push bc
-	ld bc, $8103
+	lb bc, PRINTNUM_LEADINGZEROS | 1, 3
 	call PrintNum
 	pop bc
 	call Call_03f_544d
@@ -818,16 +816,16 @@ Call_03f_544d:
 	push bc
 	ld a, b
 	ld [wCurPartySpecies], a
-	ld hl, $c454
+	hlcoord 0, 9
 	ld b, $09
 	ld c, $14
 	call ClearBox
 	xor a
 	ld [wd0c5], a
-	ld hl, $d13b
+	ld hl, wListMoves_MoveIndicesBuffer
 	ld bc, $0004
 	call ByteFill
-	ld de, $d13b
+	ld de, wListMoves_MoveIndicesBuffer
 	ld a, $1b
 	call Predef
 	ld a, $28
@@ -837,7 +835,7 @@ Call_03f_544d:
 	call Predef
 	call Call_03f_55ce
 	ld hl, $c469
-	ld de, $d13b
+	ld de, wListMoves_MoveIndicesBuffer
 	ld b, $04
 
 .asm_548e:
@@ -851,13 +849,13 @@ Call_03f_544d:
 	push hl
 	ld de, wStringBuffer1
 	ld [de], a
-	ld bc, $0103
+	lb bc, $01, 3
 	push af
 	call PrintNum
 	pop af
 	dec a
-	ld hl, $5c71
-	ld bc, $0007
+	ld hl, $5c6c + 5
+	ld bc, 7
 	call AddNTimes
 	ld a, $10
 	call GetFarByte
@@ -883,17 +881,17 @@ Call_03f_544d:
 
 Jump_03f_54cd:
 	ld hl, $c440
-	ld [hl], $7f
+	ld [hl], " "
 	ld hl, $c44f
-	ld [hl], $7f
+	ld [hl], " "
 	ld a, [wBattleMode]
 	dec a
 	jp nz, Jump_03f_5307
 
 	push bc
 	ld hl, $c468
-	ld [hl], $ed
-	ld de, $d13b
+	ld [hl], "▶"
+	ld de, wListMoves_MoveIndicesBuffer
 	ld b, 1
 
 Jump_03f_54e9:
@@ -942,7 +940,7 @@ Jump_03f_5514:
 	push hl
 	ld bc, $0011
 	add hl, bc
-	ld a, $7f
+	ld a, " "
 	ld [hli], a
 	ld [hl], a
 	pop hl
@@ -966,7 +964,7 @@ Function_03f_553d:
 	push hl
 	ld bc, $0011
 	add hl, bc
-	ld a, $7f
+	ld a, " "
 	ld [hli], a
 	ld [hl], a
 	pop hl
@@ -982,8 +980,8 @@ Function_03f_553d:
 	call PlaceString
 	ld a, [wCurSpecies]
 	dec a
-	ld hl, $5c71
-	ld bc, $0007
+	ld hl, $5c6c + 5
+	ld bc, 7
 	call AddNTimes
 	ld a, $10
 	call GetFarByte
@@ -1000,7 +998,7 @@ Function_03f_553d:
 	jp Jump_03f_54e9
 
 Jump_03f_559b:
-	ld [hl], $7f
+	ld [hl], " "
 	dec b
 	jp z, Jump_03f_55c6
 	dec de
@@ -1008,7 +1006,7 @@ Jump_03f_559b:
 	ld bc, hBGMapAddress
 	add hl, bc
 	pop bc
-	ld [hl], $ed
+	ld [hl], "▶"
 	jp Jump_03f_54e9
 
 Jump_03f_55ad:
@@ -1018,12 +1016,12 @@ Jump_03f_55ad:
 	jr nc, .asm_55c1
 
 	inc de
-	ld [hl], $7f
+	ld [hl], " "
 	push bc
 	ld bc, $0028
 	add hl, bc
 	pop bc
-	ld [hl], $ed
+	ld [hl], "▶"
 	jp Jump_03f_54e9
 
 .asm_55c1
@@ -1080,9 +1078,9 @@ Jump_03f_55df:
 	call SetPalettes
 	ld a, $80
 	ld [wJohtoBadges], a
-	ld hl, $57cf
+	ld hl, unkData_03f_57cf
 	ld de, wPlayerName
-	ld bc, $0006
+	ld bc, 6
 	call CopyBytes
 	ld a, $16
 	call Predef
@@ -1112,13 +1110,13 @@ Jump_03f_55df:
 	ld c, $12
 	call Textbox
 	ld hl, $c3ba
-	ld de, $56fa
+	ld de, DebugFight_TestFightText
 	call PlaceString
 	ld hl, $c3f4
-	ld de, $5703
+	ld de, DebugFight_PlayerPartyHeaderText
 	call PlaceString
 	ld hl, $c419
-	ld de, $5712
+	ld de, DebugFight_DefaultPlayerPartyText
 	call PlaceString
 	ld de, wPartyCount
 	xor a
@@ -1143,10 +1141,10 @@ Jump_03f_5683:
 
 	ld [wDeciramBuffer], a
 	push hl
-	ld bc, $8103
+	lb bc, PRINTNUM_LEADINGZEROS | 1, 3
 	call PrintNum
 	inc hl
-	ld de, $577e
+	ld de, DebugFight_EmptyText
 	call PlaceString
 	call GetPokemonName
 	call PlaceString
@@ -1164,7 +1162,7 @@ Jump_03f_5683:
 	ld a, [de]
 	ld [wCurPartyLevel], a
 	pop hl
-	ld bc, $8103
+	lb bc, PRINTNUM_LEADINGZEROS | 1, 3
 	call PrintNum
 	ld a, [wCurPartyMon]
 	ld de, wDebugFightMonLevel
@@ -1220,18 +1218,27 @@ DebugFight_WildMonsterText:
 DebugFight_TrainerText:
 	db "ディーラー    @" ; Dealer (Trainer)
 
-DebugFight_OpponentPartyHeaderText:
+DebugFight_OpponentPartyHeaderText1:
 	db "№．  なまえ        レべル<NEXT>"
+DebugFight_OpponentPartyHeaderText2:
 	db "000 ーーーーーーーーーー 000@"
 
 DebugFight_EmptyText2:
 	db "          @"
 
 unkData_03f_57cf:
-	db "ゴールド@" ; GOLD
+	db "ゴールド@@" ; GOLD
 
 unkData_03f_57d4:
-	dr $fd7d4,$fd7e6
+	db $03, 99
+	db $04, 99
+	db $0B, 99
+	db $10, 99
+	db $11, 99
+	db $12, 99
+	db $13, 99
+	db $14, 99
+	db $FF
 
 unk_03f_57e6:
 	ld a, 1
@@ -1268,9 +1275,9 @@ jr_03f_581e:
 	ld [wCurPartyLevel], a
 Jump_03f_582b:
 	ld hl, $c3dc
-	ld [hl], $7f
+	ld [hl], " "
 	ld hl, $c3b4
-	ld [hl], $ed
+	ld [hl], "▶"
 	call Call_03f_5868
 jr_03f_5838:
 	call DelayFrame
@@ -1323,11 +1330,11 @@ Call_03f_5868::
 
 Jump_03f_5897:
 	ld hl, $c3b4
-	ld [hl], $7f
+	ld [hl], " "
 	ld hl, $c3dc
-	ld [hl], $ed
+	ld [hl], "▶"
 	ld hl, $c404
-	ld [hl], $7f
+	ld [hl], " "
 	call Call_03f_58e3
 	call Call_03f_58f0
 jr_03f_58ac:
@@ -1369,7 +1376,7 @@ Call_03f_58e3:
 	ret
 
 Call_03f_58f0:
-	ld hl, $c3f1
+	hlcoord 1, 4
 	ld b, $08
 	ld c, $0b
 	call ClearBox
@@ -1497,13 +1504,13 @@ Call_03f_59a3:
 	pop de
 	pop hl
 	push hl
-	ld [hl], $ed
+	ld [hl], "▶"
 	ld bc, hBGMapAddress
 	add hl, bc
-	ld [hl], $7f
+	ld [hl], " "
 	ld bc, $0050
 	add hl, bc
-	ld [hl], $7f
+	ld [hl], " "
 	pop hl
 	inc hl
 	ld a, [de]
@@ -1607,13 +1614,13 @@ Call_03f_5a51:
 	push de
 	push bc
 	push hl
-	ld [hl], $ed
+	ld [hl], "▶"
 	ld bc, hBGMapAddress
 	add hl, bc
-	ld [hl], $7f
+	ld [hl], " "
 	ld bc, $50
 	add hl, bc
-	ld [hl], $7f
+	ld [hl], " "
 	pop hl
 	inc hl
 	ld a, [de]
@@ -1680,7 +1687,57 @@ unkData_03f_5ac9:
 	next "とくぼう@"
 
 Jump_03f_5ae4:
-	dr $fdae4,$fdb51
+	ld a, [wCurPartyLevel]
+	ld [wEnemyMonLevel], a
+	ld a, [wCurPartySpecies]
+	ld [wCurSpecies], a
+	call GetBaseData
+	ld a, [wCurPartySpecies]
+	ld [wEnemyMon], a
+	ld hl, wEnemyMonHP
+	ld a, [wd029]
+	ld [hli], a
+	ld a, [wd02a]
+	ld [hli], a
+	xor a
+	ld [wEnemyMonStatus], a
+	ld [$d0f0], a
+	ld hl, wEnemyMonMoves
+	ld a, [wListMoves_MoveIndicesBuffer]
+	ld [hli], a
+	ld a, [$d13c]
+	ld [hli], a
+	ld a, [$d13d]
+	ld [hli], a
+	ld a, [$d13e]
+	ld [hl], a
+	ld hl, wEnemyMonPP
+	xor a
+	ld [hli], a
+	ld [hli], a
+	ld [hli], a
+	ld [hl], a
+	ld a, [wddee]
+	ld [wEnemyMonDVs], a
+	ld a, [wddef]
+	ld [$d0e8], a
+	ld a, $09
+	call Predef
+	ld a, $01
+	call OpenSRAM
+	ld b, $0a
+	ld hl, s1_ad3b
+	ld a, [wddf0]
+
+jr_03f_5b44:
+	ld [hli], a
+	dec b
+	jr nz, jr_03f_5b44
+
+	call CloseSRAM
+	pop af
+	ld [wOptions], a
+	jr jr_03f_5b57
 
 Jump_03f_5b51:
 	ld hl, unkData_03f_5b58
@@ -1693,3 +1750,120 @@ unkData_03f_5b58:
 ; The BOX is full!
 	text "ボックスが いっぱい!"
 	done
+
+Call_03f_5b65:
+	ld a, [wCurPartySpecies]
+	push af
+	call Call_03f_5b99
+	jr c, .asm_5b93
+	ld a, $10
+	ld hl, $692f
+	rst FarCall
+	jr nc, .asm_5b88
+	call Call_03f_5b99
+	jr c, .asm_5b93
+
+	ld a, $10
+	ld hl, $692f
+	rst FarCall
+	jr nc, .asm_5b88
+	call Call_03f_5b99
+	jr c, .asm_5b93
+
+.asm_5b88:
+	call Call_03f_5be8
+	jr c, .asm_5b93
+	pop af
+	ld [wCurPartySpecies], a
+	and a
+	ret
+
+.asm_5b93:
+	pop af
+	ld [wCurPartySpecies], a
+	scf
+	ret
+
+Call_03f_5b99:
+	ld a, [wApplyStatLevelMultipliersToEnemy]
+	ld [wTMHMMove], a
+	ld a, $0e
+	call Predef
+	ld a, c
+	and a
+	jr nz, .asm_5bc5
+	ld a, [wApplyStatLevelMultipliersToEnemy]
+	ld d, a
+	call Call_03f_5c0e
+.asm_5baf:
+	ld a, $10
+	call GetFarByte
+	inc hl
+	and a
+	jr z, .asm_5bc3
+	ld a, $10
+	call GetFarByte
+	inc hl
+	cp d
+	jr z, .asm_5bc5
+	jr .asm_5baf
+
+.asm_5bc3:
+	and a
+	ret
+
+.asm_5bc5:
+	scf
+	ret
+
+unkData_03f_5bc7:
+	db 007, 009, 010, 014, 016, 020, 022, 028
+	db 049, 066, 083, 089, 091, 099, 100, 103
+	db 104, 105, 114, 125, 126, 139, 142, 149
+	db 152, 154, 155, 178, 179, 180, 187, 190
+	db -1
+
+Call_03f_5be8:
+	ld hl, $7b07
+	ld a, [wCurPartySpecies]
+	dec a
+	ld c, a
+	ld b, 0
+	add hl, bc
+	add hl, bc
+	ld a, $08
+	call GetFarHalfword
+.asm_5bf9:
+	ld a, $08
+	call GetFarByte
+	inc hl
+	cp $ff
+	jr z, .asm_5c0c
+	ld b, a
+	ld a, [wApplyStatLevelMultipliersToEnemy]
+	cp b
+	jr nz, .asm_5bf9
+	scf
+	ret
+
+.asm_5c0c:
+	and a
+	ret
+
+Call_03f_5c0e:
+	ld hl, $695f
+	ld b, 0
+	ld a, [wCurPartySpecies]
+	dec a
+	ld c, a
+	add hl, bc
+	add hl, bc
+	ld a, $10
+	call GetFarHalfword
+.asm_5c1f:
+	ld a, $10
+	call GetFarByte
+	inc hl
+	and a
+	jr nz, .asm_5c1f
+	ret

@@ -88,7 +88,10 @@ Call_004_5998:
 	dr $11998, $119d0
 
 CopyDayHourMinSecToHL:
-	dr $119d0, $13877
+	dr $119d0, $11a7e
+
+unk_004_5a7e:
+	dr $11a7e, $13877
 
 Elevator::
 	dr $13877, $13a43

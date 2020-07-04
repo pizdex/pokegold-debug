@@ -1,9 +1,7 @@
 DebugPasswordMenu:
 	ld b, 1
 	ld de, wMovementBufferCount
-	ld a, 4
-	ld hl, $5a7e
-	rst FarCall
+	farcall unk_004_5a7e
 	call DebugPasswordMenu_EnterTID
 	call Call_002_47ea
 
@@ -130,7 +128,7 @@ DebugPasswordMenu_EnterTID:
 	call ByteFill
 
 	ld a, 4
-	ld [$cf97], a
+	ld [wStringBuffer2 + 5], a
 
 	ld hl, unkData_002_4734
 	call PrintText
@@ -185,7 +183,7 @@ Call_002_4743:
 	call ByteFill
 
 	hlcoord 14, 16
-	ld a, [$cf97]
+	ld a, [wStringBuffer2 + 5]
 	ld e, a
 	ld d, 0
 	add hl, de
@@ -208,19 +206,19 @@ Call_002_476b:
 	ret
 
 .left
-	ld a, [$cf97]
+	ld a, [wStringBuffer2 + 5]
 	and a
 	ret z
 	dec a
-	ld [$cf97], a
+	ld [wStringBuffer2 + 5], a
 	ret
 
 .right
-	ld a, [$cf97]
+	ld a, [wStringBuffer2 + 5]
 	cp 4
 	ret z
 	inc a
-	ld [$cf97], a
+	ld [wStringBuffer2 + 5], a
 	ret
 
 .up
@@ -248,7 +246,7 @@ Call_002_476b:
 	ret
 
 Call_002_47b0:
-	ld a, [$cf97]
+	ld a, [wStringBuffer2 + 5]
 	ld e, a
 	ld d, 0
 	ld hl, wStringBuffer2
@@ -287,7 +285,7 @@ Call_002_47ea:
 	xor a
 	call ByteFill
 	ld a, 5
-	ld [$cf98], a
+	ld [wStringBuffer2 + 6], a
 	ld hl, unkData_002_482b
 	call PrintText
 
@@ -344,7 +342,7 @@ Call_002_4838:
 	call ByteFill
 
 	hlcoord 13, 16
-	ld a, [$cf98]
+	ld a, [wStringBuffer2 + 6]
 	ld e, a
 	ld d, 0
 	add hl, de
@@ -367,19 +365,19 @@ Call_002_4860:
 	ret
 
 .left
-	ld a, [$cf98]
+	ld a, [wStringBuffer2 + 6]
 	and a
 	ret z
 	dec a
-	ld [$cf98], a
+	ld [wStringBuffer2 + 6], a
 	ret
 
 .right
-	ld a, [$cf98]
+	ld a, [wStringBuffer2 + 6]
 	cp 5
 	ret z
 	inc a
-	ld [$cf98], a
+	ld [wStringBuffer2 + 6], a
 	ret
 
 .up
@@ -407,7 +405,7 @@ Call_002_4860:
 	ret
 
 Call_002_48a5:
-	ld a, [$cf98]
+	ld a, [wStringBuffer2 + 6]
 	ld e, a
 	ld d, 0
 	ld hl, wStringBuffer2
@@ -420,7 +418,7 @@ Call_002_48b0:
 	ld d, h
 	ld b, 0
 
-	ld a, [$cf93]
+	ld a, [wStringBuffer2 + 1]
 	ld hl, unkData_002_492a + 2
 	call Call_002_4903
 	call Call_002_48d0
