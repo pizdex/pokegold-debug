@@ -1196,7 +1196,8 @@ DebugFight_TestFightText:
 	db "テスト ファイト@" ; Test Fight
 
 DebugFight_PlayerPartyHeaderText:
-	db "№．  なまえ    レべル@" ; No.  Name    Level
+     ; No.  Name    LVL
+	db "№．  なまえ    レべル@"
 
 DebugFight_DefaultPlayerPartyText:
 	db "1．▶000 ーーーーー  000<NEXT>"
@@ -1219,6 +1220,7 @@ DebugFight_TrainerText:
 	db "ディーラー    @" ; Dealer (Trainer)
 
 DebugFight_OpponentPartyHeaderText1:
+     ; No.  Name        LVL
 	db "№．  なまえ        レべル<NEXT>"
 DebugFight_OpponentPartyHeaderText2:
 	db "000 ーーーーーーーーーー 000@"

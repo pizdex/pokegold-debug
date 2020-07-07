@@ -1,5 +1,11 @@
 unk_005_4000:
-	dr $14000, $153f8
+	dr $14000, $140ae
+
+ClockContinue::
+	dr $140ae, $14e28
+
+TryLoadSaveFile::
+	dr $14e28, $153f8
 
 RunMapSetupScript::
 	dr $153f8, $15632

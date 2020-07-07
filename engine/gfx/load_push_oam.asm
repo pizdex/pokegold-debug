@@ -1,5 +1,5 @@
-unk_001_4031:
-	farcall DebugMenu
+DebugMenu:
+	farcall _DebugMenu
 	jp StartTitleScreen
 
 WriteOAMDMACodeToHRAM::

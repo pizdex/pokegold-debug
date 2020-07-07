@@ -1,4 +1,4 @@
-DebugMenu::
+_DebugMenu::
 	call ClearTilemap
 	call ClearWindowData
 	call LoadStandardFont
@@ -15,7 +15,7 @@ DebugMenu::
 	call CloseWindow
 	ret c
 	call MenuJumptable
-	jr DebugMenu
+	jr _DebugMenu
 
 .DebugMenuHeader:
 	db MENU_BACKUP_TILES ; flags

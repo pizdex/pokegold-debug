@@ -81,7 +81,7 @@ ENDM
 
 PredefPointers::
 	add_predef LearnMove ; $0
-	add_predef unk_001_4031
+	add_predef DebugMenu
 	add_predef unk_003_46b3
 	add_predef SmallFarFlagAction
 	add_predef unk_003_46f4
