@@ -1,23 +1,13 @@
 NamesPointers::
-    inc d
-    inc c
-    ld a, d
-    db $10
-    ld a, $56
-    nop
-    nop
-    nop
-    ld bc, $72b9
-    nop
-    db $10
-    db $db
-    nop
-    xor $dd
-    dec bc
-    sub $52
-    inc b
-    rst $30
-    ld e, h
+; entries correspond to GetName constants (see constants/text_constants.asm)
+    dbw $14, $7a0c
+	dbw $10, $563e
+	dba NULL                ; DUMMY_NAME
+	dba ItemNames           ; ITEM_NAME
+	dbw $00, $db10
+	dbw $00, $ddee
+	dbw $0b, $52d6
+	dbw $04, $5cf7
 
 GetName::
 ; Return name wCurSpecies from name list wNamedObjectTypeBuffer in wStringBuffer1.
@@ -133,7 +123,7 @@ GetPokemonName::
 	dec a
 	ld hl, $7a0c
 	ld e, a
-	ld d, $0
+	ld d, 0
 
 rept MON_NAME_LENGTH - 1
 	add hl, de

@@ -11,10 +11,8 @@ INCLUDE "engine/overworld/init_map.asm"
 INCLUDE "engine/pokemon/learn.asm"
 INCLUDE "engine/pokemon/correct_nick_errors.asm"
 INCLUDE "engine/math/math.asm"
-
-ItemAttributes:
-	dr $6bb9,$7a11
-
+INCLUDE "data/items/attributes.asm"
+INCLUDE "data/items/names.asm"
 INCLUDE "engine/overworld/npc_movement.asm"
 INCLUDE "engine/events/happiness_egg.asm"
 INCLUDE "engine/events/shuckle.asm"

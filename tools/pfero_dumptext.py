@@ -11,9 +11,9 @@ args = parser.parse_args()
 
 chars = {}
 
-file = "baserom.gbc"
+file = "../baserom.gbc"
 
-for line in open("charmap.asm"):
+for line in open("../charmap.asm"):
     if line.startswith("\tcharmap "):
         line = line[9:].split(";")[0].split(",")
         if len(line) != 2:
