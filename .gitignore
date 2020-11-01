@@ -41,8 +41,6 @@ MONSGD.txt
 
 *.dimensions
 *.gbcpal
-*.2bpp
-*.1bpp
 *.lz
 *.animated.tilemap
 *.sgb.tilemap
