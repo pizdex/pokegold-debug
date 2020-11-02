@@ -21,7 +21,14 @@ INCLUDE "engine/events/haircut.asm"
 
 SECTION "bank2",ROMX,BANK[$02]
 
-INCLUDE "banks/bank02.asm"
+INCLUDE "engine/tilesets/map_palettes.asm"
+INCLUDE "gfx/tileset_palette_maps.asm"
+INCLUDE "engine/gfx/blank_screen.asm"
+INCLUDE "engine/debug/debug_password_menu.asm"
+INCLUDE "engine/overworld/player_object.asm"
+INCLUDE "engine/math/sine.asm"
+INCLUDE "engine/predef.asm"
+INCLUDE "engine/gfx/color.asm"
 
 
 SECTION "bank3",ROMX,BANK[$03]

@@ -1,7 +1,7 @@
 Call_001_6493:
 	call ClearBGPalettes
 	xor a
-	ld [wd55b], a
+	ld [wTimeOfDayPal], a
 	ld de, $0000
 	call PlayMusic
 	call ClearTilemap

@@ -2303,9 +2303,12 @@ wcc88:: ds 1 ; cc88
 wcc89:: ds 1 ; cc89
 wcc8a:: ds 1 ; cc8a
 wcc8b:: ds 1 ; cc8b
-wcc8c:: ds 1 ; cc8c
-wcc8d:: ds 1 ; cc8d
-wcc8e:: ds 1 ; cc8e
+
+wDefaultSGBLayout:: db ; cc8c
+
+wPlayerHPPal:: db ; cc8d
+wEnemyHPPal:: db ; cc8e
+
 wcc8f:: ds 1 ; cc8f
 wcc90:: ds 1 ; cc90
 wcc91:: ds 1 ; cc91
@@ -2952,7 +2955,7 @@ wd072:: ds 1 ; d072
 wd073:: ds 1 ; d073
 wd074:: ds 1 ; d074
 
-wPermission:: ds 1 ; d075
+wEnvironment:: db ; d075
 
 wd076:: ds 1 ; d076
 wd077:: ds 1 ; d077
@@ -3497,7 +3500,7 @@ wd557:: ds 1 ; d557
 wEnteredMapFromContinue:: ds 1 ; d558
 wd559:: ds 1 ; d559
 wd55a:: ds 1 ; d55a
-wd55b:: ds 1 ; d55b
+wTimeOfDayPal:: ds 1 ; d55b
 wd55c:: ds 1 ; d55c
 wd55d:: ds 1 ; d55d
 wd55e:: ds 1 ; d55e

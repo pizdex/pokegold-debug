@@ -56,7 +56,7 @@ PredefPointers::
 	db $06, $7c, $32
 	db $e4, $40, $32
 	add_predef unk_002_5f84 ; $30
-	add_predef unk_002_4f55
+	add_predef LoadSGBLayout
 	add_predef unk_024_5da5
 	add_predef unk_002_5391
 	add_predef unk_023_4576
