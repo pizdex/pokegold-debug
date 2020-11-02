@@ -1,4 +1,4 @@
-INCLUDE "macros/enum.asm"
+INCLUDE "macros/const.asm"
 INCLUDE "macros/predef.asm"
 INCLUDE "macros/rst.asm"
 INCLUDE "macros/data.asm"
@@ -11,14 +11,11 @@ INCLUDE "macros/scripts/maps.asm"
 INCLUDE "macros/scripts/events.asm"
 INCLUDE "macros/scripts/text.asm"
 INCLUDE "macros/scripts/movement.asm"
-INCLUDE "macros/scripts/trade_anims.asm"
+INCLUDE "macros/scripts/battle_commands.asm"
+INCLUDE "macros/scripts/battle_anims.asm"
+INCLUDE "macros/scripts/gfx_anims.asm"
 
-INCLUDE "macros/move_effect.asm"
-INCLUDE "macros/move_anim.asm"
-INCLUDE "macros/pic.asm"
-INCLUDE "macros/mobile.asm"
-INCLUDE "macros/pals.asm"
-INCLUDE "macros/flag.asm"
+INCLUDE "macros/legacy.asm"
 
 dr: macro
 ; IF DEF(GOLD)

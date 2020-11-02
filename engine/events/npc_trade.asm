@@ -189,7 +189,7 @@ DoNPCTrade:
 	ld de, wc5fa
 	call Functionfeb74
 
-	ld hl, wPartyMon6StatsEnd
+	ld hl, wPartyMonOT
 	ld bc, $0006
 	call Trade_GetAttributeOfLastPartymon
 	ld hl, wc600

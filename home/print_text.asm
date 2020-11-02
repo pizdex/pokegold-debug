@@ -359,7 +359,7 @@ Function33ea::
     ld a, [de]
     and $f
     call Function33fc
-    ld [hl+], a
+    ld [hli], a
     inc de
     ret
 

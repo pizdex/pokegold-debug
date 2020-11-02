@@ -12,7 +12,7 @@ PlaceWaitingText::
 
 .notinbattle
 	ld a, $10
-	call $2eb6
+	call Predef
 
 .proceed
 	hlcoord 4, 11

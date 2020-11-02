@@ -27,7 +27,7 @@ JumpTable::
     ld d, $00
     add hl, de
     add hl, de
-    ld a, [hl+]
+    ld a, [hli]
     ld h, [hl]
 ; SECTION "rst30", ROM0[$0030]
     ld l, a

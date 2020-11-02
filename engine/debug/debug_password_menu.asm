@@ -73,7 +73,7 @@ unk_002_46b9:
 .loop
 	ld a, [de]
 	add "0"
-	ld [hl+], a
+	ld [hli], a
 	inc de
 	dec c
 	jr nz, .loop
@@ -171,7 +171,7 @@ Call_002_4743:
 .asm_474b:
 	ld a, [de]
 	add "0"
-	ld [hl+], a
+	ld [hli], a
 	inc de
 	dec c
 	jr nz, .asm_474b

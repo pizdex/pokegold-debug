@@ -148,7 +148,7 @@ Init::
 	call DelayFrame
 
     ld a, $30
-    call $2eb6
+    call Predef
 
     call $3d21
     xor a

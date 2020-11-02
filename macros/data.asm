@@ -1,6 +1,29 @@
 ; Value macros
 
+; Many arbitrary percentages are simple base-10 or base-16 values:
+; -  10 = 4 percent
+; -  15 = 6 percent
+; - $10 = 6 percent + 1 = 7 percent - 1
+; -  20 = 8 percent
+; -  25 = 10 percent
+; -  30 = 12 percent
+; -  40 = 16 percent
+; -  50 = 20 percent - 1
+; -  60 = 24 percent - 1
+; -  70 = 28 percent - 1
+; -  80 = 31 percent + 1 = 32 percent - 1
+; -  85 = 33 percent + 1 = 34 percent - 1
+; - 100 = 39 percent + 1 = 40 percent - 2
+; - 120 = 47 percent + 1
+; - 123 = 49 percent - 1
+; - 160 = 63 percent
+; - 180 = 71 percent - 1 = 70 percent + 2
+; - 200 = 79 percent - 1
+; - 230 = 90 percent + 1
 percent EQUS "* $ff / 100"
+
+; e.g. 1 out_of 2 == 50 percent + 1 == $80
+out_of EQUS "* $100 /"
 
 ; Constant data (db, dw, dl) macros
 
@@ -32,18 +55,14 @@ ENDM
 dn: MACRO ; nybbles
 rept _NARG / 2
 	db ((\1) << 4) | (\2)
-	shift
-	shift
+	shift 2
 endr
 ENDM
 
 dc: MACRO ; "crumbs"
 rept _NARG / 4
 	db ((\1) << 6) | ((\2) << 4) | ((\3) << 2) | (\4)
-	shift
-	shift
-	shift
-	shift
+	shift 4
 endr
 ENDM
 
@@ -51,7 +70,7 @@ dx: MACRO
 x = 8 * ((\1) - 1)
 rept \1
 	db ((\2) >> x) & $ff
-x = x + -8
+x = x - 8
 endr
 ENDM
 
@@ -81,30 +100,20 @@ rept _NARG
 endr
 ENDM
 
+; Reverses FixPicBank in engine/gfx/load_pics.asm
+;
+; Takes the actual bank of the pic in the ROM and returns the "defined" bank:
+;     BANK("Pics 12") -> $13
+;     BANK("Pics 13") -> $14
+;     BANK("Pics 14") -> $1f
+;
+; Otherwise, the ROM bank will match the defined bank.
 dba_pic: MACRO ; dbw bank, address
-	db BANK(\1) - PICS_FIX
+	db (BANK(\1) == BANK("Pics 12")) * ($13 - BANK("Pics 12")) \
+		+ (BANK(\1) == BANK("Pics 13")) * ($14 - BANK("Pics 13")) \
+		+ (BANK(\1) == BANK("Pics 14")) * ($1f - BANK("Pics 14")) \
+		+ (BANK(\1))
 	dw \1
-ENDM
-
-dbpixel: MACRO
-if _NARG >= 4
-; x tile, x pxl, y tile, y pxl
-	db \1 * 8 + \3, \2 * 8 + \4
-else
-; x, y
-	db \1 * 8, \2 * 8
-endc
-ENDM
-
-dsprite: MACRO
-; y tile, y pxl, x tile, x pxl, vtile offset, attributes
-	db (\1 * 8) % $100 + \2, (\3 * 8) % $100 + \4, \5, \6
-ENDM
-
-menu_coords: MACRO
-; x1, y1, x2, y2
-	db \2, \1 ; start coords
-	db \4, \3 ; end coords
 ENDM
 
 bcd: MACRO
@@ -115,12 +124,10 @@ endr
 ENDM
 
 sine_table: MACRO
-; \1: amplitude
-
+; \1 samples of sin(x) from x=0 to x<32768 (pi radians)
 x = 0
-	rept $20
-	; Round up.
-	dw (sin(x) + (sin(x) & $ff)) >> 8
-x = x + (\1) * $40000
-	endr
+rept \1
+	dw (sin(x) + (sin(x) & $ff)) >> 8 ; round up
+x = x + DIV(32768, \1) ; a circle has 65536 "degrees"
+endr
 ENDM

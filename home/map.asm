@@ -2432,42 +2432,45 @@ GetWorldMapLocation::
 GetMapMusic::
 	push hl
 	push bc
-	ld de, 6
+	ld de, MAP_MUSIC
 	call GetMapHeaderMember
 	ld a, c
 	cp MUSIC_MAHOGANY_MART
-	jr z, .mahogany_mart_check
-	bit 7, c
-	jr nz, .radio_tower_check
+	jr z, .mahoganymart
+	bit RADIO_TOWER_MUSIC_F, c
+	jr nz, .radiotower
 	ld e, c
 	ld d, 0
-.load
+.done
 	pop bc
 	pop hl
 	ret
 
-.radio_tower_check
-	CheckFlag ENGINE_ROCKETS_IN_RADIO_TOWER
-	jr z, .no_rockets
+.radiotower
+	ld a, [wStatusFlags2]
+	bit STATUSFLAGS2_ROCKETS_IN_RADIO_TOWER_F, a
+	jr z, .clearedradiotower
 	ld de, MUSIC_ROCKET_OVERTURE
-	jr .load
+	jr .done
 
-.no_rockets
+.clearedradiotower
+	; the rest of the byte
 	ld a, c
-	and $7f
+	and RADIO_TOWER_MUSIC - 1
 	ld e, a
-	ld d, $0
-	jr .load
+	ld d, 0
+	jr .done
 
-.mahogany_mart_check
-	CheckFlag ENGINE_ROCKETS_IN_MAHOGANY
-	jr z, .no_rockets2
+.mahoganymart
+	ld a, [wStatusFlags2]
+	bit STATUSFLAGS2_ROCKETS_IN_MAHOGANY_F, a
+	jr z, .clearedmahogany
 	ld de, MUSIC_ROCKET_HIDEOUT
-	jr .load
+	jr .done
 
-.no_rockets2
+.clearedmahogany
 	ld de, MUSIC_CHERRYGROVE_CITY
-	jr .load
+	jr .done
 
 GetMapTimeOfDay::
 	call GetPhoneServiceTimeOfDayByte

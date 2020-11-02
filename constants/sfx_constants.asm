@@ -1,3 +1,4 @@
+; SFX indexes (see audio/sfx_pointers.asm)
 	const_def
 
 	const SFX_DEX_FANFARE_50_79           ; 00

@@ -2941,9 +2941,11 @@ wd04c:: ds 1 ; d04c
 
 wBGMapAnchor:: dw ; d04d
 
-wUsedSprites:: ds SPRITE_GFX_LIST_CAPACITY ; d04f
+wUsedSprites:: ds SPRITE_GFX_LIST_CAPACITY * 2
+wUsedSpritesEnd::
+	ds 8
 
-wOverworldMapAnchor:: ds 2 ; d06f
+wOverworldMapAnchor:: dw
 wd071:: ds 1 ; d071
 wd072:: ds 1 ; d072
 
@@ -3861,17 +3863,12 @@ wd7a9:: ds 1 ; d7a9
 
 wEventFlags:: flag_array NUM_EVENTS ; d7aa
 
-wd8a4:: ds 1 ; d8a4
-wd8a5:: ds 1 ; d8a5
-wd8a6:: ds 1 ; d8a6
-wd8a7:: ds 1 ; d8a7
-wd8a8:: ds 1 ; d8a8
-wd8a9:: ds 1 ; d8a9
-wd8aa:: ds 1 ; d8aa
+wUnusedLinkCommunicationByte:: db
 
 wGameTimerPause:: ds 1 ; d8ab
 
 wd8ac:: ds 1 ; d8ac
+
 wd8ad:: ds 1 ; d8ad
 wd8ae:: ds 1 ; d8ae
 wd8af:: ds 1 ; d8af

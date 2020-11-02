@@ -1,3 +1,5 @@
+; song ids
+; Music indexes (see audio/music_pointers.asm)
 	const_def
 
 	const MUSIC_NONE                         ; 00
@@ -95,6 +97,7 @@
 	const MUSIC_POST_CREDITS                 ; 5c
 NUM_MUSIC EQU const_value
 
+; GetMapMusic picks music for this value (see home/map.asm)
 MUSIC_MAHOGANY_MART EQU $64
 
 ; ExitPokegearRadio_HandleMusic uses these values

@@ -49,11 +49,11 @@ RotatePalettesRight::
 ; Rotate palettes to the right and fill with loaded colors from the left
 ; If we're already at the leftmost color, fill with the leftmost color
     push de
-    ld a, [hl+]
+    ld a, [hli]
     call $0c4a
-    ld a, [hl+]
+    ld a, [hli]
     ld e, a
-    ld a, [hl+]
+    ld a, [hli]
     ld d, a
     call $0c6c
     ld c, $08
@@ -95,12 +95,12 @@ RotatePalettesLeft::
 ; Rotate palettes to the left and fill with loaded colors from the right
 ; If we're already at the rightmost color, fill with the rightmost color
     push de
-    ld a, [hl-]
+    ld a, [hld]
     ld d, a
-    ld a, [hl-]
+    ld a, [hld]
     ld e, a
     call $0c6c
-    ld a, [hl-]
+    ld a, [hld]
     call $0c4a
     ld c, $08
     call $033c

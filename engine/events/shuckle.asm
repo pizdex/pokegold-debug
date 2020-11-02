@@ -52,7 +52,7 @@ GiveShuckle:
 ; OT.
 	ld a, [wPartyCount]
 	dec a
-	ld hl, wPartyMon6StatsEnd
+	ld hl, wPartyMonOT
 	call SkipNames
 	ld a, "マ"
 	ld [hli], a

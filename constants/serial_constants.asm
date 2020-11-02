@@ -1,10 +1,9 @@
-; link types
+; wLinkMode
 	const_def
 	const LINK_NULL        ; 0
 	const LINK_TIMECAPSULE ; 1
 	const LINK_TRADECENTER ; 2
 	const LINK_COLOSSEUM   ; 3
-	const LINK_MOBILE      ; 4
 
 ; hSerialReceive high nybbles
 SERIAL_TIMECAPSULE EQU $60
@@ -28,3 +27,5 @@ SERIAL_PREAMBLE_BYTE              EQU $fd
 SERIAL_NO_DATA_BYTE               EQU $fe
 ; signals the end of one part of a patch list (there are two parts) for player/enemy party data
 SERIAL_PATCH_LIST_PART_TERMINATOR EQU $ff
+
+SERIAL_PREAMBLE_LENGTH EQU 6

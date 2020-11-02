@@ -1,4 +1,4 @@
-
+; PhoneContacts indexes (see data/phone/phone_contacts.asm)
 	const_def
 	const PHONE_00
 	const PHONE_MOM
@@ -8,9 +8,9 @@
 	const PHONE_SCHOOLBOY_JACK
 	const PHONE_POKEFAN_BEVERLY
 	const PHONE_SAILOR_HUEY
-	const PHONE_08
-	const PHONE_09
-	const PHONE_0A
+	const_skip
+	const_skip
+	const_skip
 	const PHONE_COOLTRAINERM_GAVEN
 	const PHONE_COOLTRAINERF_BETH
 	const PHONE_BIRDKEEPER_JOSE
@@ -25,7 +25,7 @@
 	const PHONE_JUGGLER_IRWIN
 	const PHONE_BUG_CATCHER_ARNIE
 	const PHONE_SCHOOLBOY_ALAN
-	const PHONE_19
+	const_skip
 	const PHONE_LASS_DANA
 	const PHONE_SCHOOLBOY_CHAD
 	const PHONE_POKEFANM_DEREK
@@ -37,8 +37,8 @@
 	const PHONE_BLACKBELT_KENJI
 	const PHONE_HIKER_PARRY
 	const PHONE_PICNICKER_ERIN
-	const PHONE_BUENA
 
+; SpecialPhoneCallList indexes (see data/phone/special_calls.asm)
 	const_def
 	const SPECIALCALL_NONE
 	const SPECIALCALL_POKERUS
@@ -50,6 +50,7 @@
 	const SPECIALCALL_WORRIED
 	const SPECIALCALL_MASTERBALL
 
+; phone struct members
 	const_def
 	const PHONE_CONTACT_TRAINER_CLASS
 	const PHONE_CONTACT_TRAINER_NUMBER
@@ -57,11 +58,13 @@
 	const PHONE_CONTACT_MAP_NUMBER
 	const PHONE_CONTACT_SCRIPT1_TIME
 	const PHONE_CONTACT_SCRIPT1_BANK
-	const PHONE_CONTACT_SCRIPT1_ADDR_LO
-	const PHONE_CONTACT_SCRIPT1_ADDR_HI
+	const PHONE_CONTACT_SCRIPT1_ADDR
+	const_skip ; high PHONE_CONTACT_SCRIPT1_ADDR byte
 	const PHONE_CONTACT_SCRIPT2_TIME
 	const PHONE_CONTACT_SCRIPT2_BANK
-	const PHONE_CONTACT_SCRIPT2_ADDR_LO
-	const PHONE_CONTACT_SCRIPT2_ADDR_HI
-PHONE_TABLE_WIDTH EQU const_value
+	const PHONE_CONTACT_SCRIPT2_ADDR
+	const_skip ; high PHONE_CONTACT_SCRIPT2_ADDR byte
+PHONE_CONTACT_SIZE EQU const_value
+
+; maximum number of pokegear contacts
 CONTACT_LIST_SIZE EQU 10

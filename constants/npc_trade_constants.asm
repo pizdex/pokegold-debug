@@ -1,4 +1,3 @@
-	; npctrade struct members (see data/events/npc_trades.asm)
 NPCTRADE_DIALOG  EQU  0 ; db
 NPCTRADE_GIVEMON EQU  1 ; db
 NPCTRADE_GETMON  EQU  2 ; db
@@ -18,7 +17,6 @@ NPCTRADE_PADDING EQU 16 ; db
 	const NPC_TRADE_EMY    ; 3
 	const NPC_TRADE_CHRIS  ; 4
 	const NPC_TRADE_KIM    ; 5
-	const NPC_TRADE_FOREST ; 6
 NUM_NPC_TRADES EQU const_value
 
 ; trade gender limits
@@ -42,4 +40,3 @@ NUM_NPC_TRADES EQU const_value
 	const TRADE_DIALOGSET_COLLECTOR
 	const TRADE_DIALOGSET_HAPPY
 	const TRADE_DIALOGSET_NEWBIE
-	const TRADE_DIALOGSET_GIRL

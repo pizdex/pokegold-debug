@@ -7,16 +7,24 @@ MALE   EQU 0
 FEMALE EQU 1
 
 ; FlagAction arguments (see home/flag.asm)
-RESET_FLAG EQU 0
-SET_FLAG   EQU 1
-CHECK_FLAG EQU 2
+	const_def
+	const RESET_FLAG
+	const SET_FLAG
+	const CHECK_FLAG
 
 ; G/S version ID: 0 = Gold, 1 = Silver (used by checkver)
+IF DEF(_GOLD)
 GS_VERSION EQU 0
+ELIF DEF(_SILVER)
+GS_VERSION EQU 1
+ENDC
 
 ; save file corruption check values
 SAVE_CHECK_VALUE_1 EQU 99
 SAVE_CHECK_VALUE_2 EQU 127
+
+; RTC halted check value
+RTC_HALT_VALUE EQU $1234
 
 ; time of day boundaries
 MORN_HOUR EQU 4  ; 4 AM

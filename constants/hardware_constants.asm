@@ -32,9 +32,9 @@ RTC_M  EQU $09 ; Minutes   0-59 (0-3Bh)
 RTC_H  EQU $0a ; Hours     0-23 (0-17h)
 RTC_DL EQU $0b ; Lower 8 bits of Day Counter (0-FFh)
 RTC_DH EQU $0c ; Upper 1 bit of Day Counter, Carry Bit, Halt Flag
-        ; Bit 0  Most significant bit of Day Counter (Bit 8)
-        ; Bit 6  Halt (0=Active, 1=Stop Timer)
-        ; Bit 7  Day Counter Carry Bit (1=Counter Overflow)
+               ; Bit 0  Most significant bit of Day Counter (Bit 8)
+               ; Bit 6  Halt (0=Active, 1=Stop Timer)
+               ; Bit 7  Day Counter Carry Bit (1=Counter Overflow)
 
 ; interrupt flags
 VBLANK   EQU 0
@@ -42,7 +42,7 @@ LCD_STAT EQU 1
 TIMER    EQU 2
 SERIAL   EQU 3
 JOYPAD   EQU 4
-IE_DEFAULT EQU (1 << SERIAL) | (1 << TIMER) | (1 << LCD_STAT) | (1 << VBLANK)
+IE_DEFAULT EQU (1 << JOYPAD) | (1 << SERIAL) | (1 << TIMER) | (1 << LCD_STAT) | (1 << VBLANK)
 
 ; OAM attribute flags
 OAM_TILE_BANK EQU 3

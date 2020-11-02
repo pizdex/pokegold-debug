@@ -669,7 +669,7 @@ GetStepVector:
 	inc hl
 	ld e, [hl]
 	inc hl
-	ld a, [hl+]
+	ld a, [hli]
 	ld h, [hl]
 	ret
 
@@ -2076,7 +2076,7 @@ Function4f12:
 
 	add hl, de
 	ld c, a
-	ld [hl+], a
+	ld [hli], a
 	ld c, a
 
 Function4f19:
@@ -2204,7 +2204,7 @@ Function4fc5:
 	inc [hl]
 	ld d, $00
 	ld hl, wMovementObject
-	ld a, [hl+]
+	ld a, [hli]
 	ld h, [hl]
 	ld l, a
 	add hl, de
@@ -2218,7 +2218,7 @@ Function4fd6:
 	inc [hl]
 	ld d, $00
 	ld hl, wce83
-	ld a, [hl+]
+	ld a, [hli]
 	ld h, [hl]
 	ld l, a
 	add hl, de

@@ -998,7 +998,7 @@ unkData_03f_4c56:
 
 QuickDebug_TimerOption:
 	call FadeToMenu
-	farcall unk_002_45f1
+	farcall BlankScreen
 	farcall DebugClockMenu
 	call CloseSubmenu
 	ld a, 0
