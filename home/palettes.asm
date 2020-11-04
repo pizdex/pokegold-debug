@@ -289,21 +289,21 @@ ReloadSpritesNoPalettes::
 	ret
 
 SwapTextboxPalettes::
-    ldh a, [$9f]
-    push af
-    ld a, $02
-    rst $10
-    call $4000
-    pop af
-    rst $10
-    ret
+	ldh a, [$9f]
+	push af
+	ld a, $02
+	rst $10
+	call $4000
+	pop af
+	rst $10
+	ret
 
 ScrollBGMapPalettes::
-    ldh a, [$9f]
-    push af
-    ld a, $02
-    rst $10
-    call $404f
-    pop af
-    rst $10
-    ret
+	ldh a, [$9f]
+	push af
+	ld a, $02
+	rst $10
+	call $404f
+	pop af
+	rst $10
+	ret

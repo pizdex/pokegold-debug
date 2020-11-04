@@ -1,8 +1,8 @@
 unk_001_7f42:
-    ld a, $14
-    ld hl, PlaceWaitingText
-    rst FarCall
-    jr c, .cancel
+	ld a, $14
+	ld hl, PlaceWaitingText
+	rst FarCall
+	jr c, .cancel
 	ld a, [wCurPartySpecies]
 	ld [wScriptVar], a
 	ld [wNamedObjectIndexBuffer], a
@@ -27,10 +27,10 @@ DaisysGrooming:
 	; fallthrough
 
 HaircutOrGrooming:
-    push hl
-    ld a, $14
-    ld hl, PlaceWaitingText
-    rst FarCall
+	push hl
+	ld a, $14
+	ld hl, PlaceWaitingText
+	rst FarCall
 	pop hl
 	jr c, .nope
 	ld a, [wCurPartySpecies]

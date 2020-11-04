@@ -36,10 +36,10 @@ BattleRandom::
 
 	ldh a, [hROMBank]
 	push af
-    ld a, $0f
+	ld a, $0f
 	rst Bankswitch
 
-    call $6cc8
+	call $6cc8
 
 	ld [wPredefTemp + 1], a
 	pop af

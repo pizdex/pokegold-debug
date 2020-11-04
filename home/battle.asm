@@ -12,8 +12,8 @@ GetPartyParamLocation::
 
 GetPartyLocation::
 ; Add the length of a PartyMon struct to hl a times.
-    ld bc, $0030
-    jp $3210
+	ld bc, $0030
+	jp $3210
 
 Unreferenced_GetDexNumber::
 ; Probably used in gen 1 to convert index number to dex number
@@ -23,11 +23,11 @@ Unreferenced_GetDexNumber::
 	dec a
 	ld b, 0
 	add hl, bc
-    ld hl, $5aac
+	ld hl, $5aac
 	ld bc, BASE_DATA_SIZE
-    call $3210
+	call $3210
 	pop bc
-    ld a, $14
+	ld a, $14
 	call GetFarHalfword
 	ld b, l
 	ld c, h
@@ -120,8 +120,8 @@ UpdateBattleMon::
 	ld d, h
 	ld e, l
 	ld hl, wBattleMonLevel
-    ld bc, $0005
-    jp CopyBytes
+	ld bc, $0005
+	jp CopyBytes
 
 UpdateEnemyMonInParty::
 ; Update level, status, current HP
@@ -148,13 +148,13 @@ RefreshBattleHuds::
 	jp WaitBGMap
 
 UpdateBattleHuds::
-    ld a, $f
-    ld hl, $5da5
-    rst FarCall
-    ld a, $f
-    ld hl, $5e98
-    rst FarCall
-    ret
+	ld a, $f
+	ld hl, $5da5
+	rst FarCall
+	ld a, $f
+	ld hl, $5e98
+	rst FarCall
+	ret
 
 GetBattleVar::
 ; Preserves hl.
@@ -272,20 +272,20 @@ StdBattleTextbox::
 ; Open a textbox and print battle text at 20:hl.
 
 	ldh a, [hROMBank]
-    push af
+	push af
 
-    ld a, $0e
-    rst $10
+	ld a, $0e
+	rst $10
 
-    call PrintText
+	call PrintText
 
-    pop af
-    rst $10
-    ret
+	pop af
+	rst $10
+	ret
 
 GetBattleAnimPointer::
-    ld a, $32
-    rst $10
+	ld a, $32
+	rst $10
 
 	ld a, [hli]
 	ld [wca10], a
@@ -306,15 +306,15 @@ GetBattleAnimByte::
 	inc hl
 	ld d, [hl]
 
-    ld a, $32
-    rst $10
+	ld a, $32
+	rst $10
 
-    ld a, [de]
-    ld [wca17], a
-    inc de
+	ld a, [de]
+	ld [wca17], a
+	inc de
 
-    ld a, $33
-    rst $10
+	ld a, $33
+	rst $10
 
 	ld [hl], d
 	dec hl

@@ -1,11 +1,11 @@
 Reset::
-    call $3d21
-    xor a
-    ldh [hMapAnims], a
-    call $3577
-    ei
+	call $3d21
+	xor a
+	ldh [hMapAnims], a
+	call $3577
+	ei
 
-    ld hl, wd8ad
+	ld hl, wd8ad
 	set 7, [hl]
 
 	ld c, 32
@@ -43,7 +43,7 @@ Init::
 	ldh [rOBP1], a
 	ldh [rTMA], a
 	ldh [rTAC], a
-    ld [wcf1f], a
+	ld [wcf1f], a
 
 	ld a, %100 ; Start timer at 4096Hz
 	ldh [rTAC], a
@@ -67,7 +67,7 @@ Init::
 	or c
 	jr nz, .ByteFill
 
-    ld sp, wdfff
+	ld sp, wdfff
 
 	call ClearVRAM
 	ldh a, [hCGB]
@@ -79,12 +79,12 @@ Init::
 	pop af
 	ldh [hCGB], a
 
-    call $316c
+	call $316c
 
-    ld a, $01
-    rst $10
+	ld a, $01
+	rst $10
 
-    call $403a
+	call $403a
 
 	xor a
 	ldh [hMapAnims], a
@@ -106,23 +106,23 @@ Init::
 	ld a, CONNECTION_NOT_ESTABLISHED
 	ldh [hSerialConnectionStatus], a
 
-    ld h, $98
-    call $0698
-    ld h, $9c
-    call $0698
+	ld h, $98
+	call $0698
+	ld h, $9c
+	call $0698
 
-    ld hl, $5fc1
-    ld a, $02
-    rst $08
+	ld hl, $5fc1
+	ld a, $02
+	rst $08
 
-    ld a, $9c
-    ldh [$d9], a
-    xor a
-    ldh [hBGMapAddress], a
+	ld a, $9c
+	ldh [$d9], a
+	xor a
+	ldh [hBGMapAddress], a
 
-    ld a, $05
-    ld hl, $4089
-    rst $08
+	ld a, $05
+	ld hl, $4089
+	rst $08
 
 	ld a, SRAM_ENABLE
 	ld [MBC3SRamEnable], a
@@ -147,20 +147,20 @@ Init::
 
 	call DelayFrame
 
-    ld a, $30
-    call Predef
+	ld a, $30
+	call Predef
 
-    call $3d21
-    xor a
-    ld [wMapMusic], a
-    jp $676d
+	call $3d21
+	xor a
+	ld [wMapMusic], a
+	jp $676d
 
 ClearVRAM::
 	ld hl, VRAM_Begin
 	ld bc, VRAM_End - VRAM_Begin
 	xor a
-    call $31b9
-    ret
+	call $31b9
+	ret
 
 BlankBGMap::
 	ld a, $7f

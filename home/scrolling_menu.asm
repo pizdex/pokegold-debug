@@ -3,12 +3,12 @@ ScrollingMenu::
 	ldh a, [hROMBank]
 	push af
 
-    ld a, 9
+	ld a, 9
 	rst Bankswitch
 
-    call $4539
-    call .UpdatePalettes
-    call $4555
+	call $4539
+	call .UpdatePalettes
+	call $4555
 
 	pop af
 	rst Bankswitch

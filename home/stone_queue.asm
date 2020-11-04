@@ -27,9 +27,9 @@ HandleStoneQueue::
 	call .IsObjectInStoneTable
 	jr nc, .nope
 	call CallMapScript
-    ld a, $25
-    ld hl, $6bb9
-    rst $08
+	ld a, $25
+	ld hl, $6bb9
+	rst $08
 	scf
 	ret
 

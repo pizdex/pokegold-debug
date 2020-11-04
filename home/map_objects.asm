@@ -6,9 +6,9 @@ GetSpritePalette::
 	push bc
 	ld c, a
 
-    ld a, 5
-    ld hl, $4306
-    rst 8
+	ld a, 5
+	ld hl, $4306
+	rst 8
 
 	ld a, c
 	pop bc
@@ -58,11 +58,11 @@ DoesSpriteHaveFacings::
 	ld b, a
 	ldh a, [hROMBank]
 	push af
-    ld a, $05
+	ld a, $05
 	rst Bankswitch
 
-    ld a, b
-    call $42e9
+	ld a, b
+	call $42e9
 	ld c, a
 
 	pop de
@@ -100,7 +100,7 @@ GetTileCollision::
 
 	ldh a, [hROMBank]
 	push af
-    ld a, $3e
+	ld a, $3e
 	rst Bankswitch
 	ld e, [hl]
 	pop af
@@ -310,12 +310,12 @@ CheckObjectTime::
 
 _CopyObjectStruct::
 	ldh [hMapObjectIndexBuffer], a
-    call $28ae
+	call $28ae
 	ldh a, [hMapObjectIndexBuffer]
 	call GetMapObject
-    ld a, 2
-    ld hl, $4a05
-    rst $08
+	ld a, 2
+	ld hl, $4a05
+	rst $08
 	ret
 
 ApplyDeletionToMapObject::
@@ -331,9 +331,9 @@ ApplyDeletionToMapObject::
 	call .CheckStopFollow
 	pop af
 	call GetObjectStruct
-    ld a, $01
-    ld hl, $4360
-    rst $08
+	ld a, $01
+	ld hl, $4360
+	rst $08
 	ret
 
 .CheckStopFollow:
@@ -344,9 +344,9 @@ ApplyDeletionToMapObject::
 	cp [hl]
 	ret nz
 .ok
-    ld a, $01
-    ld hl, $579d
-    rst $08
+	ld a, $01
+	ld hl, $579d
+	rst $08
 	ld a, -1
 	ld [wObjectFollow_Leader], a
 	ld [wObjectFollow_Follower], a
@@ -354,8 +354,8 @@ ApplyDeletionToMapObject::
 
 DeleteObjectStruct::
 	call ApplyDeletionToMapObject
-    call $28a2
-    ret
+	call $28a2
+	ret
 
 CopyPlayerObjectTemplate::
 	push hl
@@ -396,9 +396,9 @@ Unreferenced_Function1822::
 .ok
 	ld a, b
 	call GetObjectStruct
-    ld a, 1
-    ld hl, $4360
-    rst $08
+	ld a, 1
+	ld hl, $4360
+	rst $08
 	ret
 
 LoadMovementDataPointer::
@@ -599,21 +599,21 @@ UpdateSprites::
 	bit 0, a
 	ret z
 
-    ld a, 1
-    ld hl, $5587
-    rst $08
-    ld a, 1
-    ld hl, $589e
-    rst $08
-    ret
+	ld a, 1
+	ld hl, $5587
+	rst $08
+	ld a, 1
+	ld hl, $589e
+	rst $08
+	ret
 
 GetObjectStruct::
-    ld bc, $0028
-    ld hl, $d1f0
-    call $3210
-    ld b, h
-    ld c, l
-    ret
+	ld bc, $0028
+	ld hl, $d1f0
+	call $3210
+	ld b, h
+	ld c, l
+	ret
 
 DoesObjectHaveASprite::
 	ld hl, OBJECT_SPRITE

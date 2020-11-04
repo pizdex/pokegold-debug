@@ -8,11 +8,11 @@ InitSound::
 
 	ldh a, [hROMBank]
 	push af
-    ld a, $3a
+	ld a, $3a
 	ldh [hROMBank], a
 	ld [MBC3RomBank], a
 
-    call $4000
+	call $4000
 
 	pop af
 	ldh [hROMBank], a
@@ -33,11 +33,11 @@ UpdateSound::
 
 	ldh a, [hROMBank]
 	push af
-    ld a, $3a
-    ldh [hROMBank], a
-    ld [$2000], a
+	ld a, $3a
+	ldh [hROMBank], a
+	ld [$2000], a
 
-    call $405c
+	call $405c
 
 	pop af
 	ldh [hROMBank], a
@@ -55,8 +55,8 @@ _LoadMusicByte::
 	ld [MBC3RomBank], a
 
 	ld a, [de]
-    ld [wCurMusicByte], a
-    ld a, $3a
+	ld [wCurMusicByte], a
+	ld a, $3a
 
 	ldh [hROMBank], a
 	ld [MBC3RomBank], a
@@ -72,7 +72,7 @@ PlayMusic::
 
 	ldh a, [hROMBank]
 	push af
-    ld a, $3a
+	ld a, $3a
 	ldh [hROMBank], a
 	ld [MBC3RomBank], a
 
@@ -80,11 +80,11 @@ PlayMusic::
 	and a
 	jr z, .nomusic
 
-    call $4b30
+	call $4b30
 	jr .end
 
 .nomusic
-    call $4000
+	call $4000
 
 .end
 	pop af
@@ -106,16 +106,16 @@ PlayMusic2::
 
 	ldh a, [hROMBank]
 	push af
-    ld a, $3a
+	ld a, $3a
 	ldh [hROMBank], a
 	ld [MBC3RomBank], a
 
 	push de
 	ld de, MUSIC_NONE
-    call $4b30
+	call $4b30
 	call DelayFrame
 	pop de
-    call $4b30
+	call $4b30
 
 	pop af
 	ldh [hROMBank], a
@@ -139,11 +139,11 @@ PlayCry::
 	push af
 
 	; Cries are stuck in one bank.
-    ld a, $3c
+	ld a, $3c
 	ldh [hROMBank], a
 	ld [MBC3RomBank], a
 
-    ld hl, $6747
+	ld hl, $6747
 rept 6 ; sizeof(mon_cry)
 	add hl, de
 endr
@@ -162,11 +162,11 @@ endr
 	ld a, [hl]
 	ld [wCryLength + 1], a
 
-    ld a, $3a
+	ld a, $3a
 	ldh [hROMBank], a
 	ld [MBC3RomBank], a
 
-    call $4b79
+	call $4b79
 
 	pop af
 	ldh [hROMBank], a
@@ -199,13 +199,13 @@ PlaySFX::
 .play
 	ldh a, [hROMBank]
 	push af
-    ld a, $3a
+	ld a, $3a
 	ldh [hROMBank], a
 	ld [MBC3RomBank], a
 
 	ld a, e
 	ld [wCurSFX], a
-    call $4c04
+	call $4c04
 
 	pop af
 	ldh [hROMBank], a

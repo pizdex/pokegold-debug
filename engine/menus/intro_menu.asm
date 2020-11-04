@@ -50,87 +50,87 @@ ResetWRAM:
 	ret
 
 _ResetWRAM:
-    ld hl, wVirtualOAM
-    ld bc, $0e8b
-    xor a
-    call ByteFill
+	ld hl, wVirtualOAM
+	ld bc, $0e8b
+	xor a
+	call ByteFill
 
-    ld hl, wd1b3
-    ld bc, $0c83
-    xor a
-    call ByteFill
+	ld hl, wd1b3
+	ld bc, $0c83
+	xor a
+	call ByteFill
 
-    ldh a, [rLY]
-    ldh [hSecondsBackup], a
-    call DelayFrame
-    ldh a, [hRandomSub]
-    ld [wd1b3], a
+	ldh a, [rLY]
+	ldh [hSecondsBackup], a
+	call DelayFrame
+	ldh a, [hRandomSub]
+	ld [wd1b3], a
 
-    ldh a, [rLY]
-    ldh [hSecondsBackup], a
-    call DelayFrame
-    ldh a, [hRandomAdd]
-    ld [wd1b4], a
+	ldh a, [rLY]
+	ldh [hSecondsBackup], a
+	call DelayFrame
+	ldh a, [hRandomAdd]
+	ld [wd1b4], a
 
-    ld hl, wPartyCount
-    call .InitList
+	ld hl, wPartyCount
+	call .InitList
 
-    xor a
-    ld [wd8af], a
-    ld [wd1d3], a
+	xor a
+	ld [wd8af], a
+	ld [wd1d3], a
 
-    call SetDefaultBoxNames
+	call SetDefaultBoxNames
 
-    ld a, BANK(s1_ad10)
-    call OpenSRAM
-    ld hl, s1_ad10
-    call .InitList
-    call CloseSRAM
+	ld a, BANK(s1_ad10)
+	call OpenSRAM
+	ld hl, s1_ad10
+	call .InitList
+	call CloseSRAM
 
-    ld hl, wNumItems
-    call .InitList
+	ld hl, wNumItems
+	call .InitList
 
-    ld hl, wNumKeyItems
-    call .InitList
+	ld hl, wNumKeyItems
+	call .InitList
 
-    ld hl, wNumBalls
-    call .InitList
+	ld hl, wNumBalls
+	call .InitList
 
-    ld hl, wPCItems
-    call .InitList
+	ld hl, wPCItems
+	call .InitList
 
-    xor a
-    ld [wdc90], a
-    ld [wdc97], a
-    ld [wdc9e], a
-    ld a, -1
-    ld [wdc92], a
-    ld [wdc99], a
-    ld [wdca0], a
-    ld [wdc93], a
-    ld [wdc9a], a
-    ld [wdca1], a
+	xor a
+	ld [wdc90], a
+	ld [wdc97], a
+	ld [wdc9e], a
+	ld a, -1
+	ld [wdc92], a
+	ld [wdc99], a
+	ld [wdca0], a
+	ld [wdc93], a
+	ld [wdc9a], a
+	ld [wdca1], a
 
-    ld a, BANK(s0_ab50)
-    call OpenSRAM
-    ld hl, s0_ab50
-    xor a
-    ld [hli], a
-    dec a
-    ld [hl], a
-    call CloseSRAM
+	ld a, BANK(s0_ab50)
+	call OpenSRAM
+	ld hl, s0_ab50
+	xor a
+	ld [hli], a
+	dec a
+	ld [hl], a
+	call CloseSRAM
 
-    call LoadOrRegenerateLuckyIDNumber
-    call InitializeMagikarpHouse
+	call LoadOrRegenerateLuckyIDNumber
+	call InitializeMagikarpHouse
 
-    xor a
-    ld [wMonType], a
+	xor a
+	ld [wMonType], a
 
-    ld [wJohtoBadges], a
-    ld [wKantoBadges], a
+	ld [wJohtoBadges], a
+	ld [wKantoBadges], a
 
-    ld [wCoins], a
-    ld [wCoins + 1], a
+	ld [wCoins], a
+	ld [wCoins + 1], a
 
 if START_MONEY >= $10000
 	ld a, HIGH(START_MONEY >> 8)
@@ -141,25 +141,25 @@ endc
 	ld a, LOW(START_MONEY)
 	ld [wMoney + 2], a
 
-    xor a
-    ld [wd927], a
+	xor a
+	ld [wd927], a
 
-    ld hl, wd929
+	ld hl, wd929
 	ld [hl], HIGH(MOM_MONEY >> 8)
 	inc hl
 	ld [hl], HIGH(MOM_MONEY) ; mid
 	inc hl
 	ld [hl], LOW(MOM_MONEY)
 
-    call InitializeNPCNames
+	call InitializeNPCNames
 
-    ld a, $09
-    ld hl, $6c93
-    rst FarCall
+	ld a, $09
+	ld hl, $6c93
+	rst FarCall
 
-    ld a, $11
-    ld hl, $7d06
-    rst FarCall
+	ld a, $11
+	ld hl, $7d06
+	rst FarCall
 
 	call ResetGameTime
 	ret
@@ -1197,12 +1197,12 @@ Function66dc:
 
 .Data_670b:
 ; frame 0 y, x; frame 1 y, x
-	db 11 * 8 + 4, 10 * 8,  0 * 8,      0 * 8
+	db 11 * 8 + 4, 10 * 8,  0 * 8,	  0 * 8
 	db 11 * 8 + 4, 13 * 8, 11 * 8 + 4, 11 * 8
 	db 11 * 8 + 4, 13 * 8, 11 * 8 + 4, 15 * 8
 	db 11 * 8 + 4, 17 * 8, 11 * 8 + 4, 15 * 8
-	db  0 * 8,      0 * 8, 11 * 8 + 4, 15 * 8
-	db  0 * 8,      0 * 8, 11 * 8 + 4, 11 * 8
+	db  0 * 8,	  0 * 8, 11 * 8 + 4, 15 * 8
+	db  0 * 8,	  0 * 8, 11 * 8 + 4, 11 * 8
 
 Copyright:
 	call ClearTilemap

@@ -58,7 +58,7 @@ CanObjectMoveInDirection:
 	ret
 
 WillObjectBumpIntoWater:
-    call Call_001_7aaf
+	call Call_001_7aaf
 	ret c
 	ld hl, OBJECT_NEXT_MAP_X
 	add hl, bc
@@ -69,7 +69,7 @@ WillObjectBumpIntoWater:
 	ld hl, OBJECT_PALETTE
 	add hl, bc
 	bit OAM_PRIORITY, [hl]
-    jp nz, Jump_001_7af1
+	jp nz, Jump_001_7af1
 	ld hl, OBJECT_NEXT_TILE
 	add hl, bc
 	ld a, [hl]
@@ -81,7 +81,7 @@ WillObjectBumpIntoWater:
 	ret
 
 WillObjectBumpIntoLand:
-    call Call_001_7aaf
+	call Call_001_7aaf
 	ret c
 	ld hl, OBJECT_NEXT_TILE
 	add hl, bc
@@ -96,7 +96,7 @@ WillObjectBumpIntoTile:
 	ld hl, OBJECT_NEXT_TILE
 	add hl, bc
 	ld a, [hl]
-    call Call_001_7acf
+	call Call_001_7acf
 	ret nc
 	push af
 	ld hl, OBJECT_DIRECTION_WALKING
@@ -105,7 +105,7 @@ WillObjectBumpIntoTile:
 	maskbits NUM_DIRECTIONS
 	ld e, a
 	ld d, 0
-    ld hl, .data_7aab
+	ld hl, .data_7aab
 	add hl, de
 	pop af
 	and [hl]
@@ -115,7 +115,7 @@ WillObjectBumpIntoTile:
 
 .data_7aab
 	db DOWN_MASK  ; DOWN
-	db UP_MASK    ; UP
+	db UP_MASK	; UP
 	db RIGHT_MASK ; LEFT
 	db LEFT_MASK  ; RIGHT
 
@@ -123,7 +123,7 @@ Call_001_7aaf:
 	ld hl, OBJECT_STANDING_TILE
 	add hl, bc
 	ld a, [hl]
-    call Call_001_7acf
+	call Call_001_7acf
  	ret nc
 	push af
 	ld hl, OBJECT_DIRECTION_WALKING
@@ -131,7 +131,7 @@ Call_001_7aaf:
 	maskbits NUM_DIRECTIONS
 	ld e, a
 	ld d, 0
-    ld hl, .data_7acb
+	ld hl, .data_7acb
 	add hl, de
 	pop af
 	and [hl]
@@ -140,7 +140,7 @@ Call_001_7aaf:
 	ret
 
 .data_7acb
-	db UP_MASK    ; DOWN
+	db UP_MASK	; DOWN
 	db DOWN_MASK  ; UP
 	db LEFT_MASK  ; LEFT
 	db RIGHT_MASK ; RIGHT
@@ -160,19 +160,19 @@ Call_001_7acf:
 	and 7
 	ld e, a
 	ld d, 0
-    ld hl, .data_7ae9
+	ld hl, .data_7ae9
 	add hl, de
 	ld a, [hl]
 	scf
 	ret
 
 .data_7ae9
-	db RIGHT_MASK             ; COLL_RIGHT_WALL/BUOY
-	db LEFT_MASK              ; COLL_LEFT_WALL/BUOY
-	db DOWN_MASK              ; COLL_UP_WALL/BUOY
-	db UP_MASK                ; COLL_DOWN_WALL/BUOY
+	db RIGHT_MASK			 ; COLL_RIGHT_WALL/BUOY
+	db LEFT_MASK			  ; COLL_LEFT_WALL/BUOY
+	db DOWN_MASK			  ; COLL_UP_WALL/BUOY
+	db UP_MASK				; COLL_DOWN_WALL/BUOY
 	db UP_MASK | RIGHT_MASK   ; COLL_DOWN_RIGHT_WALL/BUOY
-	db UP_MASK | LEFT_MASK    ; COLL_DOWN_LEFT_WALL/BUOY
+	db UP_MASK | LEFT_MASK	; COLL_DOWN_LEFT_WALL/BUOY
 	db DOWN_MASK | RIGHT_MASK ; COLL_UP_RIGHT_WALL/BUOY
 	db DOWN_MASK | LEFT_MASK  ; COLL_UP_LEFT_WALL/BUOY
 
@@ -231,7 +231,7 @@ CheckFacingObject::
 
 ; Double the distance for counter tiles.
 	call CheckCounterTile
-    jr nz, .asm_7b41
+	jr nz, .asm_7b41
 
 	ld a, [wPlayerStandingMapX]
 	sub d
@@ -311,13 +311,13 @@ unk_001_7b65:
 	ret
 
 IsNPCAtCoord:
-    ld bc, wPlayerSprite
-    xor a
+	ld bc, wPlayerSprite
+	xor a
 
 .loop
-    ldh [hObjectStructIndexBuffer], a
-    call DoesObjectHaveASprite
-    jr z, .next
+	ldh [hObjectStructIndexBuffer], a
+	call DoesObjectHaveASprite
+	jr z, .next
 
 	ld hl, OBJECT_FLAGS1
 	add hl, bc
@@ -329,9 +329,9 @@ IsNPCAtCoord:
 	bit BIG_OBJECT_F, [hl]
 	jr z, .got
 
-    call Call_001_7cc1
-    jr nc, .ok
-    jr .ok2
+	call Call_001_7cc1
+	jr nc, .ok
+	jr .ok2
 
 .got
 	ld hl, OBJECT_NEXT_MAP_X

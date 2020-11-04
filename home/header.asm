@@ -22,37 +22,37 @@ SECTION "rst20", ROM0[$0020]
 
 SECTION "rst28", ROM0[$0028]
 JumpTable::
-    push de
-    ld e, a
-    ld d, $00
-    add hl, de
-    add hl, de
-    ld a, [hli]
-    ld h, [hl]
+	push de
+	ld e, a
+	ld d, 0
+	add hl, de
+	add hl, de
+	ld a, [hli]
+	ld h, [hl]
 ; SECTION "rst30", ROM0[$0030]
-    ld l, a
-    pop de
-    jp hl
+	ld l, a
+	pop de
+	jp hl
 
 SECTION "rst38", ROM0[$0038]
-    rst $38
+	rst $38
 
 ; Game Boy hardware interrupts
 
 SECTION "vblank", ROM0[$0040]
-    jp $0150
+	jp $0150
 
 SECTION "lcd", ROM0[$0048]
-    jp $041b
+	jp $041b
 
 SECTION "timer", ROM0[$0050]
-    reti
+	reti
 
 SECTION "serial", ROM0[$0058]
-    jp $06a9
+	jp $06a9
 
 SECTION "joypad", ROM0[$0060]
-    jp $08de
+	jp $08de
 
 SECTION "Header", ROM0[$0100]
 

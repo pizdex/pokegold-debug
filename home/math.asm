@@ -30,9 +30,9 @@ Multiply::
 	push hl
 	push bc
 
-    ld hl, $6ad6
-    ld a, 1
-    rst FarCall
+	ld hl, $6ad6
+	ld a, 1
+	rst FarCall
 
 	pop bc
 	pop hl
@@ -45,13 +45,13 @@ Divide::
 	push de
 	push bc
 
-    ldh a, [hROMBank]
-    push af
-    ld a, $01
-    rst $10
-    call $6b36
-    pop af
-    rst $10
+	ldh a, [hROMBank]
+	push af
+	ld a, $01
+	rst $10
+	call $6b36
+	pop af
+	rst $10
 
 	pop bc
 	pop de

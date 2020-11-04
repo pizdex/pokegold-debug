@@ -32,16 +32,16 @@ IsInJohto::
 	ret
 
 Function306b::
-    push hl
-    xor a
-    ld hl, wd16e
+	push hl
+	xor a
+	ld hl, wd16e
 	ld [hli], a
 	ld [hli], a
 	ld [hli], a
 	ld [hl], a
-    ld a, [wd16c]
-    ld l, a
-    ld a, [wd16d]
+	ld a, [wd16c]
+	ld l, a
+	ld a, [wd16d]
 	ld h, a
 	or l
 	jr z, .quit
@@ -68,13 +68,13 @@ Function306b::
 	ld a, e
 	cp [hl]
 	jr nz, .next
-    ld hl, wd16e
+	ld hl, wd16e
 	ld b, SET_FLAG
 	push de
 	push bc
 	ld d, $0
-    ld a, $03
-    call Predef
+	ld a, $03
+	call Predef
 	pop bc
 	pop de
 .next

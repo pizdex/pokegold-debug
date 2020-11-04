@@ -26,24 +26,24 @@ CloseText::
 	ret
 
 .CloseText:
-    call $1df6
-    xor a
-    ldh [$d6], a
-    call $1fe2
-    call $2f50
-    xor a
-    ldh [$d6], a
-    call $2f5e
-    ld a, $90
-    ldh [$d4], a
-    ld a, $05
-    ld hl, $412e
-    rst $08
-    call $0d80
-    ld hl, $d558
-    res 7, [hl]
-    call $1e8f
-    ret
+	call $1df6
+	xor a
+	ldh [$d6], a
+	call $1fe2
+	call $2f50
+	xor a
+	ldh [$d6], a
+	call $2f5e
+	ld a, $90
+	ldh [$d4], a
+	ld a, $05
+	ld hl, $412e
+	rst $08
+	call $0d80
+	ld hl, $d558
+	res 7, [hl]
+	call $1e8f
+	ret
 
 OpenText::
 	call $1df6

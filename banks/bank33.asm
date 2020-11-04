@@ -5,29 +5,29 @@ DummyPredef39::
 	ret
 
 unk_033_40e5:
-    ld c, 6
+	ld c, 6
 .asm_40e7
-    call Call_033_41ca
-    dec c
-    jr nz, .asm_40e7
+	call Call_033_41ca
+	dec c
+	jr nz, .asm_40e7
 
-    call Call_033_47f7
-    call Call_033_41b1
-    call Call_033_41ca
-    ld hl, hVBlank
-    ld a, [hl]
-    push af
-    ld [hl], $01
-    call Call_033_4114
-    pop af
-    ldh [hVBlank], a
-    ld a, $01
-    ldh [hBGMapMode], a
-    call Call_033_41ca
-    call Call_033_41ca
-    call Call_033_41ca
-    call WaitSFX
-    ret
+	call Call_033_47f7
+	call Call_033_41b1
+	call Call_033_41ca
+	ld hl, hVBlank
+	ld a, [hl]
+	push af
+	ld [hl], $01
+	call Call_033_4114
+	pop af
+	ldh [hVBlank], a
+	ld a, $01
+	ldh [hBGMapMode], a
+	call Call_033_41ca
+	call Call_033_41ca
+	call Call_033_41ca
+	call WaitSFX
+	ret
 
 Call_033_4114:
 	dr $cc114, $cc15a

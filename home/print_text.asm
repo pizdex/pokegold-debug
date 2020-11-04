@@ -151,10 +151,10 @@ PrintNum::
 
 	ld d, b
 	ld a, c
-    ld b, a
-    xor a
-    ld c, a
-    ld a, b
+	ld b, a
+	xor a
+	ld c, a
+	ld a, b
 	cp 2
 	jr z, .two
 	cp 3
@@ -217,8 +217,8 @@ PrintNum::
 	call .AdvancePointer
 
 .two
-    ld c, $00
-    ldh a, [hPrintNumBuffer + 3]
+	ld c, $00
+	ldh a, [hPrintNumBuffer + 3]
 
 .mod_10
 	cp 10
@@ -230,11 +230,11 @@ PrintNum::
 
 	ld b, a
 	ldh a, [hPrintNumBuffer + 0]
-    or c
-    ldh [hPrintNumBuffer + 0], a
-    jr nz, .money
-    call .PrintLeadingZero
-    jr .money_leading_zero
+	or c
+	ldh [hPrintNumBuffer + 0], a
+	jr nz, .money
+	call .PrintLeadingZero
+	jr .money_leading_zero
 
 .money
 	ld a, "0"
@@ -242,7 +242,7 @@ PrintNum::
 	ld [hl], a
 
 .money_leading_zero
-    call .AdvancePointer
+	call .AdvancePointer
 	ld a, "0"
 	add b
 	ld [hli], a
@@ -253,7 +253,7 @@ PrintNum::
 
 
 .PrintDigit:
-    ld c, 0
+	ld c, 0
 .loop
 	ldh a, [hPrintNumBuffer + 4]
 	ld b, a
@@ -317,7 +317,7 @@ PrintNum::
 	add c
 	ld [hl], a
 	ldh [hPrintNumBuffer + 0], a
-    ret
+	ret
 
 .PrintLeadingZero:
 ; prints a leading zero unless they are turned off in the flags
@@ -343,25 +343,25 @@ PrintNum::
 Function33e1::
 ; Print c-digit hex number from de to hl
 .asm_33e1
-    push bc
-    call Function33ea
-    pop bc
-    dec c
-    jr nz, .asm_33e1
-    ret
+	push bc
+	call Function33ea
+	pop bc
+	dec c
+	jr nz, .asm_33e1
+	ret
 
 Function33ea::
-    ld a, [de]
-    swap a
-    and $f
-    call Function33fc
-    ld [hli], a
-    ld a, [de]
-    and $f
-    call Function33fc
-    ld [hli], a
-    inc de
-    ret
+	ld a, [de]
+	swap a
+	and $f
+	call Function33fc
+	ld [hli], a
+	ld a, [de]
+	and $f
+	call Function33fc
+	ld [hli], a
+	inc de
+	ret
 
 Function33fc:
 	ld bc, .digits

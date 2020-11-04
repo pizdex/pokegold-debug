@@ -1,17 +1,17 @@
 BugContest_SetCaughtContestMon:
-    ld a, [wContestMon]
-    and a
-    jr z, .firstcatch
-    ld [wNamedObjectIndexBuffer], a
-    ld a, $33
-    ld hl, $40c5
-    rst FarCall
-    ld a, $33
-    ld hl, $4000
-    rst FarCall
-    ld bc, $0e0c
-    call PlaceYesNoBox
-    ret c
+	ld a, [wContestMon]
+	and a
+	jr z, .firstcatch
+	ld [wNamedObjectIndexBuffer], a
+	ld a, $33
+	ld hl, $40c5
+	rst FarCall
+	ld a, $33
+	ld hl, $4000
+	rst FarCall
+	ld bc, $0e0c
+	call PlaceYesNoBox
+	ret c
 
 .firstcatch
 	call .generatestats

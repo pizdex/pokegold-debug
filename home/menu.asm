@@ -21,16 +21,16 @@ SetMenuAttributes::
 	ret
 
 StaticMenuJoypad::
-    ld hl, $4136
-    ld a, $09
-    rst $08
+	ld hl, $4136
+	ld a, $09
+	rst $08
 	call GetMenuJoypad
 	ret
 
 ScrollingMenuJoypad::
-    ld hl, $4139
-    ld a, $09
-    rst $08
+	ld hl, $4139
+	ld a, $09
+	rst $08
 	call GetMenuJoypad
 	ret
 
@@ -66,36 +66,36 @@ HideCursor::
 	ret
 
 PushWindow::
-    ld hl, $42a0
-    ld a, $09
-    rst $08
-    ret
+	ld hl, $42a0
+	ld a, $09
+	rst $08
+	ret
 
 ExitMenu::
-    push af
-    ld hl, $4358
-    ld a, $09
-    rst $08
-    pop af
-    ret
+	push af
+	ld hl, $4358
+	ld a, $09
+	rst $08
+	pop af
+	ret
 
 InitVerticalMenuCursor::
-    ld hl, $43f7
-    ld a, $09
-    rst $08
-    ret
+	ld hl, $43f7
+	ld a, $09
+	rst $08
+	ret
 
 CloseWindow::
-    push af
-    call ExitMenu
-    call $3485
-    call $193c
-    pop af
-    ret
+	push af
+	call ExitMenu
+	call $3485
+	call $193c
+	pop af
+	ret
 
 RestoreTileBackup::
-    call $1b5d
-    call $1ab3
+	call $1b5d
+	call $1ab3
 	inc b
 	inc c
 
@@ -377,13 +377,13 @@ CopyNameFromMenu::
 	inc hl
 	inc hl
 	pop af
-    call $3667
-    ld d, h
-    ld e, l
-    call $31e8
-    pop bc
-    pop hl
-    ret
+	call $3667
+	ld d, h
+	ld e, l
+	call $31e8
+	pop bc
+	pop hl
+	ret
 
 YesNoBox::
 	lb bc, SCREEN_WIDTH - 6, 7
@@ -445,9 +445,9 @@ YesNoMenuHeader::
 	db "いいえ@"
 
 OffsetMenuHeader::
-    call _OffsetMenuHeader
-    call PushWindow
-    ret
+	call _OffsetMenuHeader
+	call PushWindow
+	ret
 
 _OffsetMenuHeader::
 	push de
@@ -502,7 +502,7 @@ MenuWriteText::
 	ldh [hBGMapMode], a
 	call GetMenuIndexSet ; sort out the text
 	call RunMenuItemPrintingFunction ; actually write it
-    call $2f5e
+	call $2f5e
 	ldh a, [hOAMUpdate]
 	push af
 	ld a, $1
@@ -789,9 +789,9 @@ _2DMenu::
 	ldh a, [hROMBank]
 	ld [wMenuDataBank], a
 	push af
-    ld a, 9
+	ld a, 9
 	rst Bankswitch
-    call $400e
+	call $400e
 	pop bc
 	ld a, b
 	rst Bankswitch
@@ -814,18 +814,18 @@ Function1e82::
 	ret
 
 Function1e88::
-    ld a, $3e
-    ld hl, $744a
-    rst FarCall
-    ret
+	ld a, $3e
+	ld hl, $744a
+	rst FarCall
+	ret
 
 ResetBGWindow::
 	xor a
 	ldh [hBGMapMode], a
 
-    ld hl, $d558
-    bit 0, [hl]
-    jr nz, Function1ea0
+	ld hl, $d558
+	bit 0, [hl]
+	jr nz, Function1ea0
 
 	ld a, $90
 	ldh [rWY], a
@@ -833,27 +833,27 @@ ResetBGWindow::
 	ret
 
 Function1ea0:
-    res 7, [hl]
-    call Function1e88
+	res 7, [hl]
+	call Function1e88
 
-    ld hl, $ce9c
-    ld a, $7a
-    ld bc, $14
-    call ByteFill
+	ld hl, $ce9c
+	ld a, $7a
+	ld bc, $14
+	call ByteFill
 
-    ld hl, $cebc
-    ld a, $7f
-    ld bc, $14
-    call ByteFill
+	ld hl, $cebc
+	ld a, $7f
+	ld bc, $14
+	call ByteFill
 
-    farcall UpdateDebugToolgear
+	farcall UpdateDebugToolgear
 
-    ld hl, $9c00
-    ld bc, 4
-    ld de, $ce9c
-    call Get2bpp
+	ld hl, $9c00
+	ld bc, 4
+	ld de, $ce9c
+	call Get2bpp
 
-    ld a, $80
+	ld a, $80
 	ldh [rWY], a
 	ldh [hWY], a
 	ret

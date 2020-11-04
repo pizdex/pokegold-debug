@@ -27,14 +27,14 @@ UpdateJoypad::
 ; hJoypadSum: pressed so far
 
 ; Any of these three bits can be used to disable input.
-    ld a, [$d8ad]
+	ld a, [$d8ad]
 	and %11010000
 	ret nz
 
 ; If we're saving, input is disabled.
-    ld a, [$c1cc]
-    and a
-    ret nz
+	ld a, [$c1cc]
+	and a
+	ret nz
 
 ; We can only get four inputs at a time.
 ; We take d-pad first for no particular reason.
@@ -126,7 +126,7 @@ GetJoypad::
 
 ; The player input can be automated using an input stream.
 ; See more below.
-    ld a, [$c1c6]
+	ld a, [$c1c6]
 	cp AUTO_INPUT
 	jr z, .auto
 
@@ -170,25 +170,25 @@ GetJoypad::
 ; Read from the input stream.
 	ldh a, [hROMBank]
 	push af
-    ld a, [$c1c9]
+	ld a, [$c1c9]
 	rst Bankswitch
 
-    ld hl, $c1c7
+	ld hl, $c1c7
 	ld a, [hli]
 	ld h, [hl]
 	ld l, a
 
 ; We only update when the input duration has expired.
-    ld a, [$c1ca]
+	ld a, [$c1ca]
 	and a
 	jr z, .updateauto
 
 ; Until then, don't change anything.
 	dec a
-    ld [$c1ca], a
-    pop af
+	ld [$c1ca], a
+	pop af
 	rst Bankswitch
-    jr .quit
+	jr .quit
 
 .updateauto
 ; An input of $ff will end the stream.
@@ -198,18 +198,18 @@ GetJoypad::
 	ld b, a
 
 	ld a, [hli]
-    ld [$c1ca], a
+	ld [$c1ca], a
 
 .next
 ; On to the next input...
-    ld a, l
-    ld [$c1c7], a
-    ld a, h
-    ld [$c1c7 + 1], a
-    jr .finishauto
+	ld a, l
+	ld [$c1c7], a
+	ld a, h
+	ld [$c1c7 + 1], a
+	jr .finishauto
 
 .stopauto
-    call StopAutoInput
+	call StopAutoInput
 	ld b, NO_INPUT
 
 .finishauto
@@ -223,34 +223,34 @@ GetJoypad::
 StartAutoInput::
 ; Start reading automated input stream at a:hl.
 
-    ld [$c1c9], a
-    ld a, l
-    ld [$c1c7], a
-    ld a, h
-    ld [$c1c8], a
+	ld [$c1c9], a
+	ld a, l
+	ld [$c1c7], a
+	ld a, h
+	ld [$c1c8], a
 ; Start reading the stream immediately.
-    xor a
-    ld [$c1ca], a
+	xor a
+	ld [$c1ca], a
 ; Reset input mirrors.
-    xor a
+	xor a
 	ldh [hJoyPressed], a ; pressed this frame
 	ldh [hJoyReleased], a ; released this frame
 	ldh [hJoyDown], a ; currently pressed
 
 	ld a, AUTO_INPUT
-    ld [$c1c6], a
-    ret
+	ld [$c1c6], a
+	ret
 
 StopAutoInput::
 ; Clear variables related to automated input.
-    xor a
-    ld [wAutoInputBank], a
-    ld [wAutoInputAddress], a
-    ld [wAutoInputAddress + 1], a
-    ld [wAutoInputLength], a
+	xor a
+	ld [wAutoInputBank], a
+	ld [wAutoInputAddress], a
+	ld [wAutoInputAddress + 1], a
+	ld [wAutoInputLength], a
 ; Back to normal input.
-    ld [wInputType], a
-    ret
+	ld [wInputType], a
+	ret
 
 JoyTitleScreenInput::
 .loop
@@ -258,8 +258,8 @@ JoyTitleScreenInput::
 	call DelayFrame
 
 	push bc
-    call JoyTextDelay
-    pop bc
+	call JoyTextDelay
+	pop bc
 
 	ldh a, [hJoyDown]
 	cp D_UP | SELECT | B_BUTTON
@@ -294,7 +294,7 @@ WaitButton::
 	push af
 	ld a, 1
 	ldh [hOAMUpdate], a
-    call $345f
+	call $345f
 	call JoyWaitAorB
 	pop af
 	ldh [hOAMUpdate], a
@@ -313,11 +313,11 @@ JoyTextDelay::
 	and a
 	jr z, .checkframedelay
 	ld a, 15
-    ld [$cf1d], a
-    ret
+	ld [$cf1d], a
+	ret
 
 .checkframedelay
-    ld a, [$cf1d]
+	ld a, [$cf1d]
 	and a
 	jr z, .restartframedelay
 	xor a
@@ -326,8 +326,8 @@ JoyTextDelay::
 
 .restartframedelay
 	ld a, 5
-    ld [$cf1d], a
-    ret
+	ld [$cf1d], a
+	ret
 
 WaitPressAorB_BlinkCursor::
 ; Show a blinking cursor in the lower right-hand
@@ -347,9 +347,9 @@ WaitPressAorB_BlinkCursor::
 
 .loop
 	push hl
-    ld hl, $c506
-    call BlinkCursor
-    pop hl
+	ld hl, $c506
+	call BlinkCursor
+	pop hl
 
 	call JoyTextDelay
 	ldh a, [hJoyLast]
@@ -374,7 +374,7 @@ PromptButton::
 ; Show a blinking cursor in the lower right-hand
 ; corner of a textbox and wait until A or B is
 ; pressed, afterwards, play a sound.
-    ld a, [$d03c]
+	ld a, [$d03c]
 	and a
 	jr nz, .link
 	call .wait_input
@@ -422,8 +422,8 @@ PromptButton::
 	ld a, "─"
 
 .load_cursor_state
-    ld [$c506], a
-    ret
+	ld [$c506], a
+	ret
 
 BlinkCursor::
 	push bc

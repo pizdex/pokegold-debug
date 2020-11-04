@@ -25,10 +25,10 @@ Functiond59::
 	ret
 
 ReplacePlayerSprite::
-    ld a, $05
-    ld hl, $410e
-    rst $08
-    ret
+	ld a, $05
+	ld hl, $410e
+	rst $08
+	ret
 
 LoadStandardFont::
 	farcall _LoadStandardFont
@@ -40,7 +40,7 @@ LoadFontsBattleExtra::
 
 LoadFontsExtra::
 	farcall _LoadFontsExtra
-    ret
+	ret
 
 DecompressRequest2bpp::
 	push de

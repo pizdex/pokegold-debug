@@ -12,13 +12,13 @@ LatchClock::
 	ret
 
 UpdateTime::
-    call GetClock
-    call FixDays
-    call FixTime
-    ld a, $05
-    ld hl, $4032
-    rst $08
-    ret
+	call GetClock
+	call FixDays
+	call FixTime
+	ld a, $05
+	ld hl, $4032
+	rst $08
+	ret
 
 GetClock::
 ; store clock data in hRTCDayHi-hRTCSeconds
@@ -186,10 +186,10 @@ InitTimeOfDay::
 	jr InitTime ; useless
 
 InitTime::
-    ld a, $05
-    ld hl, $40d1
-    rst $08
-    ret
+	ld a, $05
+	ld hl, $40d1
+	rst $08
+	ret
 
 
 PanicResetClock::
@@ -266,9 +266,9 @@ ClearRTCStatus::
 
 RecordRTCStatus::
 ; append flags to sRTCStatusFlags
-    ld hl, s0_b000
-    push af
-    ld a, BANK(s0_b000)
+	ld hl, s0_b000
+	push af
+	ld a, BANK(s0_b000)
 	call OpenSRAM
 	pop af
 	or [hl]

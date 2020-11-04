@@ -99,18 +99,18 @@ UpdateBGMap::
 
 ; BG Map 0
 	dec a ; 1
-    jr z, .Tiles
+	jr z, .Tiles
 
 .Attr:
-    ld a, 1
-    ldh [rVBK], a
+	ld a, 1
+	ldh [rVBK], a
 
-    ld hl, $cccd
+	ld hl, $cccd
 	call .update
 
-    ld a, 0
-    ldh [rVBK], a
-    ret
+	ld a, 0
+	ldh [rVBK], a
+	ret
 
 .Tiles:
 	hlcoord 0, 0
@@ -354,7 +354,7 @@ AnimateTileset::
 	ld a, BANK(_AnimateTileset)
 	rst Bankswitch
 
-    call _AnimateTileset
+	call _AnimateTileset
 
 	pop af
 	rst Bankswitch
@@ -368,24 +368,24 @@ AnimateTileset::
 	ret
 
 Function15ef::
-    ld a, [$d558]
-    bit 0, a
-    ret z
+	ld a, [$d558]
+	bit 0, a
+	ret z
 
-    bit 7, a
-    ret nz
+	bit 7, a
+	ret nz
 
-    bit 2, a
-    res 2, a
-    ret z
+	bit 2, a
+	res 2, a
+	ret z
 
-    ld [$d558], a
-    ld [$ffdb], sp
-    ld hl, $cebc
-    ld sp, hl
-    ld hl, $9c20
-    ld a, 1
-    jp $14e6
+	ld [$d558], a
+	ld [$ffdb], sp
+	ld hl, $cebc
+	ld sp, hl
+	ld hl, $9c20
+	ld a, 1
+	jp $14e6
 
 Function160f::
 	nop

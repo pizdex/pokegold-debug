@@ -6,7 +6,7 @@ Serial::
 	push de
 	push hl
 
-    ld a, [wPrinterConnectionOpen]
+	ld a, [wPrinterConnectionOpen]
 	bit 0, a
 	jr nz, .printer
 
@@ -31,8 +31,8 @@ Serial::
 	jr .player2
 
 .printer
-    call $1ed4
-    jr .end
+	call $1ed4
+	jr .end
 
 .establish_connection
 	ldh a, [rSB]
@@ -87,7 +87,7 @@ Serial_ExchangeBytes::
 .loop
 	ld a, [hl]
 	ldh [hSerialSend], a
-    call Serial_ExchangeByte
+	call Serial_ExchangeByte
 	push bc
 	ld b, a
 	inc hl
@@ -140,34 +140,34 @@ Serial_ExchangeByte::
 	jr z, .not_player_1_or_wLinkTimeoutFrames_zero
 	call .delay_15_cycles
 	push hl
-    ld hl, wce50
-    inc [hl]
+	ld hl, wce50
+	inc [hl]
 	jr nz, .no_rollover_up
 	dec hl
 	inc [hl]
 
 .no_rollover_up
 	pop hl
-    call CheckwLinkTimeoutFramesNonzero
-    jr nz, .loop2
-    jp SerialDisconnected
+	call CheckwLinkTimeoutFramesNonzero
+	jr nz, .loop2
+	jp SerialDisconnected
 
 .not_player_1_or_wLinkTimeoutFrames_zero
 	ldh a, [rIE]
 	and (1 << SERIAL) | (1 << TIMER) | (1 << LCD_STAT) | (1 << VBLANK)
 	cp 1 << SERIAL
 	jr nz, .loop2
-    ld a, [wce51]
-    dec a
-    ld [wce51], a
-    jr nz, .loop2
-    ld a, [wce51 + 1]
-    dec a
-    ld [wce51 + 1], a
-    jr nz, .loop2
-    ldh a, [hSerialConnectionStatus]
-    cp 1
-    jr z, .reset_ffcc
+	ld a, [wce51]
+	dec a
+	ld [wce51], a
+	jr nz, .loop2
+	ld a, [wce51 + 1]
+	dec a
+	ld [wce51 + 1], a
+	jr nz, .loop2
+	ldh a, [hSerialConnectionStatus]
+	cp 1
+	jr z, .reset_ffcc
 
 	ld a, 255
 .delay_255_cycles
@@ -183,9 +183,9 @@ Serial_ExchangeByte::
 	jr nz, .rIE_not_equal_8
 
 	; LOW($5000)
-    ld [wce51], a
+	ld [wce51], a
 	ld a, HIGH($5000)
-    ld [wce51 + 1], a
+	ld [wce51 + 1], a
 
 .rIE_not_equal_8
 	ldh a, [hSerialReceive]
@@ -194,7 +194,7 @@ Serial_ExchangeByte::
 	call CheckwLinkTimeoutFramesNonzero
 	jr z, .linkTimeoutFrames_zero
 	push hl
-    ld hl, wce50
+	ld hl, wce50
 	ld a, [hl]
 	dec a
 	ld [hld], a
@@ -204,8 +204,8 @@ Serial_ExchangeByte::
 
 .no_rollover
 	pop hl
-    call CheckwLinkTimeoutFramesNonzero
-    jr z, SerialDisconnected
+	call CheckwLinkTimeoutFramesNonzero
+	jr z, SerialDisconnected
 
 .linkTimeoutFrames_zero
 	ldh a, [rIE]
@@ -226,8 +226,8 @@ Serial_ExchangeByte::
 	ret
 
 CheckwLinkTimeoutFramesNonzero::
-    push hl
-    ld hl, wce4f
+	push hl
+	ld hl, wce4f
 	ld a, [hli]
 	or [hl]
 	pop hl
@@ -235,15 +235,15 @@ CheckwLinkTimeoutFramesNonzero::
 
 SerialDisconnected::
 	dec a ; a is always 0 when called
-    ld [wce4f], a
-    ld [wce50], a
-    ret
+	ld [wce4f], a
+	ld [wce50], a
+	ret
 
 ; This is used to exchange the button press and selected menu item on the link menu.
 ; The data is sent thrice and read twice to increase reliability.
 Serial_ExchangeLinkMenuSelection::
-    ld hl, wce4a
-    ld de, wce45
+	ld hl, wce4a
+	ld de, wce45
 	ld c, 2
 	ld a, TRUE
 	ldh [hSerialIgnoringInitialData], a
@@ -267,30 +267,30 @@ Serial_ExchangeLinkMenuSelection::
 	ret
 
 Serial_PrintWaitingTextAndSyncAndExchangeNybble::
-    call $31c5
-    ld hl, $4000
-    ld a, $01
-    rst $08
-    call WaitLinkTransfer
-    jp $31d1
+	call $31c5
+	ld hl, $4000
+	ld a, $01
+	rst $08
+	call WaitLinkTransfer
+	jp $31d1
 
 Serial_SyncAndExchangeNybble::
-    call $31c5
-    ld hl, $4000
-    ld a, $01
-    rst $08
-    jp WaitLinkTransfer
+	call $31c5
+	ld hl, $4000
+	ld a, $01
+	rst $08
+	jp WaitLinkTransfer
 
 WaitLinkTransfer::
-    ld a, $ff
-    ld [wce46], a
+	ld a, $ff
+	ld [wce46], a
 .loop
 	call LinkTransfer
 	call DelayFrame
 	call CheckwLinkTimeoutFramesNonzero
 	jr z, .check
 	push hl
-    ld hl, wce50
+	ld hl, wce50
 	dec [hl]
 	jr nz, .skip
 	dec hl
@@ -305,32 +305,32 @@ WaitLinkTransfer::
 	pop hl
 
 .check
-    ld a, [wce46]
-    inc a
-    jr z, .loop
+	ld a, [wce46]
+	inc a
+	jr z, .loop
 
 	ld b, 10
 .receive
-    call DelayFrame
-    call LinkTransfer
-    dec b
-    jr nz, .receive
+	call DelayFrame
+	call LinkTransfer
+	dec b
+	jr nz, .receive
 
 	ld b, 10
 .acknowledge
-    call DelayFrame
-    call LinkDataReceived
-    dec b
-    jr nz, .acknowledge
+	call DelayFrame
+	call LinkDataReceived
+	dec b
+	jr nz, .acknowledge
 
-    ld a, [wce46]
-    ld [wce45], a
+	ld a, [wce46]
+	ld [wce45], a
 	ret
 
 LinkTransfer::
 	push bc
 	ld b, SERIAL_TIMECAPSULE
-    ld a, [wd03c]
+	ld a, [wd03c]
 	cp LINK_TIMECAPSULE
 	jr z, .got_high_nybble
 	ld b, SERIAL_TIMECAPSULE
@@ -341,8 +341,8 @@ LinkTransfer::
 	ld b, SERIAL_BATTLE
 
 .got_high_nybble
-    call .Receive
-    ld a, [wce4a]
+	call .Receive
+	ld a, [wce4a]
 	add b
 	ldh [hSerialSend], a
 	ldh a, [hSerialConnectionStatus]
@@ -354,22 +354,22 @@ LinkTransfer::
 	ldh [rSC], a
 
 .player_1
-    call .Receive
-    pop bc
-    ret
+	call .Receive
+	pop bc
+	ret
 
 .Receive:
-    ldh a, [hSerialReceive]
-    ld [wce45], a
+	ldh a, [hSerialReceive]
+	ld [wce45], a
 	and $f0
 	cp b
 	ret nz
 	xor a
 	ldh [hSerialReceive], a
-    ld a, [wce45]
-    and $f
-    ld [wce46], a
-    ret
+	ld a, [wce45]
+	and $f
+	ld [wce46], a
+	ret
 
 LinkDataReceived::
 ; Let the other system know that the data has been received.
@@ -385,7 +385,7 @@ LinkDataReceived::
 	ret
 
 Unreferenced_Function8c9::
-    ld a, [wd03c]
+	ld a, [wd03c]
 	and a
 	ret nz
 	ld a, USING_INTERNAL_CLOCK

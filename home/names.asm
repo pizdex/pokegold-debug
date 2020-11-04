@@ -1,6 +1,6 @@
 NamesPointers::
 ; entries correspond to GetName constants (see constants/text_constants.asm)
-    dbw $14, $7a0c
+	dbw $14, $7a0c
 	dbw $10, $563e
 	dba NULL                ; DUMMY_NAME
 	dba ItemNames           ; ITEM_NAME
@@ -55,10 +55,10 @@ GetName::
 	call CopyBytes
 
 .done
-    ld a, e
-    ld [wcff8], a
-    ld a, d
-    ld [wcff8 + 1], a
+	ld a, e
+	ld [wcff8], a
+	ld a, d
+	ld [wcff8 + 1], a
 
 	pop de
 	pop bc
@@ -115,7 +115,7 @@ GetPokemonName::
 	ldh a, [hROMBank]
 	push af
 	push hl
-    ld a, $14
+	ld a, $14
 	rst Bankswitch
 
 ; Each name is six characters
@@ -178,15 +178,15 @@ GetTMHMName::
 ; TM/HM prefix
 	cp HM01
 	push af
-    jr c, .TM
+	jr c, .TM
 
-    ld hl, $3732
-    ld bc, $0006
-    jr .copy
+	ld hl, $3732
+	ld bc, $0006
+	jr .copy
 
 .TM:
-    ld hl, $372c
-    ld bc, $0005
+	ld hl, $372c
+	ld bc, $0005
 
 .copy:
 	ld de, wStringBuffer1
@@ -196,9 +196,9 @@ GetTMHMName::
 	push de
 	ld a, [wNamedObjectIndexBuffer]
 	ld c, a
-    ld hl, $56e3
-    ld a, 3
-    rst FarCall
+	ld hl, $56e3
+	ld a, 3
+	rst FarCall
 	pop de
 
 ; HM numbers start from 51, not 1

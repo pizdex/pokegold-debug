@@ -60,7 +60,7 @@ DrawBattleHPBar::
 
 PrepMonFrontpic::
 	ld a, 1
-    ld [wBoxAlignment], a
+	ld [wBoxAlignment], a
 
 _PrepMonFrontpic::
 	ld a, [wCurPartySpecies]
@@ -71,26 +71,26 @@ _PrepMonFrontpic::
 	cp NUM_POKEMON + 1
 	jr nc, .not_pokemon
 .egg
-    push hl
-    ld de, vTiles2
-    ld a, $3c
-    call Predef
+	push hl
+	ld de, vTiles2
+	ld a, $3c
+	call Predef
 	pop hl
 	xor a
 	ldh [hGraphicStartTile], a
 	lb bc, 7, 7
-    ld a, $13
-    call Predef
-    xor a
-    ld [wBoxAlignment], a
-    ret
+	ld a, $13
+	call Predef
+	xor a
+	ld [wBoxAlignment], a
+	ret
 
 .not_pokemon
 	xor a
-    ld [wBoxAlignment], a
-    inc a
-    ld [wCurPartySpecies], a
-    ret
+	ld [wBoxAlignment], a
+	inc a
+	ld [wCurPartySpecies], a
+	ret
 
 PlayStereoCry::
 	push af
@@ -116,8 +116,8 @@ _PlayMonCry::
 
 	ld e, c
 	ld d, b
-    call $3db6
-    call $3e28
+	call $3db6
+	call $3e28
 
 .done
 	pop bc
@@ -133,10 +133,10 @@ LoadCry::
 
 	ldh a, [hROMBank]
 	push af
-    ld a, $3c
+	ld a, $3c
 	rst Bankswitch
 
-    ld hl, $6747
+	ld hl, $6747
 rept 6 ; sizeof(mon_cry)
 	add hl, bc
 endr
@@ -206,7 +206,7 @@ Print8BitNumLeftAlign::
 	jp PrintNum
 
 Unreferenced_GetNthMove::
-    ld hl, wListMoves_MoveIndicesBuffer
+	ld hl, wListMoves_MoveIndicesBuffer
 	ld c, a
 	ld b, 0
 	add hl, bc
@@ -219,7 +219,7 @@ GetBaseData::
 	push hl
 	ldh a, [hROMBank]
 	push af
-    ld a, $14
+	ld a, $14
 	rst Bankswitch
 
 ; Egg doesn't have BaseData
@@ -230,7 +230,7 @@ GetBaseData::
 ; Get BaseData
 	dec a
 	ld bc, BASE_DATA_SIZE
-    ld hl, $5aac
+	ld hl, $5aac
 	call AddNTimes
 	ld de, wCurBaseData
 	ld bc, BASE_DATA_SIZE
@@ -238,7 +238,7 @@ GetBaseData::
 	jr .end
 
 .egg
-    ld de, $7f24
+	ld de, $7f24
 
 ; Sprite dimensions
 	ld b, $55 ; 5x5
@@ -287,9 +287,9 @@ GetNick::
 	call CopyBytes
 	pop de
 
-    ld hl, $6a97
-    ld a, 1
-    rst FarCall
+	ld hl, $6a97
+	ld a, 1
+	rst FarCall
 
 	pop bc
 	pop hl

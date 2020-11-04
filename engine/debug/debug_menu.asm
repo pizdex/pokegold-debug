@@ -168,51 +168,51 @@ unk_03f_43ae:
 	ret
 
 Call_03f_4420:
-    ld a, 1
-    ld b, 10
-    ld hl, wd98c
+	ld a, 1
+	ld b, 10
+	ld hl, wd98c
 .loop
-    ld [hli], a
-    inc a
-    dec b
-    jr nz, .loop
-    ret
+	ld [hli], a
+	inc a
+	dec b
+	jr nz, .loop
+	ret
 
 Call_03f_442d:
-    ld b, $1f
-    ld a, $ff
+	ld b, $1f
+	ld a, $ff
 .loop
-    ld [hli], a
-    dec b
-    jr nz, .loop
-    ld [hl], 7
-    ret
+	ld [hli], a
+	dec b
+	jr nz, .loop
+	ld [hl], 7
+	ret
 
 Debug_GiveTMsHMs:
-    nop
-    ld b, NUM_TMS + NUM_HMS
-    ld a, 1 ; Quantity
-    ld hl, wTMsHMs
+	nop
+	ld b, NUM_TMS + NUM_HMS
+	ld a, 1 ; Quantity
+	ld hl, wTMsHMs
 .loop
-    ld [hli], a
-    dec b
-    jr nz, .loop
-    ret
+	ld [hli], a
+	dec b
+	jr nz, .loop
+	ret
 
 Call_03f_4445:
-    ld hl, wNumItems
+	ld hl, wNumItems
 .loop
-    ld a, [de]
-    cp $ff
-    ret z
-    ld [wCurItem], a
-    inc de
-    ld a, [de]
-    inc de
-    ld [wItemQuantityChangeBuffer], a
-    call ReceiveItem
-    jr .loop
-    ret
+	ld a, [de]
+	cp $ff
+	ret z
+	ld [wCurItem], a
+	inc de
+	ld a, [de]
+	inc de
+	ld [wItemQuantityChangeBuffer], a
+	call ReceiveItem
+	jr .loop
+	ret
 
 .KeyItemData:
 	db BICYCLE, 1
@@ -253,27 +253,27 @@ RandomizeFieldStarter:
 ; Sets wCurPartySpecies to either Meganium ($9a), Typhlosion ($9d) or Feraligatr ($a0)
 
 .loop
-    call Random
-    and 3
-    jr z, .loop
-    dec a
+	call Random
+	and 3
+	jr z, .loop
+	dec a
 
 ; a is now either 0, 1 or 2
-    ld b, a
-    add a
-    add b
-    add $9a
-    ld b, $50
-    call Call_03f_44a3
-    ret
+	ld b, a
+	add a
+	add b
+	add $9a
+	ld b, $50
+	call Call_03f_44a3
+	ret
 
 Call_03f_44a3:
-    ld [wCurPartySpecies], a
-    ld a, b
-    ld [wCurPartyLevel], a
-    ld a, 6
-    call Predef
-    ret
+	ld [wCurPartySpecies], a
+	ld a, b
+	ld [wCurPartyLevel], a
+	ld a, 6
+	call Predef
+	ret
 
 Call_03f_44b0:
 	ld a, c
@@ -303,23 +303,23 @@ Call_03f_44b0:
 
 Call_03f_44dd:
 .loop
-    call Random
-    and a
-    jr z, .loop
-    cp $f6
-    jr nc, .loop
-    cp $c9
-    jr z, .loop
-    ret
+	call Random
+	and a
+	jr z, .loop
+	cp $f6
+	jr nc, .loop
+	cp $c9
+	jr z, .loop
+	ret
 
 Call_03f_44ec:
-    farcall unk_009_7450
-    ret
+	farcall unk_009_7450
+	ret
 
 Call_03f_44f3:
-    ld de, EVENT_GAVE_MYSTERY_EGG_TO_ELM
-    ld b, 1
-    jp EventFlagAction
+	ld de, EVENT_GAVE_MYSTERY_EGG_TO_ELM
+	ld b, 1
+	jp EventFlagAction
 
 Call_03f_44fb:
 .loop

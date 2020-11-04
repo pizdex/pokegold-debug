@@ -51,14 +51,14 @@ LearnMove:
 	ld [wPlayerDisableCount], a
 
 .not_disabled
-    call GetMoveName
-    ld hl, Text_1_2_and_Poof
-    call PrintText
-    pop de
-    pop hl
+	call GetMoveName
+	ld hl, Text_1_2_and_Poof
+	call PrintText
+	pop de
+	pop hl
 
 .learn
-    ld a, [wTMHMMove]
+	ld a, [wTMHMMove]
 	ld [hl], a
 	ld bc, MON_PP - MON_MOVES
 	add hl, bc
@@ -69,7 +69,7 @@ LearnMove:
 	ld hl, $5c71
 	ld bc, MOVE_LENGTH
 	call AddNTimes
-    ld a, $10
+	ld a, $10
 	call GetFarByte
 	pop de
 	pop hl
@@ -103,21 +103,21 @@ LearnMove:
 	jp .learned
 
 .cancel
-    ld hl, StopLearningMoveText
-    call PrintText
-    call YesNoBox
-    jp c, .loop
+	ld hl, StopLearningMoveText
+	call PrintText
+	call YesNoBox
+	jp c, .loop
 
-    ld hl, DidNotLearnMoveText
-    call PrintText
-    ld b, 0
-    ret
+	ld hl, DidNotLearnMoveText
+	call PrintText
+	ld b, 0
+	ret
 
 .learned
-    ld hl, LearnedMoveText
-    call PrintText
-    ld b, 1
-    ret
+	ld hl, LearnedMoveText
+	call PrintText
+	ld b, 1
+	ret
 
 ForgetMove:
 	push hl
@@ -136,7 +136,7 @@ ForgetMove:
 
 .loop
 	push hl
-    ld hl, $698e
+	ld hl, $698e
 	call PrintText
 	hlcoord 10, 8
 	ld b, NUM_MOVES * 2
@@ -144,12 +144,12 @@ ForgetMove:
 	call Textbox
 	hlcoord 12, 10
 	ld a, SCREEN_WIDTH * 2
-    ld [wDebugClockCurrentOption], a
-    ld a, $20 ; ListMoves
-    call Predef
-    ld a, $0a
-    ld [w2DMenuCursorInitY], a
-    ld a, $0b
+	ld [wDebugClockCurrentOption], a
+	ld a, $20 ; ListMoves
+	call Predef
+	ld a, $0a
+	ld [w2DMenuCursorInitY], a
+	ld a, $0b
 	ld [w2DMenuCursorInitX], a
 	ld a, [wNumMoves]
 	inc a
@@ -193,7 +193,7 @@ ForgetMove:
 	ret
 
 .hmmove
-    ld hl, MoveCantForgetHMText
+	ld hl, MoveCantForgetHMText
 	call PrintText
 	pop hl
 	jr .loop

@@ -21,22 +21,22 @@ FillBoxWithByte::
 
 ClearTilemap::
 ; Fill wTilemap with blank tiles.
-    ld hl, $c3a0
+	ld hl, $c3a0
 	ld a, " "
-    ld bc, $0168
-    call $31b9
+	ld bc, $0168
+	call $31b9
 
 	; Update the BG Map.
 	ldh a, [rLCDC]
 	bit rLCDC_ENABLE, a
 	ret z
-    jp $345f
+	jp $345f
 
 ClearScreen::
 	ld a, PAL_BG_TEXT
-    ld hl, $cccd
+	ld hl, $cccd
 	ld bc, SCREEN_WIDTH * SCREEN_HEIGHT
-    call $31b9
+	call $31b9
 	jr ClearTilemap
 
 Textbox::
@@ -98,7 +98,7 @@ TextboxBorder::
 
 TextboxPalette::
 ; Fill text box width c height b at hl with pal 7
-    ld de, $092d
+	ld de, $092d
 	add hl, de
 	inc b
 	inc b
@@ -122,7 +122,7 @@ TextboxPalette::
 
 SpeechTextbox::
 ; Standard textbox.
-    ld hl, $c490
+	ld hl, $c490
 	ld b, TEXTBOX_INNERH
 	ld c, TEXTBOX_INNERW
 	jp Textbox
@@ -142,17 +142,17 @@ PrintText::
 	call SetUpTextbox
 
 PrintTextboxText::
-    ld bc, $c4b9
-    call $1275
-    ret
+	ld bc, $c4b9
+	call $1275
+	ret
 
 SetUpTextbox::
-    push hl
+	push hl
 	call SpeechTextbox
-    call $193c
-    call $3485
-    pop hl
-    ret
+	call $193c
+	call $3485
+	pop hl
+	ret
 
 PlaceString::
 	push hl
@@ -195,14 +195,14 @@ ENDM
 	dict "<LINE>", LineChar
 	dict "<NEXT>", NextLineChar
 
-    and a
-    jp z, $121b
+	and a
+	jp z, $121b
 
-    cp "<SCROLL>"
-    jp z, _ContTextNoPause
+	cp "<SCROLL>"
+	jp z, _ContTextNoPause
 
-    cp "<_CONT>"
-    jp z, _ContText
+	cp "<_CONT>"
+	jp z, _ContText
 
 	dict "<PARA>", Paragraph
 	dict "<MOM>", PrintMomsName
@@ -321,56 +321,56 @@ PlaceMoveUsersName::
 	push de
 	and a
 	jr nz, .enemy
-    ld de, $cafc
-    jr PlaceCommandCharacter
+	ld de, $cafc
+	jr PlaceCommandCharacter
 
 .enemy
-    ld de, $1161
-    call $0f46
-    ld h, b
-    ld l, c
-    ld de, $caf6
-    jr PlaceCommandCharacter
+	ld de, $1161
+	call $0f46
+	ld h, b
+	ld l, c
+	ld de, $caf6
+	jr PlaceCommandCharacter
 
 PlaceEnemysName::
-    push de
-    ld a, [$d03c]
-    and a
-    jr nz, .linkbattle
-    ld a, [$d10f]
+	push de
+	ld a, [$d03c]
+	and a
+	jr nz, .linkbattle
+	ld a, [$d10f]
 	cp RIVAL1
 	jr z, .rival
 	cp RIVAL2
 	jr z, .rival
-    ld de, $cb2a
+	ld de, $cb2a
 	call PlaceString
 	ld h, b
 	ld l, c
-    ld de, $116c
+	ld de, $116c
 	call PlaceString
 
-    push bc
-    ld hl, $5910
-    ld a, $0e
-    rst $08
-    pop hl
-    ld de, $cf87
-    jr PlaceCommandCharacter
+	push bc
+	ld hl, $5910
+	ld a, $0e
+	rst $08
+	pop hl
+	ld de, $cf87
+	jr PlaceCommandCharacter
 
 .rival:
-    ld de, $d1c1
-    jr PlaceCommandCharacter
+	ld de, $d1c1
+	jr PlaceCommandCharacter
 
 .linkbattle:
-    ld de, $cb2a
-    jr PlaceCommandCharacter
+	ld de, $cb2a
+	jr PlaceCommandCharacter
 
 PlaceCommandCharacter::
-    call $0f46
-    ld h, b
-    ld l, c
-    pop de
-    jp $0f51
+	call $0f46
+	ld h, b
+	ld l, c
+	pop de
+	jp $0f51
 
 TMCharText::      db "わざマシン@"
 TrainerCharText:: db "トレーナー@"
@@ -399,51 +399,51 @@ NextLineChar::
 	jp NextChar
 
 LineChar::
-    pop hl
-    ld hl, $c4e1
+	pop hl
+	ld hl, $c4e1
 	push hl
 	jp NextChar
 
 Paragraph::
 	push de
-    ld a, [$d03c]
+	ld a, [$d03c]
 	cp LINK_COLOSSEUM
 	jr z, .linkbattle
-    call $1264
+	call $1264
 
 .linkbattle
-    call $1249
+	call $1249
 	call PromptButton
-    ld hl, $c4a5
-    ld bc, $0412
+	ld hl, $c4a5
+	ld bc, $0412
 	call ClearBox
-    call $126a
+	call $126a
 	ld c, 20
 	call DelayFrames
-    ld hl, $c4b9
-    pop de
+	ld hl, $c4b9
+	pop de
 	jp NextChar
 
 _ContText::
-    ld a, [$d03c]
-    cp LINK_COLOSSEUM
-    jr z, .communication
-    call $1264
+	ld a, [$d03c]
+	cp LINK_COLOSSEUM
+	jr z, .communication
+	call $1264
 
 .communication
-    call $1249
+	call $1249
 
 	push de
 	call PromptButton
 	pop de
 
-    call $126a
+	call $126a
 
 _ContTextNoPause::
-    push de
-    call $122c
-    call $122c
-    ld hl, $c4e1
+	push de
+	call $122c
+	call $122c
+	ld hl, $c4e1
 	pop de
 	jp NextChar
 
@@ -468,22 +468,22 @@ PlaceDexEnd::
 	ret
 
 PromptText::
-    ld a, [$d03c]
-    cp LINK_COLOSSEUM
-    jr z, .ok
-    call $1264
+	ld a, [$d03c]
+	cp LINK_COLOSSEUM
+	jr z, .ok
+	call $1264
 
 .ok
-    call $1249
+	call $1249
 	call PromptButton
-    ld a, [$d03c]
+	ld a, [$d03c]
 	cp LINK_COLOSSEUM
-    jr z, DoneText
-    call $126a
+	jr z, DoneText
+	call $126a
 
 DoneText::
-    pop hl
-    ld de, .stop
+	pop hl
+	ld de, .stop
 	dec de
 	ret
 
@@ -504,12 +504,12 @@ NullChar::
 	done
 
 TextScroll::
-    ld hl, $c4b8
-    ld de, $c4a4
+	ld hl, $c4b8
+	ld de, $c4a4
 	ld bc, 3 * SCREEN_WIDTH
-    call $3187
+	call $3187
 
-    ld hl, $c4e1
+	ld hl, $c4e1
 	ld a, " "
 	ld bc, TEXTBOX_INNERW
 	call $31b9
@@ -524,7 +524,7 @@ Text_WaitBGMap::
 	ld a, 1
 	ldh [hOAMUpdate], a
 
-    call $345f
+	call $345f
 
 	pop af
 	ldh [hOAMUpdate], a
@@ -544,13 +544,13 @@ Diacritic::
 
 LoadBlinkingCursor::
 	ld a, "▼"
-    ld [$c506], a
-    ret
+	ld [$c506], a
+	ret
 
 UnloadBlinkingCursor::
 	ld a, "─"
-    ld [$c506], a
-    ret
+	ld [$c506], a
+	ret
 
 PokeFluteTerminatorCharacter::
 	ld hl, .stop
@@ -560,7 +560,7 @@ PokeFluteTerminatorCharacter::
 	text_end
 
 Call_000_1275:
-    ld a, [$d1ae]
+	ld a, [$d1ae]
 	push af
 	set NO_TEXT_DELAY_F, a
 	ld [wTextboxFlags], a
@@ -568,9 +568,8 @@ Call_000_1275:
 	call DoTextUntilTerminator
 
 	pop af
-    ld [$d1ae], a
-    ret
-
+	ld [$d1ae], a
+	ret
 
 DoTextUntilTerminator::
 	ld a, [hli]
@@ -600,51 +599,51 @@ DoTextUntilTerminator::
 
 TextCommands::
 ; entries correspond to TX_* constants (see macros/scripts/text.asm)
-    call z, $d712
-    ld [de], a
-    db $e3
-    ld [de], a
-    di
-    ld [de], a
-    cp $12
-    ld c, $13
-    ld [de], a
-    inc de
-    jr z, jr_000_12c3
+	call z, $d712
+	ld [de], a
+	db $e3
+	ld [de], a
+	di
+	ld [de], a
+	cp $12
+	ld c, $13
+	ld [de], a
+	inc de
+	jr z, jr_000_12c3
 
-    scf
-    inc de
-    jr c, jr_000_12c7
+	scf
+	inc de
+	jr c, jr_000_12c7
 
-    ld d, e
-    inc de
-    ld h, [hl]
-    inc de
-    xor c
-    inc de
-    ret z
+	ld d, e
+	inc de
+	ld h, [hl]
+	inc de
+	xor c
+	inc de
+	ret z
 
-    inc de
-    ld h, [hl]
-    inc de
-    ld h, [hl]
-    inc de
-    ld h, [hl]
-    inc de
-    ld h, [hl]
+	inc de
+	ld h, [hl]
+	inc de
+	ld h, [hl]
+	inc de
+	ld h, [hl]
+	inc de
+	ld h, [hl]
 
 jr_000_12c3:
-    inc de
-    ld h, [hl]
-    inc de
-    ld h, [hl]
+	inc de
+	ld h, [hl]
+	inc de
+	ld h, [hl]
 
 jr_000_12c7:
-    inc de
-    ret nc
+	inc de
+	ret nc
 
-    inc de
-    add sp, $13
+	inc de
+	add sp, $13
 
 TextCommand_START::
 ; text_start
@@ -693,7 +692,7 @@ TextCommand_BCD::
 	ld h, b
 	ld l, c
 	ld c, a
-    call $3af3
+	call $3af3
 	ld b, h
 	ld c, l
 	pop hl
@@ -705,10 +704,10 @@ TextCommand_MOVE::
 ; [$03][addr]
 
 	ld a, [hli]
-    ld [$cfd0], a
+	ld [$cfd0], a
 	ld c, a
 	ld a, [hli]
-    ld [$cfd1], a
+	ld [$cfd1], a
 	ld b, a
 	ret
 
@@ -738,7 +737,7 @@ TextCommand_LOW::
 ; write text at (1,16)
 ; [$05]
 
-    ld bc, $c4e1
+	ld bc, $c4e1
 	ret
 
 TextCommand_PROMPT_BUTTON::
@@ -747,7 +746,7 @@ TextCommand_PROMPT_BUTTON::
 ; show arrow
 ; [06]
 
-    ld a, [$d03c]
+	ld a, [$d03c]
 	cp LINK_COLOSSEUM
 	jp z, TextCommand_LINK_PROMPT_BUTTON
 
@@ -769,13 +768,13 @@ TextCommand_SCROLL::
 	call TextScroll
 	call TextScroll
 	pop hl
-    ld bc, $c4e1
+	ld bc, $c4e1
 	ret
 
 TextCommand_START_ASM::
 ; text_asm
 
-    jp hl
+	jp hl
 
 TextCommand_NUM::
 ; text_decimal
@@ -858,7 +857,7 @@ Unreferenced_Function1388::
 	ld e, [hl]
 	inc hl
 	ld d, [hl]
-    call $3a0e
+	call $3a0e
 	pop de
 	pop hl
 	pop bc
@@ -931,11 +930,11 @@ TextCommand_STRINGBUFFER::
 	push hl
 	ld e, a
 	ld d, 0
-    ld hl, $4000
-    add hl, de
-    add hl, de
-    ld a, $09
-    call $31a9
+	ld hl, $4000
+	add hl, de
+	add hl, de
+	ld a, $09
+	call $31a9
 	ld d, h
 	ld e, l
 	ld h, b

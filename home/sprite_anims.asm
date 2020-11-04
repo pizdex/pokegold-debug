@@ -3,29 +3,29 @@ InitSpriteAnimStruct::
 	ldh a, [hROMBank]
 	push af
 
-    ld a, $23
+	ld a, $23
 	rst Bankswitch
-    ld a, [wAnimatedObjectStructIDBuffer]
+	ld a, [wAnimatedObjectStructIDBuffer]
 
-    call $525a
+	call $525a
 
 	pop af
 	rst Bankswitch
 
-    ret
+	ret
 
 ReinitSpriteAnimFrame::
 	ld [wAnimatedObjectStructIDBuffer], a
 	ldh a, [hROMBank]
 	push af
 
-    ld a, $23
+	ld a, $23
 	rst Bankswitch
-    ld a, [wAnimatedObjectStructIDBuffer]
+	ld a, [wAnimatedObjectStructIDBuffer]
 
-    call $5395
+	call $5395
 
 	pop af
 	rst Bankswitch
 
-    ret
+	ret

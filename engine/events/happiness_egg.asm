@@ -66,7 +66,7 @@ ChangeHappiness:
 .ok
 	dec c
 	ld b, 0
-    ld hl, $7d71
+	ld hl, $7d71
 	add hl, bc
 	add hl, bc
 	add hl, bc
@@ -193,9 +193,9 @@ DayCareStep::
 
 	call Random
 	ld [hl], a
-    ld hl, $78f0
-    ld a, 5
-    rst FarCall
+	ld hl, $78f0
+	ld a, 5
+	rst FarCall
 	ld a, [wBreedingCompatibility]
 	cp 230
 	ld b, 32 percent - 1

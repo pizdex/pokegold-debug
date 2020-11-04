@@ -7,21 +7,21 @@ GetPredefPointer::
 	ld a, l
 	ld [wPredefTemp + 1], a
 
-    push de
-    ld a, [wPredefID]
-    ld e, a
-    ld d, 0
-    ld hl, PredefPointers
-    add hl, de
-    add hl, de
-    add hl, de
-    pop de
+	push de
+	ld a, [wPredefID]
+	ld e, a
+	ld d, 0
+	ld hl, PredefPointers
+	add hl, de
+	add hl, de
+	add hl, de
+	pop de
 
 	ld a, [hli]
 	ld [wPredefAddress + 1], a
 	ld a, [hli]
 	ld [wPredefAddress], a
 	ld a, [hl]
-    ret
+	ret
 
 INCLUDE "data/predef_pointers.asm"
