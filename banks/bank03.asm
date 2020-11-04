@@ -1,32 +1,13 @@
-CheckTime::
-	dr $c000, $c01b
+INCLUDE "engine/pokemon/health.asm"
 
-EngineFlagAction::
-	dr $c01b, $c188
-
-Jump_003_4188:
-	dr $c188, $c381
-
-unk_003_4381:
-	dr $c381, $c4f4
-
-Call_003_44f4:
-	dr $c4f4, $c677
-
-SmallFarFlagAction:
-	dr $c677, $c6b3
-
-unk_003_46b3:
-	dr $c6b3, $c6f4
-
-unk_003_46f4:
-	dr $c6f4, $c73b
-
-unk_003_473b:
-	dr $c73b, $cfb1
+Call_003_4745:
+	dr $c745, $cfb1
 
 Call_003_4fb1:
-	dr $cfb1, $db39
+	dr $cfb1, $d8fc
+
+Call_003_58fc:
+	dr $d8fc, $db39
 
 TryAddMonToParty:
 	dr $db39, $dbb3

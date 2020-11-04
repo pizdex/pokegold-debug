@@ -9,16 +9,16 @@ ENDM
 PredefPointers::
 	add_predef LearnMove ; $0
 	add_predef DebugMenu
-	add_predef unk_003_46b3
+	add_predef HealParty
 	add_predef SmallFarFlagAction
-	add_predef unk_003_46f4
+	add_predef ComputeHPBarPixels
 	add_predef unk_003_5d1a
 	add_predef TryAddMonToParty
 	add_predef unk_003_5d43
 	add_predef unk_003_5dec ; $8
 	add_predef unk_003_611b
 	add_predef unk_003_6239
-	add_predef unk_003_473b
+	add_predef AnimateHPBar
 	add_predef unk_003_6415
 	add_predef unk_003_6429
 	db $f6, $59, $04

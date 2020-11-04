@@ -189,3 +189,6 @@ SRAM $02
 SRAM $03
 	org $a000
 	"SRAM3"
+HRAM
+	"OAM DMA"
+	"HRAM"

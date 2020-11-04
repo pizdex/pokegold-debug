@@ -69,7 +69,7 @@ _ResetWRAM:
     ldh a, [rLY]
     ldh [hSecondsBackup], a
     call DelayFrame
-    ldh a, [hRandom]
+    ldh a, [hRandomAdd]
     ld [wd1b4], a
 
     ld hl, wPartyCount

@@ -4027,11 +4027,8 @@ wd93d:: ds 1 ; d93d
 wd93e:: ds 1 ; d93e
 wd93f:: ds 1 ; d93f
 wd940:: ds 1 ; d940
-wd941:: ds 1 ; d941
-wd942:: ds 1 ; d942
-wd943:: ds 1 ; d943
-wd944:: ds 1 ; d944
-
+wSpecialPhoneCallID:: db ; d941
+	ds 3
 wBugContestStartTime:: ds 4 ; d945
 
 wd949:: ds 1 ; d949

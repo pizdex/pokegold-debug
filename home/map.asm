@@ -1645,7 +1645,7 @@ UpdateBGMapRow::
     dec c
     jr nz, .asm_2971
     ld a, $14
-    ldh [hFFDE], a
+    ldh [hBGMapTileCount], a
     ret
 
 UpdateBGMapColumn::
@@ -1669,7 +1669,7 @@ UpdateBGMapColumn::
     dec c
     jr nz, .asm_298d
     ld a, $12
-    ldh [hFFDE], a
+    ldh [hBGMapTileCount], a
     ret
 
 Function29a6::

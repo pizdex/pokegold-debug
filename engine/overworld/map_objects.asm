@@ -869,26 +869,26 @@ Function4802:
 	ret
 
 Function4803:
-	call $310f
+	call Random
 	ldh a, [$e3]
 	and $01
 	jp Function4ad1
 
 Function480d:
-	call $310f
+	call Random
 	ldh a, [$e3]
 	and $01
 	or $02
 	jp Function4ad1
 
 Function4819:
-	call $310f
+	call Random
 	ldh a, [$e3]
 	and $03
 	jp Function4ad1
 
 Function4823:
-	call $310f
+	call Random
 	ldh a, [$e3]
 	and $0c
 	ld hl, $0008
@@ -902,7 +902,7 @@ Function4832:
 	ld a, [hl]
 	and $0c
 	ld d, a
-	call $310f
+	call Random
 	ldh a, [$e3]
 	and $0c
 	cp d
@@ -1372,29 +1372,28 @@ Function4ad1:
 	call Function460b
 
 Function4afe:
-	call $310f
-	ldh a, [hRandom]
+	call Random
+	ldh a, [hRandomAdd]
 	and $7f
 	jr Function4b0e
 
 Function4b07:
-	call $310f
+	call Random
 	ldh a, [hRandomAdd]
 	and $1f
-
 Function4b0e:
-	ld hl, $a
+	ld hl, OBJECT_STEP_DURATION
 	add hl, bc
 	ld [hl], a
-	ld hl, $7
+	ld hl, OBJECT_DIRECTION_WALKING
 	add hl, bc
-	ld [hl], $ff
-	ld hl, $b
+	ld [hl], STANDING
+	ld hl, OBJECT_ACTION
 	add hl, bc
-	ld [hl], $1
-	ld hl, $9
+	ld [hl], OBJECT_ACTION_STAND
+	ld hl, OBJECT_STEP_TYPE
 	add hl, bc
-	ld [hl], $3
+	ld [hl], STEP_TYPE_SLEEP
 	ret
 
 StepTypesJumptable:

@@ -3,6 +3,11 @@ INCLUDE "constants.asm"
 SECTION "bank1", ROMX
 
 INCLUDE "engine/link/place_waiting_text.asm"
+
+DebugMenu:
+	farcall _DebugMenu
+	jp StartTitleScreen
+
 INCLUDE "engine/gfx/load_push_oam.asm"
 INCLUDE "engine/overworld/map_objects.asm"
 INCLUDE "engine/menus/main_menu.asm"
@@ -32,6 +37,12 @@ INCLUDE "engine/gfx/color.asm"
 
 
 SECTION "bank3",ROMX,BANK[$03]
+
+INCLUDE "engine/events/checktime.asm"
+INCLUDE "engine/events/engine_flags.asm"
+INCLUDE "engine/overworld/variables.asm"
+INCLUDE "engine/events/specials.asm"
+INCLUDE "engine/smallflag.asm"
 
 INCLUDE "banks/bank03.asm"
 
