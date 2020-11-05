@@ -315,7 +315,7 @@ _CopyObjectStruct::
 	call GetMapObject
 	ld a, 2
 	ld hl, $4a05
-	rst $08
+	rst FarCall
 	ret
 
 ApplyDeletionToMapObject::
@@ -333,7 +333,7 @@ ApplyDeletionToMapObject::
 	call GetObjectStruct
 	ld a, $01
 	ld hl, $4360
-	rst $08
+	rst FarCall
 	ret
 
 .CheckStopFollow:
@@ -346,7 +346,7 @@ ApplyDeletionToMapObject::
 .ok
 	ld a, $01
 	ld hl, $579d
-	rst $08
+	rst FarCall
 	ld a, -1
 	ld [wObjectFollow_Leader], a
 	ld [wObjectFollow_Follower], a
@@ -398,7 +398,7 @@ Unreferenced_Function1822::
 	call GetObjectStruct
 	ld a, 1
 	ld hl, $4360
-	rst $08
+	rst FarCall
 	ret
 
 LoadMovementDataPointer::
@@ -601,10 +601,10 @@ UpdateSprites::
 
 	ld a, 1
 	ld hl, $5587
-	rst $08
+	rst FarCall
 	ld a, 1
 	ld hl, $589e
-	rst $08
+	rst FarCall
 	ret
 
 GetObjectStruct::

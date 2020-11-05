@@ -2022,7 +2022,7 @@ Function4eac:
 	ld b, a
 	ld a, $02
 	ld hl, $4981
-	rst $08
+	rst FarCall
 	pop bc
 	ld hl, $0005
 	add hl, bc

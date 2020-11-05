@@ -901,10 +901,50 @@ wc6fd:: ds 1 ; c6fd
 wc6fe:: ds 1 ; c6fe
 wc6ff:: ds 1 ; c6ff
 
+SECTION "Overworld Map", WRAM0
+
+UNION
+; overworld map blocks
+wOverworldMapBlocks:: ds 1300
+wOverworldMapBlocksEnd::
+
+NEXTU
 wMysteryGiftStaging::
-wOverworldMap::
-wOverworldMapBlocks::
-wLYOverrides::
+
+NEXTU
+; raw link data
+wLinkData:: ds 271
+	ds 229
+	ds 5
+	ds 198
+	ds 79
+	ds 5
+	ds 113
+	ds 100
+	dw
+wLinkOTPartyMonTypes:: ds 2 * PARTY_LENGTH
+	ds 84
+	ds 84
+	ds 118
+wLinkDataEnd:
+
+NEXTU
+; LCD expects wLYOverrides to have an alignment of $100
+wLYOverrides:: ds SCREEN_HEIGHT_PX
+wLYOverridesEnd::
+
+UNION
+	ds 16
+wLYOverrides2:: ds SCREEN_HEIGHT_PX
+wLYOverrides2End::
+
+NEXTU
+	ds $100 - SCREEN_HEIGHT_PX
+wLYOverridesBackup:: ds SCREEN_HEIGHT_PX
+wLYOverridesBackupEnd:: ds $100 - SCREEN_HEIGHT_PX
+ENDU
+
+NEXTU
 wc700:: ds 1 ; c700
 wc701:: ds 1 ; c701
 wc702:: ds 1 ; c702
@@ -1161,9 +1201,6 @@ wc7fc:: ds 1 ; c7fc
 wc7fd:: ds 1 ; c7fd
 wc7fe:: ds 1 ; c7fe
 wc7ff:: ds 1 ; c7ff
-wLYOverridesEnd::
-
-wLYOverridesBackup:: ; c800
 wc800:: ds 1 ; c800
 wc801:: ds 1 ; c801
 wc802:: ds 1 ; c802
@@ -1776,147 +1813,15 @@ wca5e:: ds 1 ; ca5e
 wca5f:: ds 1 ; ca5f
 wca60:: ds 1 ; ca60
 wca61:: ds 1 ; ca61
-wca62:: ds 1 ; ca62
-wca63:: ds 1 ; ca63
-wca64:: ds 1 ; ca64
-wca65:: ds 1 ; ca65
-wca66:: ds 1 ; ca66
-wca67:: ds 1 ; ca67
-wca68:: ds 1 ; ca68
-wca69:: ds 1 ; ca69
-wca6a:: ds 1 ; ca6a
-wca6b:: ds 1 ; ca6b
-wca6c:: ds 1 ; ca6c
-wca6d:: ds 1 ; ca6d
-wca6e:: ds 1 ; ca6e
-wca6f:: ds 1 ; ca6f
-wca70:: ds 1 ; ca70
-wca71:: ds 1 ; ca71
-wca72:: ds 1 ; ca72
-wca73:: ds 1 ; ca73
-wca74:: ds 1 ; ca74
-wca75:: ds 1 ; ca75
-wca76:: ds 1 ; ca76
-wca77:: ds 1 ; ca77
-wca78:: ds 1 ; ca78
-wca79:: ds 1 ; ca79
-wca7a:: ds 1 ; ca7a
-wca7b:: ds 1 ; ca7b
-wca7c:: ds 1 ; ca7c
-wca7d:: ds 1 ; ca7d
-wca7e:: ds 1 ; ca7e
-wca7f:: ds 1 ; ca7f
-wca80:: ds 1 ; ca80
-wca81:: ds 1 ; ca81
-wca82:: ds 1 ; ca82
-wca83:: ds 1 ; ca83
-wca84:: ds 1 ; ca84
-wca85:: ds 1 ; ca85
-wca86:: ds 1 ; ca86
-wca87:: ds 1 ; ca87
-wca88:: ds 1 ; ca88
-wca89:: ds 1 ; ca89
-wca8a:: ds 1 ; ca8a
-wca8b:: ds 1 ; ca8b
-wca8c:: ds 1 ; ca8c
-wca8d:: ds 1 ; ca8d
-wca8e:: ds 1 ; ca8e
-wca8f:: ds 1 ; ca8f
-wca90:: ds 1 ; ca90
-wca91:: ds 1 ; ca91
-wca92:: ds 1 ; ca92
-wca93:: ds 1 ; ca93
-wca94:: ds 1 ; ca94
-wca95:: ds 1 ; ca95
-wca96:: ds 1 ; ca96
-wca97:: ds 1 ; ca97
-wca98:: ds 1 ; ca98
-wca99:: ds 1 ; ca99
-wca9a:: ds 1 ; ca9a
-wca9b:: ds 1 ; ca9b
-wca9c:: ds 1 ; ca9c
-wca9d:: ds 1 ; ca9d
-wca9e:: ds 1 ; ca9e
-wca9f:: ds 1 ; ca9f
-wcaa0:: ds 1 ; caa0
-wcaa1:: ds 1 ; caa1
-wcaa2:: ds 1 ; caa2
-wcaa3:: ds 1 ; caa3
-wcaa4:: ds 1 ; caa4
-wcaa5:: ds 1 ; caa5
-wcaa6:: ds 1 ; caa6
-wcaa7:: ds 1 ; caa7
-wcaa8:: ds 1 ; caa8
-wcaa9:: ds 1 ; caa9
-wcaaa:: ds 1 ; caaa
-wcaab:: ds 1 ; caab
-wcaac:: ds 1 ; caac
-wcaad:: ds 1 ; caad
-wcaae:: ds 1 ; caae
-wcaaf:: ds 1 ; caaf
-wcab0:: ds 1 ; cab0
-wcab1:: ds 1 ; cab1
-wcab2:: ds 1 ; cab2
-wcab3:: ds 1 ; cab3
-wcab4:: ds 1 ; cab4
-wcab5:: ds 1 ; cab5
-wcab6:: ds 1 ; cab6
-wcab7:: ds 1 ; cab7
-wcab8:: ds 1 ; cab8
-wcab9:: ds 1 ; cab9
-wcaba:: ds 1 ; caba
-wcabb:: ds 1 ; cabb
-wcabc:: ds 1 ; cabc
-wcabd:: ds 1 ; cabd
-wcabe:: ds 1 ; cabe
-wcabf:: ds 1 ; cabf
-wcac0:: ds 1 ; cac0
-wcac1:: ds 1 ; cac1
-wcac2:: ds 1 ; cac2
-wcac3:: ds 1 ; cac3
-wcac4:: ds 1 ; cac4
-wcac5:: ds 1 ; cac5
-wcac6:: ds 1 ; cac6
-wcac7:: ds 1 ; cac7
-wcac8:: ds 1 ; cac8
-wcac9:: ds 1 ; cac9
-wcaca:: ds 1 ; caca
-wcacb:: ds 1 ; cacb
-wcacc:: ds 1 ; cacc
-wcacd:: ds 1 ; cacd
-wcace:: ds 1 ; cace
-wcacf:: ds 1 ; cacf
-wcad0:: ds 1 ; cad0
-wcad1:: ds 1 ; cad1
-wcad2:: ds 1 ; cad2
-wcad3:: ds 1 ; cad3
-wcad4:: ds 1 ; cad4
-wcad5:: ds 1 ; cad5
-wcad6:: ds 1 ; cad6
-wcad7:: ds 1 ; cad7
-wcad8:: ds 1 ; cad8
-wcad9:: ds 1 ; cad9
-wcada:: ds 1 ; cada
-wcadb:: ds 1 ; cadb
-wcadc:: ds 1 ; cadc
-wcadd:: ds 1 ; cadd
-wcade:: ds 1 ; cade
-wcadf:: ds 1 ; cadf
-wcae0:: ds 1 ; cae0
-wcae1:: ds 1 ; cae1
-wcae2:: ds 1 ; cae2
-wcae3:: ds 1 ; cae3
-wcae4:: ds 1 ; cae4
-wcae5:: ds 1 ; cae5
-wcae6:: ds 1 ; cae6
-wcae7:: ds 1 ; cae7
 
-wBattle:
+	ds 134
+
+wBattle::
 wEnemyMoveStruct:: move_struct wEnemyMoveStruct
 wPlayerMoveStruct:: move_struct wPlayerMoveStruct
 
-wEnemyMonNick:: ds MON_NAME_LENGTH ; caf6
-wBattleMonNick:: ds MON_NAME_LENGTH ; cafc
+wEnemyMonNick:: ds MON_NAME_LENGTH
+wBattleMonNick:: ds MON_NAME_LENGTH
 
 wBattleMon:: battle_struct wBattleMon ; cb02
 
@@ -1947,25 +1852,26 @@ wcb37:: ds 1 ; cb37
 wcb38:: ds 1 ; cb38
 wcb39:: ds 1 ; cb39
 
-wPlayerSubStatus1:: ds 1 ; cb3a
-wPlayerSubStatus2:: ds 1 ; cb3b
-wPlayerSubStatus3:: ds 1 ; cb3c
-wPlayerSubStatus4:: ds 1 ; cb3d
-wPlayerSubStatus5:: ds 1 ; cb3e
-wEnemySubStatus1:: ds 1 ; cb3f
-wEnemySubStatus2:: ds 1 ; cb40
-wEnemySubStatus3:: ds 1 ; cb41
-wEnemySubStatus4:: ds 1 ; cb42
-wEnemySubStatus5:: ds 1 ; cb43
+wPlayerSubStatus1:: db
+wPlayerSubStatus2:: db
+wPlayerSubStatus3:: db
+wPlayerSubStatus4:: db
+wPlayerSubStatus5:: db
 
-wcb44:: ds 1 ; cb44
-wcb45:: ds 1 ; cb45
-wcb46:: ds 1 ; cb46
-wPlayerDisableCount:: ds 1 ; cb47
-wcb48:: ds 1 ; cb48
-wcb49:: ds 1 ; cb49
-wcb4a:: ds 1 ; cb4a
-wcb4b:: ds 1 ; cb4b
+wEnemySubStatus1:: db
+wEnemySubStatus2:: db
+wEnemySubStatus3:: db
+wEnemySubStatus4:: db
+wEnemySubStatus5:: db
+
+wPlayerRolloutCount:: db
+wPlayerConfuseCount:: db
+wPlayerToxicCount:: db
+wPlayerDisableCount:: db
+wPlayerEncoreCount:: db
+wPlayerPerishCount:: db
+wPlayerFuryCutterCount:: db
+wPlayerProtectCount:: db
 
 wcb4c:: ds 1 ; cb4c
 wcb4d:: ds 1 ; cb4d
@@ -2176,8 +2082,8 @@ wcc10:: ds 1 ; cc10
 wcc11:: ds 1 ; cc11
 wcc12:: ds 1 ; cc12
 wcc13:: ds 1 ; cc13
+ENDU
 
-wOverworldMapEnd::
 wBGMapBuffer:: ds 1 ; cc14
 
 wcc15:: ds 1 ; cc15
@@ -2420,30 +2326,21 @@ wce58:: ds 1 ; ce58
 wce59:: ds 1 ; ce59
 wce5a:: ds 1 ; ce5a
 
-wRequested2bpp:: ds 1 ; ce5b
-wRequested2bppSource:: dw ; ce5c
-wRequested2bppDest:: dw ; ce5e
+wRequested2bppSize:: db
+wRequested2bppSource:: dw
+wRequested2bppDest:: dw
 
-wRequested1bpp:: ds 1 ; ce60
-wRequested1bppSource:: dw ; ce61
-wRequested1bppDest:: dw ; ce63
+wRequested1bppSize:: db
+wRequested1bppSource:: dw
+wRequested1bppDest:: dw
 
-wSecondsSince:: ds 1 ; ce65
-wMinutesSince:: ds 1 ; ce66
-wHoursSince:: ds 1 ; ce67
-wDaysSince:: ds 1 ; ce68
-wce69:: ds 1 ; ce69
-wce6a:: ds 1 ; ce6a
-wce6b:: ds 1 ; ce6b
-wce6c:: ds 1 ; ce6c
-wce6d:: ds 1 ; ce6d
-wce6e:: ds 1 ; ce6e
-wce6f:: ds 1 ; ce6f
-wce70:: ds 1 ; ce70
-wce71:: ds 1 ; ce71
-wce72:: ds 1 ; ce72
-wce73:: ds 1 ; ce73
-wce74:: ds 1 ; ce74
+wSecondsSince:: db
+wMinutesSince:: db
+wHoursSince:: db
+wDaysSince:: db
+
+	ds 12
+
 wce75:: ds 1 ; ce75
 wce76:: ds 1 ; ce76
 
@@ -2640,6 +2537,12 @@ NEXTU ; cf21
 wDebugMusicTrack:: db
 	ds 2
 wDebugSFXTrack:: db
+
+NEXTU
+; trade
+wCurTradePartyMon:: db
+wCurOTTradePartyMon:: db
+wBufferTrademonNick:: ds MON_NAME_LENGTH
 
 NEXTU ; cf21
 wcf21:: ds 1 ; cf21
@@ -2919,14 +2822,18 @@ wd036:: ds 1 ; d036
 wd037:: ds 1 ; d037
 wd038:: ds 1 ; d038
 wd039:: ds 1 ; d039
-wCurPartyLevel:: ds 1 ; d03a
-wd03b:: ds 1 ; d03b
-wd03c:: ds 1 ; d03c
+
+wCurPartyLevel:: db
+
+wScrollingMenuListSize:: db
+
+wLinkMode:: db
+; 0 not in link battle
+; 1 link battle
 
 wNextWarpNumber:: ds 1 ; d03d
 wNextMapGroup:: ds 1 ; d03e
 wNextMapNumber:: ds 1 ; d03f
-
 wPrevWarpNumber:: ds 1 ; d040
 wPrevMapGroup:: ds 1 ; d041
 wPrevMapNumber:: ds 1 ; d042
@@ -3037,6 +2944,7 @@ wTilesetEnd::
 wd0c3:: ds 1 ; d0c3
 wd0c4:: ds 1 ; d0c4
 
+UNION
 ; Debug
 wDebugItem::
 wDebugClockCurrentOption:: ; d0c5
@@ -3068,6 +2976,22 @@ wd0db:: ds 1 ; d0db
 wd0dc:: ds 1 ; d0dc
 wd0dd:: ds 1 ; d0dd
 wd0de:: ds 1 ; d0de
+
+NEXTU
+; field move data
+wFieldMoveData::
+wFieldMoveJumptableIndex:: db
+wEscapeRopeOrDigType::
+wSurfingPlayerState::
+wFishingRodUsed:: db
+wCutWhirlpoolOverworldBlockAddr:: dw
+wCutWhirlpoolReplacementBlock:: db
+wCutWhirlpoolAnimationType::
+wStrengthSpecies::
+wFishingResult:: db
+	ds 1
+wFieldMoveDataEnd::
+ENDU
 
 wTempEnemyMonSpecies:: ds 1 ; d0df
 wTempBattleMonSpecies:: ds 1 ; d0e0
@@ -3105,8 +3029,9 @@ wd115:: ds 1 ; d115
 wd116:: ds 1 ; d116
 wd117:: ds 1 ; d117
 wd118:: ds 1 ; d118
-wd119:: ds 1 ; d119
-wd11a:: ds 1 ; d11a
+wBaseType::
+wBaseType1:: db
+wBaseType2:: db
 wd11b:: ds 1 ; d11b
 wd11c:: ds 1 ; d11c
 wd11d:: ds 1 ; d11d
@@ -3164,7 +3089,7 @@ wBreedingCompatibility::
 wMoveGrammar::
 wApplyStatLevelMultipliersToEnemy::
 wUsePPUp::
-wd143:: ds 1 ; d143
+wd143:: db
 
 wd144:: ds 1 ; d144
 wd145:: ds 1 ; d145
@@ -3497,10 +3422,9 @@ wd554:: ds 1 ; d554
 wd555:: ds 1 ; d555
 wd556:: ds 1 ; d556
 wd557:: ds 1 ; d557
-wEnteredMapFromContinue:: ds 1 ; d558
-wd559:: ds 1 ; d559
-wd55a:: ds 1 ; d55a
-wTimeOfDayPal:: ds 1 ; d55b
+wEnteredMapFromContinue:: db
+	ds 2
+wTimeOfDayPal:: db
 wd55c:: ds 1 ; d55c
 wd55d:: ds 1 ; d55d
 wd55e:: ds 1 ; d55e
@@ -4299,43 +4223,39 @@ wdbd1:: ds 1 ; dbd1
 wdbd2:: ds 1 ; dbd2
 wdbd3:: ds 1 ; dbd3
 
-wDayCareMan:: ; dbd4
+wDayCareMan::
 ; bit 7: active
 ; bit 6: egg ready
 ; bit 5: monsters are compatible
 ; bit 0: monster 1 in day-care
-	ds 1
+	db
 
-wBreedMon1::
-wBreedMon1Nick::  ds MON_NAME_LENGTH ; dbd5
-wBreedMon1OT::    ds NAME_LENGTH ; dbdb
-; TODO fix incorrect Stats label
-wBreedMon1Stats:: box_struct wBreedMon1 ; dbe1
+wBreedMon1Nick:: ds MON_NAME_LENGTH
+wBreedMon1OT::   ds NAME_LENGTH
+wBreedMon1::     box_struct wBreedMon1
 
-wDayCareLady:: ; dc01
+wDayCareLady::
 ; bit 7: active
 ; bit 0: monster 2 in day-care
-	ds 1
+	db
 
-wStepsToEgg:: ds 1 ; dc02
-
-wBreedMotherOrNonDitto:: ; dc03
+wStepsToEgg::
+	db
+wBreedMotherOrNonDitto::
 ;  z: yes
 ; nz: no
-	ds 1
+	db
 
-wBreedMon2::
-wBreedMon2Nick::  ds MON_NAME_LENGTH ; dc04
-wBreedMon2OT::    ds NAME_LENGTH ; dc0a
-wBreedMon2Stats:: box_struct wBreedMon2 ; dc10
+wBreedMon2Nick:: ds MON_NAME_LENGTH
+wBreedMon2OT::   ds NAME_LENGTH
+wBreedMon2::     box_struct wBreedMon2
 
-wEggNick:: ds MON_NAME_LENGTH ; dc30
-wEggOT::   ds NAME_LENGTH ; dc36
-wEggMon::  box_struct wEggMon ; dc3c
+wEggNick:: ds MON_NAME_LENGTH
+wEggOT::   ds NAME_LENGTH
+wEggMon::  box_struct wEggMon
 
-wBugContestSecondPartySpecies:: ds 1 ; dc5c
-
-wContestMon:: party_struct wContestMon ; dc5d
+wBugContestSecondPartySpecies:: db
+wContestMon:: party_struct wContestMon
 
 wdc8d:: ds 1 ; dc8d
 wdc8e:: ds 1 ; dc8e
@@ -4373,21 +4293,22 @@ wdcad:: ds 1 ; dcad
 wdcae:: ds 1 ; dcae
 wdcaf:: ds 1 ; dcaf
 wdcb0:: ds 1 ; dcb0
-wdcb1:: ds 1 ; dcb1
-wdcb2:: ds 1 ; dcb2
-wdcb3:: ds 1 ; dcb3
-wdcb4:: ds 1 ; dcb4
-wdcb5:: ds 1 ; dcb5
 
+UNION
+	ds 2
+wdcb3:: db
+	ds 19
+wDebugFightMonLevel:: db
+
+NEXTU
 ; enemy party
-wOTPlayerName:: ds NAME_LENGTH ; dcb6
-wOTPlayerID:: dw ; dcbc
-	ds 8
-
-wOTPartyCount::   db ; dcc6
-wDebugFightMonLevel::
-wOTPartySpecies:: ds PARTY_LENGTH ; dcc7
-wOTPartyEnd::     db ; dccd
+wOTPlayerName:: ds NAME_LENGTH
+wOTPlayerID:: dw
+	ds 13
+wOTPartyCount::   db
+wOTPartySpecies:: ds PARTY_LENGTH
+wOTPartyEnd::     db ; older code doesn't check PartyCount
+ENDU
 
 ; ot party mons
 wOTPartyMons::

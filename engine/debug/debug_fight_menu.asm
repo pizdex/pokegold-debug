@@ -39,7 +39,7 @@ DebugFightMenu:
 	jr .load_items
 
 .ChoosePlayerParty:
-	callfar unk_03e_40a6
+	callfar StatsScreen_LoadFont
 	call ClearTilemap
 	call ClearSprites
 
@@ -1098,7 +1098,7 @@ Jump_03f_55df:
 	call LoadStandardFont
 	ld hl, $40a6
 	ld a, $3e
-	rst $08
+	rst FarCall
 	call ClearTilemap
 	call ClearSprites
 	ld a, $e4

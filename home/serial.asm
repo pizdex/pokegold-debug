@@ -270,7 +270,7 @@ Serial_PrintWaitingTextAndSyncAndExchangeNybble::
 	call $31c5
 	ld hl, $4000
 	ld a, $01
-	rst $08
+	rst FarCall
 	call WaitLinkTransfer
 	jp $31d1
 
@@ -278,7 +278,7 @@ Serial_SyncAndExchangeNybble::
 	call $31c5
 	ld hl, $4000
 	ld a, $01
-	rst $08
+	rst FarCall
 	jp WaitLinkTransfer
 
 WaitLinkTransfer::
@@ -330,7 +330,7 @@ WaitLinkTransfer::
 LinkTransfer::
 	push bc
 	ld b, SERIAL_TIMECAPSULE
-	ld a, [wd03c]
+	ld a, [wLinkMode]
 	cp LINK_TIMECAPSULE
 	jr z, .got_high_nybble
 	ld b, SERIAL_TIMECAPSULE
@@ -385,7 +385,7 @@ LinkDataReceived::
 	ret
 
 Unreferenced_Function8c9::
-	ld a, [wd03c]
+	ld a, [wLinkMode]
 	and a
 	ret nz
 	ld a, USING_INTERNAL_CLOCK

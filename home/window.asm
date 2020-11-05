@@ -38,7 +38,7 @@ CloseText::
 	ldh [$d4], a
 	ld a, $05
 	ld hl, $412e
-	rst $08
+	rst FarCall
 	call $0d80
 	ld hl, $d558
 	res 7, [hl]

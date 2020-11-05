@@ -1,12 +1,10 @@
 INCLUDE "engine/pokemon/health.asm"
+INCLUDE "engine/events/overworld.asm"
 
-Call_003_4745:
-	dr $c745, $cfb1
+_ReceiveItem::
+	dr $d4b1, $d8fc
 
-Call_003_4fb1:
-	dr $cfb1, $d8fc
-
-Call_003_58fc:
+_AnimateHPBar:
 	dr $d8fc, $db39
 
 TryAddMonToParty:
@@ -42,4 +40,7 @@ _DoItemEffect::
 	dr $eaae, $eac8
 
 unkData_003_6ac8:
-	dr $eac8, $10000
+	dr $eac8, $fe58
+
+RestoreAllPP:
+	dr $fe58, $10000

@@ -17,7 +17,7 @@ UpdateTime::
 	call FixTime
 	ld a, $05
 	ld hl, $4032
-	rst $08
+	rst FarCall
 	ret
 
 GetClock::
@@ -188,7 +188,7 @@ InitTimeOfDay::
 InitTime::
 	ld a, $05
 	ld hl, $40d1
-	rst $08
+	rst FarCall
 	ret
 
 

@@ -29,7 +29,7 @@ HandleStoneQueue::
 	call CallMapScript
 	ld a, $25
 	ld hl, $6bb9
-	rst $08
+	rst FarCall
 	scf
 	ret
 

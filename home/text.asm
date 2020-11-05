@@ -352,7 +352,7 @@ PlaceEnemysName::
 	push bc
 	ld hl, $5910
 	ld a, $0e
-	rst $08
+	rst FarCall
 	pop hl
 	ld de, $cf87
 	jr PlaceCommandCharacter

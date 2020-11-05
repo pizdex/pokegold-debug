@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-file = "baserom.gbc"
+file = "../baserom.gbc"
 
-offset = 0xfcec1
-count = 2
+offset = 0xd49c
+count = 1
 
 file = open(file, "rb")
 file.seek(offset)
@@ -29,6 +29,9 @@ while count != 0:
 		elif byte == 0x08:
 			arg = int.from_bytes(file.read(2), "little")
 			print("\tiffalse $%04x ; TEMP" % arg)
+		elif byte == 0x09:
+			arg = int.from_bytes(file.read(2), "little")
+			print("\tiftrue $%04x ; TEMP" % arg)
 		elif byte == 0x0c:
 			arg = int.from_bytes(file.read(2), "little")
 			print("\tjumpstd $%04x ; TEMP" % arg)
@@ -78,11 +81,16 @@ while count != 0:
 		elif byte == 0x4c:
 			arg = int.from_bytes(file.read(2), "little")
 			print("\twritetext $%04x ; TEMP" % arg)
+		elif byte == 0x4e:
+			print("\tyesorno")
 		elif byte == 0x4f:
 			arg = int.from_bytes(file.read(2), "little")
 			print("\tloadmenu $%04x ; TEMP" % arg)
 		elif byte == 0x50:
 			print("\tclosewindow")
+		elif byte == 0x52:
+			arg = int.from_bytes(file.read(2), "little")
+			print("\tjumptext $%04x ; TEMP" % arg)
 		elif byte == 0x53:
 			print("\twaitbutton")
 		elif byte == 0x58:

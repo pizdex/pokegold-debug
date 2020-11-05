@@ -49,9 +49,7 @@ HealPartyMon:
 	ld a, [hl]
 	ld [bc], a
 
-	ld a, $03
-	ld hl, $7e58
-	rst FarCall
+	farcall RestoreAllPP
 	ret
 
 ComputeHPBarPixels:
@@ -107,6 +105,6 @@ ComputeHPBarPixels:
 
 AnimateHPBar:
 	call WaitBGMap
-	call Call_003_58fc
+	call _AnimateHPBar
 	call WaitBGMap
 	ret

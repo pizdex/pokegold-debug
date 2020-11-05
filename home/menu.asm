@@ -23,14 +23,14 @@ SetMenuAttributes::
 StaticMenuJoypad::
 	ld hl, $4136
 	ld a, $09
-	rst $08
+	rst FarCall
 	call GetMenuJoypad
 	ret
 
 ScrollingMenuJoypad::
 	ld hl, $4139
 	ld a, $09
-	rst $08
+	rst FarCall
 	call GetMenuJoypad
 	ret
 
@@ -68,21 +68,21 @@ HideCursor::
 PushWindow::
 	ld hl, $42a0
 	ld a, $09
-	rst $08
+	rst FarCall
 	ret
 
 ExitMenu::
 	push af
 	ld hl, $4358
 	ld a, $09
-	rst $08
+	rst FarCall
 	pop af
 	ret
 
 InitVerticalMenuCursor::
 	ld hl, $43f7
 	ld a, $09
-	rst $08
+	rst FarCall
 	ret
 
 CloseWindow::

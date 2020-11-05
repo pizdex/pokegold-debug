@@ -88,7 +88,10 @@ Call_004_5998:
 	dr $11998, $119d0
 
 CopyDayHourMinSecToHL:
-	dr $119d0, $11a7e
+	dr $119d0, $11a74
+
+_NamingScreen:
+	dr $11a74, $11a7e
 
 unk_004_5a7e:
 	dr $11a7e, $13877

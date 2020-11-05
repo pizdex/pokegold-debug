@@ -9,7 +9,7 @@ DoMysteryGift::
 	call WaitBGMap
 	ld a, $0b
 	ld hl, $5771
-	rst $08
+	rst FarCall
 	call Call_00a_65df
 	ld a, 2
 	ld [wc901], a

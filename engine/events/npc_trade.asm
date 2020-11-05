@@ -165,7 +165,7 @@ DoNPCTrade:
 	ld [wPokemonWithdrawDepositParameter], a
 	ld hl, $62e7
 	ld a, $03
-	rst $08
+	rst FarCall
 	ld a, $06
 	call Predef
 
@@ -238,7 +238,7 @@ DoNPCTrade:
 	ld [wCurPartyMon], a
 	ld a, $03
 	ld hl, $63e2
-	rst $08
+	rst FarCall
 	pop af
 	ld [wCurPartyMon], a
 	pop hl

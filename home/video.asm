@@ -211,11 +211,11 @@ endr
 Serve1bppRequest::
 ; Only call during the first fifth of VBlank
 
-	ld a, [wRequested1bpp]
+	ld a, [wRequested1bppSize]
 	and a
 	ret z
 
-; Copy [wRequested1bpp] 1bpp tiles from [wRequested1bppSource] to [wRequested1bppDest]
+; Copy [wRequested1bppSize] 1bpp tiles from [wRequested1bppSource] to [wRequested1bppDest]
 
 	ld [hSPBuffer], sp
 
@@ -233,11 +233,11 @@ Serve1bppRequest::
 	ld l, a
 
 ; # tiles to copy
-	ld a, [wRequested1bpp]
+	ld a, [wRequested1bppSize]
 	ld b, a
 
 	xor a
-	ld [wRequested1bpp], a
+	ld [wRequested1bppSize], a
 
 .next
 
@@ -282,11 +282,11 @@ endr
 Serve2bppRequest::
 ; Only call during the first fifth of VBlank
 
-	ld a, [wRequested2bpp]
+	ld a, [wRequested2bppSize]
 	and a
 	ret z
 
-; Copy [wRequested2bpp] 2bpp tiles from [wRequested2bppSource] to [wRequested2bppDest]
+; Copy [wRequested2bppSize] 2bpp tiles from [wRequested2bppSource] to [wRequested2bppDest]
 
 	ld [hSPBuffer], sp
 
@@ -304,11 +304,11 @@ Serve2bppRequest::
 	ld l, a
 
 ; # tiles to copy
-	ld a, [wRequested2bpp]
+	ld a, [wRequested2bppSize]
 	ld b, a
 
 	xor a
-	ld [wRequested2bpp], a
+	ld [wRequested2bppSize], a
 
 .next
 

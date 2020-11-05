@@ -293,6 +293,9 @@ INCBIN "baserom.gbc",$F4000,$4000
 
 SECTION "bank3E",ROMX,BANK[$3E]
 
+INCLUDE "engine/gfx/load_font.asm"
+INCLUDE "data/collision/collision_permissions.asm"
+
 INCLUDE "banks/bank3e.asm"
 
 

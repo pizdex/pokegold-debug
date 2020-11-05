@@ -99,7 +99,7 @@ CheckReceivedDex::
 	ld b, CHECK_FLAG
 	ld a, 3
 	ld hl, $401b
-	rst $08
+	rst FarCall
 	ld a, c
 	and a
 	ret
@@ -124,7 +124,7 @@ xor_a_dec_a::
 	dec a
 	ret
 
-Unreferenced_CheckFieldDebug::
+CheckFieldDebug::
 	push hl
 	ld hl, wDebugFlags
 	bit DEBUG_FIELD_F, [hl]

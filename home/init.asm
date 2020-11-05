@@ -113,7 +113,7 @@ Init::
 
 	ld hl, $5fc1
 	ld a, $02
-	rst $08
+	rst FarCall
 
 	ld a, $9c
 	ldh [$d9], a
@@ -122,7 +122,7 @@ Init::
 
 	ld a, $05
 	ld hl, $4089
-	rst $08
+	rst FarCall
 
 	ld a, SRAM_ENABLE
 	ld [MBC3SRamEnable], a

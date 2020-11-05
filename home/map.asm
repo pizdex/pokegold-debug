@@ -1049,24 +1049,25 @@ GetCoordOfUpperLeftCorner::
 	ret
 
 LoadBlockData::
-	ld hl, wOverworldMap
-	ld bc, wOverworldMapEnd - wOverworldMap
+	ld hl, wOverworldMapBlocks
+	ld bc, wOverworldMapBlocksEnd - wOverworldMapBlocks
 	ld a, 0
 	call ByteFill
 	call ChangeMap
 	call FillMapConnections
-	ld a, 1
+	ld a, MAPCALLBACK_TILES
 	call RunMapCallback
 	ret
 
 ChangeMap::
 	ldh a, [hROMBank]
 	push af
-	ld hl, wOverworldMap
+
+	ld hl, wOverworldMapBlocks
 	ld a, [wMapWidth]
-	ldh [hObjectStructIndexBuffer], a
+	ldh [hConnectedMapWidth], a
 	add 6
-	ldh [hMapObjectIndexBuffer], a
+	ldh [hConnectionStripLength], a
 	ld c, a
 	ld b, 0
 	add hl, bc

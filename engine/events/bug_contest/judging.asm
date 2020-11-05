@@ -126,7 +126,7 @@ LoadContestantName:
 ; Get the Trainer Class name and copy it into wBugContestWinnerName.
 	ld hl, $5511
 	ld a, $0e
-	rst $08
+	rst FarCall
 	ld hl, wStringBuffer1
 	ld de, wBugContestWinnerName
 	ld bc, TRAINER_CLASS_NAME_LENGTH

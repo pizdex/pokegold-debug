@@ -27,7 +27,7 @@ Functiond59::
 ReplacePlayerSprite::
 	ld a, $05
 	ld hl, $410e
-	rst $08
+	rst FarCall
 	ret
 
 LoadStandardFont::
@@ -138,7 +138,7 @@ Request2bpp::
 	cp 8 ; TilesPerCycle
 	jr nc, .cycle
 
-	ld [wRequested2bpp], a
+	ld [wRequested2bppSize], a
 	call DelayFrame
 
 	pop af
@@ -150,7 +150,7 @@ Request2bpp::
 
 .cycle
 	ld a, 8 ; TilesPerCycle
-	ld [wRequested2bpp], a
+	ld [wRequested2bppSize], a
 
 	call DelayFrame
 	ld a, c
@@ -183,7 +183,7 @@ Request1bpp::
 	cp 8 ; TilesPerCycle
 	jr nc, .cycle
 
-	ld [wRequested1bpp], a
+	ld [wRequested1bppSize], a
 	call DelayFrame
 
 	pop af
@@ -195,7 +195,7 @@ Request1bpp::
 
 .cycle
 	ld a, 8 ; TilesPerCycle
-	ld [wRequested1bpp], a
+	ld [wRequested1bppSize], a
 
 	call DelayFrame
 	ld a, c

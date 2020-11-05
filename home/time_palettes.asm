@@ -15,11 +15,11 @@ UpdateTimeAndPals::
 
 	ld hl, $43c9
 	ld a, $23
-	rst $08
+	rst FarCall
 	ret
 
 UpdateTimePals::
 	ld hl, $43fa
 	ld a, $23
-	rst $08
+	rst FarCall
 	ret
