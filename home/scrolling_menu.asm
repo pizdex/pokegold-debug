@@ -3,12 +3,12 @@ ScrollingMenu::
 	ldh a, [hROMBank]
 	push af
 
-	ld a, 9
+	ld a, BANK(_ScrollingMenu) ; aka BANK(_InitScrollingMenu)
 	rst Bankswitch
 
-	call $4539
+	call _InitScrollingMenu
 	call .UpdatePalettes
-	call $4555
+	call _ScrollingMenu
 
 	pop af
 	rst Bankswitch
@@ -45,7 +45,7 @@ JoyTextDelay_ForcehJoyDown::
 
 	ldh a, [hInMenu]
 	push af
-	ld a, 1
+	ld a, $1
 	ldh [hInMenu], a
 	call JoyTextDelay
 	pop af

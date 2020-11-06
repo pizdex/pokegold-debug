@@ -97,9 +97,7 @@ endr
 CheckReceivedDex::
 	ld de, ENGINE_POKEDEX
 	ld b, CHECK_FLAG
-	ld a, 3
-	ld hl, $401b
-	rst FarCall
+	farcall EngineFlagAction
 	ld a, c
 	and a
 	ret

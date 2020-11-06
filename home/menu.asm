@@ -1,36 +1,34 @@
-SetMenuAttributes::
+Load2DMenuData::
 	push hl
 	push bc
-	ld hl, w2DMenuCursorInitY
-	ld b, 8
+	ld hl, w2DMenuData
+	ld b, w2DMenuDataEnd - w2DMenuData
 .loop
 	ld a, [de]
 	inc de
 	ld [hli], a
 	dec b
 	jr nz, .loop
-	ld a, 1
-	ld [hli], a
-	ld [hli], a
+
+	; Reset menu state
+	ld a, $1
+	ld [hli], a ; wMenuCursorY
+	ld [hli], a ; wMenuCursorX
 	xor a
-	ld [hli], a
-	ld [hli], a
+	ld [hli], a ; wCursorOffCharacter
+	ld [hli], a ; wCursorCurrentTile
 	ld [hli], a
 	pop bc
 	pop hl
 	ret
 
 StaticMenuJoypad::
-	ld hl, $4136
-	ld a, $09
-	rst FarCall
+	callfar _StaticMenuJoypad
 	call GetMenuJoypad
 	ret
 
 ScrollingMenuJoypad::
-	ld hl, $4139
-	ld a, $09
-	rst FarCall
+	callfar _ScrollingMenuJoypad
 	call GetMenuJoypad
 	ret
 
@@ -66,36 +64,30 @@ HideCursor::
 	ret
 
 PushWindow::
-	ld hl, $42a0
-	ld a, $09
-	rst FarCall
+	callfar _PushWindow
 	ret
 
 ExitMenu::
 	push af
-	ld hl, $4358
-	ld a, $09
-	rst FarCall
+	callfar _ExitMenu
 	pop af
 	ret
 
 InitVerticalMenuCursor::
-	ld hl, $43f7
-	ld a, $09
-	rst FarCall
+	callfar _InitVerticalMenuCursor
 	ret
 
 CloseWindow::
 	push af
 	call ExitMenu
-	call $3485
-	call $193c
+	call ApplyTilemap
+	call UpdateSprites
 	pop af
 	ret
 
 RestoreTileBackup::
-	call $1b5d
-	call $1ab3
+	call MenuBoxCoord2Tile
+	call GetMenuBoxDims
 	inc b
 	inc c
 
@@ -120,8 +112,8 @@ RestoreTileBackup::
 	ret
 
 PopWindow::
-	ld b, $10
-	ld de, wMenuFlags
+	ld b, wMenuHeaderEnd - wMenuHeader
+	ld de, wMenuHeader
 .loop
 	ld a, [hld]
 	ld [de], a
@@ -131,14 +123,14 @@ PopWindow::
 	ret
 
 GetMenuBoxDims::
-	ld a, [wMenuBorderTopCoord]
+	ld a, [wMenuBorderTopCoord] ; top
 	ld b, a
-	ld a, [wMenuBorderBottomCoord]
+	ld a, [wMenuBorderBottomCoord] ; bottom
 	sub b
 	ld b, a
-	ld a, [wMenuBorderLeftCoord]
+	ld a, [wMenuBorderLeftCoord] ; left
 	ld c, a
-	ld a, [wMenuBorderRightCoord]
+	ld a, [wMenuBorderRightCoord] ; right
 	sub c
 	ld c, a
 	ret
@@ -152,8 +144,8 @@ CopyMenuData::
 	ld a, [hli]
 	ld h, [hl]
 	ld l, a
-	ld de, wMenuDataFlags
-	ld bc, wMenuDataEnd - wMenuDataFlags
+	ld de, wMenuData
+	ld bc, wMenuDataEnd - wMenuData
 	call CopyBytes
 	pop af
 	pop bc
@@ -259,6 +251,7 @@ MenuBoxCoord2Tile::
 	ld c, a
 	ld a, [wMenuBorderTopCoord]
 	ld b, a
+	; fallthrough
 
 Coord2Tile::
 ; Return the address of wTilemap(c, b) in hl.
@@ -302,7 +295,7 @@ MenuTextbox::
 	pop hl
 	jp PrintText
 
-; unused
+Menu_DummyFunction:: ; unreferenced
 	ret
 
 LoadMenuTextbox::
@@ -342,7 +335,7 @@ VerticalMenu::
 	call MenuBox
 	call UpdateSprites
 	call PlaceVerticalMenuItems
-	call $3485
+	call ApplyTilemap
 	call CopyMenuData
 	ld a, [wMenuDataFlags]
 	bit 7, a
@@ -355,6 +348,7 @@ VerticalMenu::
 .cancel
 	scf
 	ret
+
 .okay
 	and a
 	ret
@@ -377,10 +371,10 @@ CopyNameFromMenu::
 	inc hl
 	inc hl
 	pop af
-	call $3667
+	call GetNthString
 	ld d, h
 	ld e, l
-	call $31e8
+	call CopyName1
 	pop bc
 	pop hl
 	ret
@@ -391,7 +385,7 @@ YesNoBox::
 PlaceYesNoBox::
 	jr _YesNoBox
 
-PlaceGenericTwoOptionBox::
+PlaceGenericTwoOptionBox:: ; unreferenced
 	call LoadMenuHeader
 	jr InterpretTwoOptionMenu
 
@@ -401,7 +395,7 @@ _YesNoBox::
 	ld hl, YesNoMenuHeader
 	call CopyMenuHeader
 	pop bc
-	
+
 	ld a, b
 	ld [wMenuBorderLeftCoord], a
 	add 5
@@ -421,7 +415,7 @@ InterpretTwoOptionMenu::
 	pop af
 	jr c, .no
 	ld a, [wMenuCursorY]
-	cp 2
+	cp 2 ; no
 	jr z, .no
 	and a
 	ret
@@ -483,9 +477,9 @@ DoNthMenu::
 	ret
 
 SetUpMenu::
-	call DrawVariableLengthMenuBox ; ???
+	call DrawVariableLengthMenuBox
 	call MenuWriteText
-	call InitMenuCursorAndButtonPermissions ; set up selection pointer
+	call InitMenuCursorAndButtonPermissions
 	ld hl, w2DMenuFlags1
 	set 7, [hl]
 	ret
@@ -502,12 +496,12 @@ MenuWriteText::
 	ldh [hBGMapMode], a
 	call GetMenuIndexSet ; sort out the text
 	call RunMenuItemPrintingFunction ; actually write it
-	call $2f5e
+	call SafeUpdateSprites
 	ldh a, [hOAMUpdate]
 	push af
 	ld a, $1
 	ldh [hOAMUpdate], a
-	call $3485
+	call ApplyTilemap
 	pop af
 	ldh [hOAMUpdate], a
 	ret
@@ -665,7 +659,7 @@ PlaceMenuStrings::
 	ld h, [hl]
 	ld l, a
 	ld a, [wMenuSelection]
-	call $3667
+	call GetNthString
 	ld d, h
 	ld e, l
 	pop hl
@@ -685,7 +679,7 @@ PlaceNthMenuStrings::
 	call PlaceString
 	ret
 
-Unreferenced_Function1dd5:
+GetNthMenuStrings:: ; unreferenced
 	call GetMenuDataPointerTableEntry
 	inc hl
 	inc hl
@@ -704,7 +698,7 @@ MenuJumptable::
 
 GetMenuDataPointerTableEntry::
 	ld e, a
-	ld d, 0
+	ld d, $0
 	ld hl, wMenuDataPointerTableAddr
 	ld a, [hli]
 	ld h, [hl]
@@ -750,7 +744,7 @@ MenuClickSound::
 	push af
 	and A_BUTTON | B_BUTTON
 	jr z, .nosound
-	ld hl, wMenuHeader
+	ld hl, wMenuFlags
 	bit 3, a
 	jr nz, .nosound
 	call PlayClickSFX
@@ -761,7 +755,7 @@ MenuClickSound::
 PlayClickSFX::
 	push de
 	ld de, SFX_READ_TEXT_2
-	call $3df6
+	call PlaySFX
 	pop de
 	ret
 
@@ -772,10 +766,10 @@ MenuTextboxWaitButton::
 	ret
 
 Place2DMenuItemName::
-	ld [wBuffer], a
+	ld [wTempBank], a
 	ldh a, [hROMBank]
 	push af
-	ld a, [wBuffer]
+	ld a, [wTempBank]
 	rst Bankswitch
 
 	call PlaceString
@@ -787,11 +781,11 @@ Place2DMenuItemName::
 _2DMenu::
 	call CopyMenuData
 	ldh a, [hROMBank]
-	ld [wMenuDataBank], a
+	ld [wMenuData_2DMenuItemStringsBank], a
 	push af
-	ld a, 9
+	ld a, BANK(_2DMenu_)
 	rst Bankswitch
-	call $400e
+	call _2DMenu_
 	pop bc
 	ld a, b
 	rst Bankswitch
@@ -799,31 +793,29 @@ _2DMenu::
 	ret
 
 Function1e76::
-	ld hl, $d558
+	ld hl, wd558
 	set 2, [hl]
 	ret
 
 Function1e7c::
-	ld hl, $d558
+	ld hl, wd558
 	set 0, [hl]
 	ret
 
 Function1e82::
-	ld hl, $d558
+	ld hl, wd558
 	res 0, [hl]
 	ret
 
 Function1e88::
-	ld a, $3e
-	ld hl, $744a
-	rst FarCall
+	farcall unk_03e_744a
 	ret
 
 ResetBGWindow::
 	xor a
 	ldh [hBGMapMode], a
 
-	ld hl, $d558
+	ld hl, wd558
 	bit 0, [hl]
 	jr nz, Function1ea0
 
@@ -836,21 +828,21 @@ Function1ea0:
 	res 7, [hl]
 	call Function1e88
 
-	ld hl, $ce9c
-	ld a, $7a
-	ld bc, $14
+	ld hl, wce9c
+	ld a, "─"
+	ld bc, 20
 	call ByteFill
 
-	ld hl, $cebc
-	ld a, $7f
-	ld bc, $14
+	ld hl, wToolgearBuffer
+	ld a, " "
+	ld bc, 20
 	call ByteFill
 
 	farcall UpdateDebugToolgear
 
-	ld hl, $9c00
+	ld hl, vBGMap1
 	ld bc, 4
-	ld de, $ce9c
+	ld de, wce9c
 	call Get2bpp
 
 	ld a, $80

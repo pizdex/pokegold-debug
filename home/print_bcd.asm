@@ -15,7 +15,6 @@ PrintBCDNumber::
 	ld b, c ; save flags in b
 	res PRINTNUM_LEADINGZEROS_F, c
 	res PRINTNUM_LEFTALIGN_F, c
-
 .loop
 	ld a, [de]
 	swap a
@@ -27,11 +26,12 @@ PrintBCDNumber::
 	jr nz, .loop
 	bit PRINTNUM_LEADINGZEROS_F, b
 	jr z, .done ; if so, we are done
-.numberEqualsZero ; if every digit of the BCD number is zero
+; every digit of the BCD number is zero
 	bit PRINTNUM_LEFTALIGN_F, b
-	jr nz, .skipCurrencySymbol
+	jr nz, .skipLeftAlignmentAdjustment
+; the string is left-aligned; it needs to be moved back one space
 	dec hl
-.skipCurrencySymbol
+.skipLeftAlignmentAdjustment
 	ld [hl], "0"
 	call PrintLetterDelay
 	inc hl
@@ -42,15 +42,16 @@ PrintBCDDigit::
 	and %00001111
 	and a
 	jr z, .zeroDigit
-	res PRINTNUM_LEADINGZEROS_F, b
+
+	res PRINTNUM_LEADINGZEROS_F, b ; unset 7 to indicate that a nonzero digit has been reached
 .outputDigit
 	add "0"
 	ld [hli], a
 	jp PrintLetterDelay
 
 .zeroDigit
-	bit PRINTNUM_LEADINGZEROS_F, b
-	jr z, .outputDigit
+	bit PRINTNUM_LEADINGZEROS_F, b ; either printing leading zeroes or already reached a nonzero digit?
+	jr z, .outputDigit ; if so, print a zero digit
 	bit PRINTNUM_LEFTALIGN_F, b
 	ret nz
 	ld a, " "

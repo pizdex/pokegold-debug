@@ -1,14 +1,17 @@
 unk_025_4000:
-	dr $94000,$965f9
+	dr $94000, $940ed
+
+MapGroupPointers::
+	dr $940ed, $965f9
 
 OverworldLoop::
 	xor a
-	ld [wd14b], a
+	ld [wMapStatus], a
 .asm_65fd
-	ld a, [wd14b]
+	ld a, [wMapStatus]
 	ld hl, .unkPointers_025_660c
 	rst $28
-	ld a, [wd14b]
+	ld a, [wMapStatus]
 	cp $03
 	jr nz, .asm_65fd
 	ret
@@ -23,7 +26,7 @@ Call_025_6614:
 	dr $96614,$96706
 
 Call_025_6706:
-	ld a, [wd14c]
+	ld a, [wMapEventStatus]
 	cp $01
 	ret z
 	call UpdateTime
@@ -33,7 +36,13 @@ Call_025_6706:
 	ret
 
 Call_025_671c:
-	dr $9671c,$96fb0
+	dr $9671c,$96bb9
+
+EnableScriptMode::
+	dr $96bb9,$96bc1
+
+ScriptEvents::
+	dr $96bc1,$96fb0
 
 unk_025_6fb0:
 	call GetScriptByte
@@ -74,10 +83,19 @@ jr_025_7354:
 	jp Jump_025_7357
 
 Jump_025_7357:
-	dr $97357,$97463
+	dr $97357,$973b9
+
+CallCallback::
+	dr $973b9,$97463
 
 Jump_025_7463:
 	dr $97463,$97ad4
 
 LoadScriptBDE::
-	dr $97ad4,$98000
+	dr $97ad4,$97ae4
+
+TryTileCollisionEvent:
+	dr $97ae4,$97c8e
+
+ClearCmdQueue::
+	dr $97c8e,$98000

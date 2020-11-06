@@ -12,10 +12,10 @@ GetPartyParamLocation::
 
 GetPartyLocation::
 ; Add the length of a PartyMon struct to hl a times.
-	ld bc, $0030
-	jp $3210
+	ld bc, PARTYMON_STRUCT_LENGTH
+	jp AddNTimes
 
-Unreferenced_GetDexNumber::
+GetDexNumber:: ; unreferenced
 ; Probably used in gen 1 to convert index number to dex number
 ; Not required in gen 2 because index number == dex number
 	push hl
@@ -23,11 +23,11 @@ Unreferenced_GetDexNumber::
 	dec a
 	ld b, 0
 	add hl, bc
-	ld hl, $5aac
+	ld hl, BaseData + BASE_DEX_NO
 	ld bc, BASE_DATA_SIZE
-	call $3210
+	call AddNTimes
 	pop bc
-	ld a, $14
+	ld a, BANK(BaseData)
 	call GetFarHalfword
 	ld b, l
 	ld c, h
@@ -120,7 +120,7 @@ UpdateBattleMon::
 	ld d, h
 	ld e, l
 	ld hl, wBattleMonLevel
-	ld bc, $0005
+	ld bc, wBattleMonMaxHP - wBattleMonLevel
 	jp CopyBytes
 
 UpdateEnemyMonInParty::
@@ -148,125 +148,11 @@ RefreshBattleHuds::
 	jp WaitBGMap
 
 UpdateBattleHuds::
-	ld a, $f
-	ld hl, $5da5
-	rst FarCall
-	ld a, $f
-	ld hl, $5e98
-	rst FarCall
+	farcall UpdatePlayerHUD
+	farcall UpdateEnemyHUD
 	ret
 
-GetBattleVar::
-; Preserves hl.
-	push hl
-	call GetBattleVarAddr
-	pop hl
-	ret
-
-GetBattleVarAddr::
-; Get variable from pair a, depending on whose turn it is.
-; There are 21 variable pairs.
-
-	push bc
-
-	ld hl, BattleVarPairs
-	ld c, a
-	ld b, 0
-	add hl, bc
-	add hl, bc
-
-	ld a, [hli]
-	ld h, [hl]
-	ld l, a
-
-; Enemy turn uses the second byte instead.
-; This lets battle variable calls be side-neutral.
-	ldh a, [hBattleTurn]
-	and a
-	jr z, .getvar
-	inc hl
-
-.getvar
-; var id
-	ld a, [hl]
-	ld c, a
-	ld b, 0
-
-	ld hl, $3c74
-	add hl, bc
-	add hl, bc
-
-	ld a, [hli]
-	ld h, [hl]
-	ld l, a
-
-	ld a, [hl]
-
-	pop bc
-	ret
-
-BattleVarPairs:
-; entries correspond to BATTLE_VARS_* constants
-	dw .Substatus1
-	dw .Substatus2
-	dw .Substatus3
-	dw .Substatus4
-	dw .Substatus5
-	dw .Substatus1Opp
-	dw .Substatus2Opp
-	dw .Substatus3Opp
-	dw .Substatus4Opp
-	dw .Substatus5Opp
-	dw .Status
-	dw .StatusOpp
-	dw .MoveAnim
-	dw .MoveEffect
-	dw .MovePower
-	dw .MoveType
-	dw .CurMove
-	dw .LastCounter
-	dw .LastCounterOpp
-	dw .LastMove
-	dw .LastMoveOpp
-
-;                   player                 enemy
-.Substatus1:     db PLAYER_SUBSTATUS_1,    ENEMY_SUBSTATUS_1
-.Substatus1Opp:  db ENEMY_SUBSTATUS_1,     PLAYER_SUBSTATUS_1
-.Substatus2:     db PLAYER_SUBSTATUS_2,    ENEMY_SUBSTATUS_2
-.Substatus2Opp:  db ENEMY_SUBSTATUS_2,     PLAYER_SUBSTATUS_2
-.Substatus3:     db PLAYER_SUBSTATUS_3,    ENEMY_SUBSTATUS_3
-.Substatus3Opp:  db ENEMY_SUBSTATUS_3,     PLAYER_SUBSTATUS_3
-.Substatus4:     db PLAYER_SUBSTATUS_4,    ENEMY_SUBSTATUS_4
-.Substatus4Opp:  db ENEMY_SUBSTATUS_4,     PLAYER_SUBSTATUS_4
-.Substatus5:     db PLAYER_SUBSTATUS_5,    ENEMY_SUBSTATUS_5
-.Substatus5Opp:  db ENEMY_SUBSTATUS_5,     PLAYER_SUBSTATUS_5
-.Status:         db PLAYER_STATUS,         ENEMY_STATUS
-.StatusOpp:      db ENEMY_STATUS,          PLAYER_STATUS
-.MoveAnim:       db PLAYER_MOVE_ANIMATION, ENEMY_MOVE_ANIMATION
-.MoveEffect:     db PLAYER_MOVE_EFFECT,    ENEMY_MOVE_EFFECT
-.MovePower:      db PLAYER_MOVE_POWER,     ENEMY_MOVE_POWER
-.MoveType:       db PLAYER_MOVE_TYPE,      ENEMY_MOVE_TYPE
-.CurMove:        db PLAYER_CUR_MOVE,       ENEMY_CUR_MOVE
-.LastCounter:    db PLAYER_COUNTER_MOVE,   ENEMY_COUNTER_MOVE
-.LastCounterOpp: db ENEMY_COUNTER_MOVE,    PLAYER_COUNTER_MOVE
-.LastMove:       db PLAYER_LAST_MOVE,      ENEMY_LAST_MOVE
-.LastMoveOpp:    db ENEMY_LAST_MOVE,       PLAYER_LAST_MOVE
-
-BattleVarLocations:
-; entries correspond to PLAYER_* and ENEMY_* constants
-	dw wPlayerSubStatus1,            wEnemySubStatus1
-	dw wPlayerSubStatus2,            wEnemySubStatus2
-	dw wPlayerSubStatus3,            wEnemySubStatus3
-	dw wPlayerSubStatus4,            wEnemySubStatus4
-	dw wPlayerSubStatus5,            wEnemySubStatus5
-	dw wBattleMonStatus,             wEnemyMonStatus
-	dw wPlayerMoveStructAnimation,   wEnemyMoveStructAnimation
-	dw wPlayerMoveStructEffect,      wEnemyMoveStructEffect
-	dw wPlayerMoveStructPower,       wEnemyMoveStructPower
-	dw wPlayerMoveStructType,        wEnemyMoveStructType
-	dw wCurPlayerMove,               wCurEnemyMove
-	dw wLastEnemyCounterMove,        wLastPlayerCounterMove
-	dw wLastPlayerMove,              wLastEnemyMove
+INCLUDE "home/battle_vars.asm"
 
 StdBattleTextbox::
 ; Open a textbox and print battle text at 20:hl.
@@ -275,22 +161,22 @@ StdBattleTextbox::
 	push af
 
 	ld a, $0e
-	rst $10
+	rst Bankswitch
 
 	call PrintText
 
 	pop af
-	rst $10
+	rst Bankswitch
 	ret
 
 GetBattleAnimPointer::
 	ld a, $32
-	rst $10
+	rst Bankswitch
 
 	ld a, [hli]
-	ld [wca10], a
+	ld [wBattleAnimAddress], a
 	ld a, [hl]
-	ld [wca11], a
+	ld [wBattleAnimAddress + 1], a
 
 	ld a, $33
 	rst Bankswitch
@@ -301,20 +187,20 @@ GetBattleAnimByte::
 	push hl
 	push de
 
-	ld hl, wca10
+	ld hl, wBattleAnimAddress
 	ld e, [hl]
 	inc hl
 	ld d, [hl]
 
 	ld a, $32
-	rst $10
+	rst Bankswitch
 
 	ld a, [de]
-	ld [wca17], a
+	ld [wBattleAnimByte], a
 	inc de
 
 	ld a, $33
-	rst $10
+	rst Bankswitch
 
 	ld [hl], d
 	dec hl
@@ -323,7 +209,7 @@ GetBattleAnimByte::
 	pop de
 	pop hl
 
-	ld a, [wca17]
+	ld a, [wBattleAnimByte]
 	ret
 
 PushLYOverrides::

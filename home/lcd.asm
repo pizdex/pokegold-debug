@@ -6,11 +6,10 @@ LCD::
 	and a
 	jr z, .done
 
-; At this point it's assumed we're in WRAM bank 5!
 	push hl
 	ldh a, [rLY]
 	ld l, a
-	ld h, HIGH($c700)
+	ld h, HIGH(wLYOverrides)
 	ld h, [hl]
 	ldh a, [hLCDCPointer]
 	ld l, a

@@ -1,5 +1,11 @@
 ; VBlank is the interrupt responsible for updating VRAM.
 
+; In Pokemon Gold and Silver, VBlank has been hijacked to act as the
+; main loop. After time-sensitive graphics operations have been
+; performed, joypad input and sound functions are executed.
+
+; This prevents the display and audio output from lagging.
+
 VBlank::
 	push af
 	push bc
@@ -38,7 +44,7 @@ VBlank::
 	dw VBlank3
 	dw VBlank4
 	dw VBlank5
-	dw VBlank0
+	dw VBlank0 ; just in case
 	dw VBlank0 ; just in case
 
 VBlank0::
@@ -73,7 +79,7 @@ VBlank0::
 	ldh [hRandomSub], a
 
 	ldh a, [hROMBank]
-	ld [$d147], a
+	ld [wROMBankBackup], a
 
 	ldh a, [hSCX]
 	ldh [rSCX], a
@@ -87,16 +93,18 @@ VBlank0::
 	; There's only time to call one of these in one vblank.
 	; Calls are in order of priority.
 
-	call $142d
+	call UpdateBGMapBuffer
 	jr c, .done
-	call $0bc8
+	call UpdatePalsIfCGB
 	jr c, .done
+	call UpdateBGMap
 
-	call $1490
-	call $157d
-	call $1526
-	call $15d8
-	call $160f
+	; These have their own timing checks.
+
+	call Serve2bppRequest
+	call Serve1bppRequest
+	call AnimateTileset
+	call FillBGMap0WithBlack
 
 .done
 	ldh a, [hOAMUpdate]
@@ -106,30 +114,29 @@ VBlank0::
 
 .done_oam
 	; vblank-sensitive operations are done
-
 	xor a
-	ld [$cf1e], a
+	ld [wVBlankOccurred], a
 
-	ld a, [$cf1c]
+	ld a, [wOverworldDelay]
 	and a
 	jr z, .ok
 	dec a
-	ld [$cf1c], a
+	ld [wOverworldDelay], a
 
 .ok
-	ld a, [$cf1d]
+	ld a, [wTextDelayFrames]
 	and a
 	jr z, .ok2
 	dec a
-	ld [$cf1d], a
+	ld [wTextDelayFrames], a
 
 .ok2
-	call $08e5
+	call UpdateJoypad
 
-	ld a, $3a
+	ld a, BANK(_UpdateSound)
 	rst Bankswitch
-	call $405c
-	ld a, [$d147]
+	call _UpdateSound
+	ld a, [wROMBankBackup]
 	rst Bankswitch
 
 	ldh a, [hSeconds]
@@ -144,44 +151,54 @@ VBlank1::
 ; tiles
 ; oam
 ; sound / lcd stat
-	ldh a, [$9f]
-	ld [$d147], a
-	ldh a, [$d1]
+
+	ldh a, [hROMBank]
+	ld [wROMBankBackup], a
+	ldh a, [hSCX]
 	ldh [rSCX], a
-	ldh a, [$d2]
+	ldh a, [hSCY]
 	ldh [rSCY], a
-	call $023e
-	jr c, jr_000_020f
+	call UpdatePals
+	jr c, .done
 
-	call $1490
-	call $157d
-	call $ff80
+	call UpdateBGMap
+	call Serve2bppRequest
 
-jr_000_020f:
+	call hTransferVirtualOAM
+
+.done
 	xor a
-	ld [$cf1e], a
+	ld [wVBlankOccurred], a
+
+	; get requested ints
 	ldh a, [rIF]
 	ld b, a
+	; discard requested ints
 	xor a
 	ldh [rIF], a
-	ld a, $02
+	; enable lcd stat
+	ld a, 1 << LCD_STAT
 	ldh [rIE], a
+	; rerequest serial int if applicable (still disabled)
+	; request lcd stat
 	ld a, b
-	and $08
-	or $02
+	and 1 << SERIAL
+	or 1 << LCD_STAT
 	ldh [rIF], a
+
 	ei
-	ld a, $3a
-	rst $10
-	call $405c
-	ld a, [$d147]
-	rst $10
+	ld a, BANK(_UpdateSound)
+	rst Bankswitch
+	call _UpdateSound
+	ld a, [wROMBankBackup]
+	rst Bankswitch
+
 	di
 	ldh a, [rIF]
 	ld b, a
 	xor a
 	ldh [rIF], a
-	ld a, $1f
+	ld a, IE_DEFAULT
 	ldh [rIE], a
 	ld a, b
 	ldh [rIF], a
@@ -189,16 +206,19 @@ jr_000_020f:
 
 UpdatePals::
 ; update pals for either dmg or cgb
-	ldh a, [$e8]
-	and a
-	jp nz, $0bcc
 
-	ld a, [$cf6d]
+	ldh a, [hCGB]
+	and a
+	jp nz, UpdateCGBPals
+
+	; update gb pals
+	ld a, [wBGP]
 	ldh [rBGP], a
-	ld a, [$cf6e]
+	ld a, [wOBP0]
 	ldh [rOBP0], a
-	ld a, [$cf6f]
+	ld a, [wOBP1]
 	ldh [rOBP1], a
+
 	and a
 	ret
 
@@ -210,22 +230,28 @@ VBlank4::
 ; serial
 ; sound
 
-	ldh a, [$9f]
-	ld [$d147], a
-	call $1490
-	call $157d
-	call $ff80
-	call $08e5
-	xor a
-	ld [$cf1e], a
-	call $1ee0
-	ld a, $3a
-	rst $10
-	call $405c
-	ld a, [$d147]
-	rst $10
-	ret
+	ldh a, [hROMBank]
+	ld [wROMBankBackup], a
 
+	call UpdateBGMap
+	call Serve2bppRequest
+
+	call hTransferVirtualOAM
+
+	call UpdateJoypad
+
+	xor a
+	ld [wVBlankOccurred], a
+
+	call AskSerial
+
+	ld a, BANK(_UpdateSound)
+	rst Bankswitch
+	call _UpdateSound
+
+	ld a, [wROMBankBackup]
+	rst Bankswitch
+	ret
 
 VBlank5::
 ; scx
@@ -234,50 +260,61 @@ VBlank5::
 ; tiles
 ; joypad
 
-	ldh a, [$9f]
-	ld [$d147], a
-	ldh a, [$d1]
+	ldh a, [hROMBank]
+	ld [wROMBankBackup], a
+
+	ldh a, [hSCX]
 	ldh [rSCX], a
-	call $0bc8
-	jr c, jr_000_028c
 
-	call $1490
-	call $157d
+	call UpdatePalsIfCGB
+	jr c, .done
 
-jr_000_028c:
+	call UpdateBGMap
+	call Serve2bppRequest
+.done
+
 	xor a
-	ld [$cf1e], a
-	call $08e5
+	ld [wVBlankOccurred], a
+
+	call UpdateJoypad
+
 	xor a
 	ldh [rIF], a
-	ld a, $02
+	ld a, 1 << LCD_STAT
 	ldh [rIE], a
+	; request lcd stat
 	ldh [rIF], a
+
 	ei
-	ld a, $3a
-	rst $10
-	call $405c
-	ld a, [$d147]
-	rst $10
+	ld a, BANK(_UpdateSound)
+	rst Bankswitch
+	call _UpdateSound
+	ld a, [wROMBankBackup]
+	rst Bankswitch
 	di
+
 	xor a
 	ldh [rIF], a
-	ld a, $1f
+	; enable ints
+	ld a, IE_DEFAULT
 	ldh [rIE], a
 	ret
 
 VBlank2::
 ; sound only
 
-	ldh a, [$9f]
-	ld [$d147], a
-	ld a, $3a
-	rst $10
-	call $405c
-	ld a, [$d147]
-	rst $10
+	ldh a, [hROMBank]
+	ld [wROMBankBackup], a
+
+	ld a, BANK(_UpdateSound)
+	rst Bankswitch
+	call _UpdateSound
+
+	ld a, [wROMBankBackup]
+	rst Bankswitch
+
 	xor a
-	ld [$cf1e], a
+	ld [wVBlankOccurred], a
 	ret
 
 VBlank3::
@@ -288,60 +325,76 @@ VBlank3::
 ; oam
 ; sound / lcd stat
 
-	ldh a, [$9d]
+	ldh a, [hVBlankCounter]
 	inc a
-	ldh [$9d], a
+	ldh [hVBlankCounter], a
+
 	ldh a, [rDIV]
 	ld b, a
-	ldh a, [$e3]
+	ldh a, [hRandomAdd]
 	adc b
-	ldh [$e3], a
+	ldh [hRandomAdd], a
+
 	ldh a, [rDIV]
 	ld b, a
-	ldh a, [$e4]
+	ldh a, [hRandomSub]
 	sbc b
-	ldh [$e4], a
-	call $08e5
-	ldh a, [$9f]
-	ld [$d147], a
-	ldh a, [$d1]
+	ldh [hRandomSub], a
+
+	call UpdateJoypad
+
+	ldh a, [hROMBank]
+	ld [wROMBankBackup], a
+
+	ldh a, [hSCX]
 	ldh [rSCX], a
-	ldh a, [$d2]
+	ldh a, [hSCY]
 	ldh [rSCY], a
-	ldh a, [$d4]
+
+	ldh a, [hWY]
 	ldh [rWY], a
-	ldh a, [$d3]
+	ldh a, [hWX]
 	ldh [rWX], a
-	call $1490
-	call $142d
-	call $157d
-	call $1526
-	call $15d8
-	call $ff80
+
+	call UpdateBGMap
+	call UpdateBGMapBuffer
+
+	call Serve2bppRequest
+	call Serve1bppRequest
+	call AnimateTileset
+	call hTransferVirtualOAM
+
 	xor a
-	ld [$cf1e], a
-	ld a, [$cf1d]
+	ld [wVBlankOccurred], a
+
+	ld a, [wTextDelayFrames]
 	and a
-	jr z, jr_000_0311
-
+	jr z, .okay
 	dec a
-	ld [$cf1d], a
+	ld [wTextDelayFrames], a
 
-jr_000_0311:
+.okay
+	; discard requested ints
 	xor a
 	ldh [rIF], a
-	ld a, $02
+	; enable lcd stat
+	ld a, 1 << LCD_STAT
 	ldh [rIE], a
+	; request lcd stat
 	ldh [rIF], a
+
 	ei
-	ld a, $3a
-	rst $10
-	call $405c
-	ld a, [$d147]
-	rst $10
+	ld a, BANK(_UpdateSound)
+	rst Bankswitch
+	call _UpdateSound
+	ld a, [wROMBankBackup]
+	rst Bankswitch
 	di
+
+	; discard requested ints
 	xor a
 	ldh [rIF], a
-	ld a, $1f
+	; enable ints
+	ld a, IE_DEFAULT
 	ldh [rIE], a
 	ret

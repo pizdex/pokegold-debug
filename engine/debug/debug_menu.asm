@@ -341,7 +341,7 @@ Call_03f_44fb:
 	call FarCopyBytes
 
 	ld hl, .RivalName
-	ld de, wd1c1
+	ld de, wRivalName
 	ld bc, 6
 	call CopyBytes
 	ret

@@ -30,9 +30,7 @@ Multiply::
 	push hl
 	push bc
 
-	ld hl, $6ad6
-	ld a, 1
-	rst FarCall
+	callfar _Multiply
 
 	pop bc
 	pop hl
@@ -44,22 +42,14 @@ Divide::
 	push hl
 	push de
 	push bc
-
-	ldh a, [hROMBank]
-	push af
-	ld a, $01
-	rst $10
-	call $6b36
-	pop af
-	rst $10
-
+	homecall _Divide
 	pop bc
 	pop de
 	pop hl
 	ret
 
-SubtractSigned::
-; Return a - b, sign in carry.
+SubtractAbsolute:: ; unreferenced
+; Return |a - b|, sign in carry.
 	sub b
 	ret nc
 	cpl

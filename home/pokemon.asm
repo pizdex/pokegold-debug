@@ -59,11 +59,12 @@ DrawBattleHPBar::
 	ret
 
 PrepMonFrontpic::
-	ld a, 1
+	ld a, $1
 	ld [wBoxAlignment], a
 
 _PrepMonFrontpic::
 	ld a, [wCurPartySpecies]
+; is a pokemon?
 	and a
 	jr z, .not_pokemon
 	cp EGG
@@ -116,8 +117,8 @@ _PlayMonCry::
 
 	ld e, c
 	ld d, b
-	call $3db6
-	call $3e28
+	call PlayCry
+	call WaitSFX
 
 .done
 	pop bc
@@ -133,10 +134,10 @@ LoadCry::
 
 	ldh a, [hROMBank]
 	push af
-	ld a, $3c
+	ld a, BANK(PokemonCries)
 	rst Bankswitch
 
-	ld hl, $6747
+	ld hl, PokemonCries
 rept 6 ; sizeof(mon_cry)
 	add hl, bc
 endr
@@ -205,7 +206,7 @@ Print8BitNumLeftAlign::
 	ld b, PRINTNUM_LEFTALIGN | 1
 	jp PrintNum
 
-Unreferenced_GetNthMove::
+GetNthMove:: ; unreferenced
 	ld hl, wListMoves_MoveIndicesBuffer
 	ld c, a
 	ld b, 0
@@ -219,7 +220,7 @@ GetBaseData::
 	push hl
 	ldh a, [hROMBank]
 	push af
-	ld a, $14
+	ld a, BANK(BaseData)
 	rst Bankswitch
 
 ; Egg doesn't have BaseData
@@ -230,7 +231,7 @@ GetBaseData::
 ; Get BaseData
 	dec a
 	ld bc, BASE_DATA_SIZE
-	ld hl, $5aac
+	ld hl, BaseData
 	call AddNTimes
 	ld de, wCurBaseData
 	ld bc, BASE_DATA_SIZE
@@ -287,9 +288,7 @@ GetNick::
 	call CopyBytes
 	pop de
 
-	ld hl, $6a97
-	ld a, 1
-	rst FarCall
+	callfar CorrectNickErrors
 
 	pop bc
 	pop hl

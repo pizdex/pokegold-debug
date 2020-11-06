@@ -6,9 +6,7 @@ GetSpritePalette::
 	push bc
 	ld c, a
 
-	ld a, 5
-	ld hl, $4306
-	rst 8
+	farcall _GetSpritePalette
 
 	ld a, c
 	pop bc
@@ -20,7 +18,7 @@ GetSpriteVTile::
 	push hl
 	push bc
 	ld hl, wUsedSprites + 2
-	ld c, $b
+	ld c, SPRITE_GFX_LIST_CAPACITY - 1
 	ld b, a
 	ldh a, [hMapObjectIndexBuffer]
 	cp 0
@@ -58,11 +56,11 @@ DoesSpriteHaveFacings::
 	ld b, a
 	ldh a, [hROMBank]
 	push af
-	ld a, $05
+	ld a, BANK(_DoesSpriteHaveFacings)
 	rst Bankswitch
 
 	ld a, b
-	call $42e9
+	call _DoesSpriteHaveFacings
 	ld c, a
 
 	pop de
@@ -74,13 +72,13 @@ DoesSpriteHaveFacings::
 	ret
 
 GetPlayerStandingTile::
-	ld a, [$d1fe]
+	ld a, [wPlayerStandingTile]
 	call GetTileCollision
 	ld b, a
 	ret
 
 CheckOnWater::
-	ld a, [$d1fe]
+	ld a, [wPlayerStandingTile]
 	call GetTileCollision
 	sub WATER_TILE
 	ret z
@@ -93,21 +91,21 @@ GetTileCollision::
 	push de
 	push hl
 
-	ld hl, $734a
+	ld hl, TileCollisionTable
 	ld e, a
 	ld d, 0
 	add hl, de
 
 	ldh a, [hROMBank]
 	push af
-	ld a, $3e
+	ld a, BANK(TileCollisionTable)
 	rst Bankswitch
 	ld e, [hl]
 	pop af
 	rst Bankswitch
 
 	ld a, e
-	and $f ; low nibble only
+	and $f ; lo nybble only
 
 	pop hl
 	pop de
@@ -205,7 +203,7 @@ GetMapObject::
 ; Return the location of map object a in bc.
 	ld hl, wMapObjects
 	ld bc, MAPOBJECT_LENGTH
-	call $3210
+	call AddNTimes
 	ld b, h
 	ld c, l
 	ret
@@ -239,7 +237,7 @@ CheckObjectTime::
 	ld a, [hl]
 	cp -1
 	jr z, .timeofday_always
-	ld hl, .TimeOfDayValues_191e
+	ld hl, .TimesOfDay
 	ld a, [wTimeOfDay]
 	add l
 	ld l, a
@@ -259,7 +257,7 @@ CheckObjectTime::
 	and a
 	ret
 
-.TimeOfDayValues_191e:
+.TimesOfDay:
 ; entries correspond to TimeOfDay values
 	db MORN
 	db DAY
@@ -302,20 +300,18 @@ CheckObjectTime::
 	scf
 	ret
 
-; unused
+CopyMapObjectStruct:: ; unreferenced
 	ldh [hMapObjectIndexBuffer], a
 	call GetMapObject
-	call $4a05
+	call CopyObjectStruct
 	ret
 
-_CopyObjectStruct::
+UnmaskCopyMapObjectStruct::
 	ldh [hMapObjectIndexBuffer], a
-	call $28ae
+	call UnmaskObject
 	ldh a, [hMapObjectIndexBuffer]
 	call GetMapObject
-	ld a, 2
-	ld hl, $4a05
-	rst FarCall
+	farcall CopyObjectStruct
 	ret
 
 ApplyDeletionToMapObject::
@@ -331,9 +327,7 @@ ApplyDeletionToMapObject::
 	call .CheckStopFollow
 	pop af
 	call GetObjectStruct
-	ld a, $01
-	ld hl, $4360
-	rst FarCall
+	farcall DeleteMapObject
 	ret
 
 .CheckStopFollow:
@@ -344,9 +338,7 @@ ApplyDeletionToMapObject::
 	cp [hl]
 	ret nz
 .ok
-	ld a, $01
-	ld hl, $579d
-	rst FarCall
+	farcall StopFollow
 	ld a, -1
 	ld [wObjectFollow_Leader], a
 	ld [wObjectFollow_Follower], a
@@ -354,7 +346,7 @@ ApplyDeletionToMapObject::
 
 DeleteObjectStruct::
 	call ApplyDeletionToMapObject
-	call $28a2
+	call MaskObject
 	ret
 
 CopyPlayerObjectTemplate::
@@ -370,7 +362,7 @@ CopyPlayerObjectTemplate::
 	call CopyBytes
 	ret
 
-Unreferenced_Function1822::
+DeleteFollowerMapObject: ; unreferenced
 	call GetMapObject
 	ld hl, MAPOBJECT_OBJECT_STRUCT_ID
 	add hl, bc
@@ -384,7 +376,7 @@ Unreferenced_Function1822::
 	pop af
 	cp -1
 	ret z
-	cp $d
+	cp NUM_OBJECT_STRUCTS
 	ret nc
 	ld b, a
 	ld a, [wObjectFollow_Leader]
@@ -396,9 +388,7 @@ Unreferenced_Function1822::
 .ok
 	ld a, b
 	call GetObjectStruct
-	ld a, 1
-	ld hl, $4360
-	rst FarCall
+	farcall DeleteMapObject
 	ret
 
 LoadMovementDataPointer::
@@ -584,12 +574,12 @@ _GetMovementByte::
 	ld a, h
 	ret
 
-SetVramState_Bit0::
+SetVramState_Bit0:: ; unreferenced
 	ld hl, wVramState
 	set 0, [hl]
 	ret
 
-ResetVramState_Bit0::
+ResetVramState_Bit0:: ; unreferenced
 	ld hl, wVramState
 	res 0, [hl]
 	ret
@@ -599,18 +589,14 @@ UpdateSprites::
 	bit 0, a
 	ret z
 
-	ld a, 1
-	ld hl, $5587
-	rst FarCall
-	ld a, 1
-	ld hl, $589e
-	rst FarCall
+	farcall UpdateAllObjectsFrozen
+	farcall _UpdateSprites
 	ret
 
 GetObjectStruct::
-	ld bc, $0028
-	ld hl, $d1f0
-	call $3210
+	ld bc, OBJECT_LENGTH
+	ld hl, wObjectStructs
+	call AddNTimes
 	ld b, h
 	ld c, l
 	ret

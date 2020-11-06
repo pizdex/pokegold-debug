@@ -31,17 +31,17 @@ IsInJohto::
 	ld a, KANTO_REGION
 	ret
 
-Function306b::
+SetXYCompareFlags::
 	push hl
 	xor a
-	ld hl, wd16e
+	ld hl, wXYCompareFlags
 	ld [hli], a
 	ld [hli], a
 	ld [hli], a
 	ld [hl], a
-	ld a, [wd16c]
+	ld a, [wXYComparePointer]
 	ld l, a
-	ld a, [wd16d]
+	ld a, [wXYComparePointer + 1]
 	ld h, a
 	or l
 	jr z, .quit
@@ -52,13 +52,13 @@ Function306b::
 	add $4
 	ld d, a
 	ld a, [wPlayerStandingMapY]
-	ld a, $4 ; add $4
+	ld a, $4 ; should be "add $4"
 	ld e, a
 	push bc
-	ld c, $0
+	ld c, 0
 .loop
 	ld a, [hl]
-	cp $ff
+	cp -1 ; end?
 	jr z, .done
 	push hl
 	ld a, d
@@ -68,13 +68,12 @@ Function306b::
 	ld a, e
 	cp [hl]
 	jr nz, .next
-	ld hl, wd16e
+	ld hl, wXYCompareFlags
 	ld b, SET_FLAG
 	push de
 	push bc
-	ld d, $0
-	ld a, $03
-	call Predef
+	ld d, 0
+	predef SmallFarFlagAction
 	pop bc
 	pop de
 .next
@@ -84,7 +83,7 @@ Function306b::
 	inc hl
 	inc c
 	ld a, c
-	cp $20
+	cp MAX_XYCOMPARE_LENGTH
 	jr c, .loop
 .done
 	pop bc

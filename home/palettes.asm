@@ -17,7 +17,6 @@ UpdateCGBPals::
 	and a
 	ret z
 
-ForceUpdateCGBPals::
 	ld hl, wBGPals2
 
 ; copy 8 pals to bgpd
@@ -82,7 +81,7 @@ DmgToCgbBGPals::
 	ld c, 8
 	call CopyPals
 ; request pal update
-	ld a, 1
+	ld a, TRUE
 	ldh [hCGBPalUpdate], a
 
 	pop bc
@@ -121,7 +120,7 @@ DmgToCgbObjPals::
 	ld c, 8
 	call CopyPals
 ; request pal update
-	ld a, 1
+	ld a, TRUE
 	ldh [hCGBPalUpdate], a
 
 	pop bc
@@ -148,7 +147,7 @@ DmgToCgbObjPal0::
 	ld b, a
 	ld c, 1
 	call CopyPals
-	ld a, 1
+	ld a, TRUE
 	ldh [hCGBPalUpdate], a
 
 	pop bc
@@ -177,7 +176,7 @@ DmgToCgbObjPal1::
 	ld b, a
 	ld c, 1
 	call CopyPals
-	ld a, 1
+	ld a, TRUE
 	ldh [hCGBPalUpdate], a
 
 	pop bc
@@ -257,22 +256,22 @@ ClearVBank1::
 	ldh [rVBK], a
 	ret
 
-Functiond13::
-	ld hl, wTilemap
-	ld de, wAttrmap
+ReloadPalettes::
+	hlcoord 0, 0
+	decoord 0, 0, wAttrmap
 	ld bc, SCREEN_WIDTH * SCREEN_HEIGHT
-.asm_d33
+.loop
 	ld a, [hli]
-	cp $60
-	jr c, .asm_d3b
-	ld a, $7
+	cp "■"
+	jr c, .skip
+	ld a, PAL_BG_TEXT
 	ld [de], a
-.asm_d3b
+.skip
 	inc de
 	dec bc
 	ld a, b
 	or c
-	jr nz, .asm_d33
+	jr nz, .loop
 	ret
 
 ReloadSpritesNoPalettes::
@@ -283,27 +282,15 @@ ReloadSpritesNoPalettes::
 	ld bc, (8 palettes) + (2 palettes)
 	xor a
 	call ByteFill
-	ld a, 1
+	ld a, TRUE
 	ldh [hCGBPalUpdate], a
 	call DelayFrame
 	ret
 
 SwapTextboxPalettes::
-	ldh a, [$9f]
-	push af
-	ld a, $02
-	rst $10
-	call $4000
-	pop af
-	rst $10
+	homecall _SwapTextboxPalettes
 	ret
 
 ScrollBGMapPalettes::
-	ldh a, [$9f]
-	push af
-	ld a, $02
-	rst $10
-	call $404f
-	pop af
-	rst $10
+	homecall _ScrollBGMapPalettes
 	ret

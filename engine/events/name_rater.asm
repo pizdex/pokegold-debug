@@ -95,7 +95,7 @@ CheckIfMonIsYourOT:
 	ld bc, PARTYMON_STRUCT_LENGTH
 	ld a, [wCurPartyMon]
 	call AddNTimes
-	ld de, wd1b3
+	ld de, wPlayerID
 	ld c, 2 ; number of bytes in which your ID is stored
 .loop
 	ld a, [de]

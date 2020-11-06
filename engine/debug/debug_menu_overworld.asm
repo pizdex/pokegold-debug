@@ -497,11 +497,11 @@ unk_03f_48a1:
 	farcall DebugClockMenu_Overworld
 
 jr_03f_48a7:
-	farcall unk_023_440e
-	farcall unk_023_43b9
+	farcall FadeOutPalettes
+	farcall UpdateTimeOfDayPal
 	ld b, 9
 	call GetSGBLayout
-	farcall unk_023_4403
+	farcall FadeInPalettes
 	call UpdateTimePals
 	ld a, 1
 	ret
@@ -1279,7 +1279,7 @@ unk_03f_4e7a:
 
 unk_03f_4e80:
 	halloffame
-	loadmem wd1d4, 1
+	loadmem wSpawnAfterChampion, 1
 	end
 
 unk_03f_4e86:

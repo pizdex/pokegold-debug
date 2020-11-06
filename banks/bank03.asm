@@ -2,7 +2,16 @@ INCLUDE "engine/pokemon/health.asm"
 INCLUDE "engine/events/overworld.asm"
 
 _ReceiveItem::
-	dr $d4b1, $d8fc
+	dr $d4b1, $d4e9
+
+_TossItem::
+	dr $d4e9, $d520
+
+_CheckItem::
+	dr $d520, $d703
+
+_CheckTossableItem::
+	dr $d703, $d8fc
 
 _AnimateHPBar:
 	dr $d8fc, $db39

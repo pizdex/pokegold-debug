@@ -27,9 +27,7 @@ HandleStoneQueue::
 	call .IsObjectInStoneTable
 	jr nc, .nope
 	call CallMapScript
-	ld a, $25
-	ld hl, $6bb9
-	rst FarCall
+	farcall EnableScriptMode
 	scf
 	ret
 

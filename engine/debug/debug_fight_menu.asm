@@ -531,7 +531,7 @@ DebugFight_StartButton:
 	callfar unk_00e_5534
 
 	ld hl, wTilemap + 165
-	ld de, wcb2a
+	ld de, wOTClassName
 	call PlaceString
 	pop bc
 	jr .asm_5271
@@ -689,7 +689,7 @@ Jump_03f_5360:
 	ld c, a
 	callfar unk_00e_5534
 	ld hl, $c445
-	ld de, wcb2a
+	ld de, wOTClassName
 	call PlaceString
 	pop bc
 	jp Jump_03f_5314

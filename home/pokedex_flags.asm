@@ -59,8 +59,7 @@ CheckSeenMon::
 
 PokedexFlagAction::
 	ld d, 0
-	ld a, 3
-	call Predef
+	predef SmallFarFlagAction
 	ld a, c
 	and a
 	ret

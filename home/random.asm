@@ -36,10 +36,10 @@ BattleRandom::
 
 	ldh a, [hROMBank]
 	push af
-	ld a, $0f
+	ld a, BANK(_BattleRandom)
 	rst Bankswitch
 
-	call $6cc8
+	call _BattleRandom
 
 	ld [wPredefTemp + 1], a
 	pop af
@@ -74,7 +74,7 @@ RandomRange::
 	ld a, c
 	pop bc
 
-	call $3222
+	call SimpleDivide
 
 	pop bc
 	ret

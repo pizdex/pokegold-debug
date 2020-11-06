@@ -68,8 +68,11 @@ Call_003_4791:
 CheckPartyMove:
 	dr $c7bb, $c86f
 
-Call_003_486f:
-	dr $c86f, $cfb1
+CheckMapForSomethingToCut:
+	dr $c86f, $c8a3
+
+Script_Cut:
+	dr $c8a3, $cfb1
 
 Call_003_4fb1:
 	dr $cfb1, $d439
@@ -83,15 +86,15 @@ TryCutOW::
 	call CheckEngineFlag
 	jr c, .cant_cut
 
-	ld a, $03
-	ld hl, $545c
+	ld a, BANK(AskCutScript)
+	ld hl, AskCutScript
 	call CallScript
 	scf
 	ret
 
 .cant_cut
-	ld a, $03
-	ld hl, $549c
+	ld a, BANK(CantCutScript)
+	ld hl, CantCutScript
 	call CallScript
 	scf
 	ret
@@ -102,7 +105,7 @@ AskCutScript:
 	yesorno
 	iffalse .declined
 	callasm .CheckMap
-	iftrue $48a3
+	iftrue Script_Cut
 .declined
 	closetext
 	end
@@ -110,7 +113,7 @@ AskCutScript:
 .CheckMap:
 	xor a
 	ld [wScriptVar], a
-	call Call_003_486f
+	call CheckMapForSomethingToCut
 	ret c
 	ld a, TRUE
 	ld [wScriptVar], a

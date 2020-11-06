@@ -222,11 +222,29 @@ wc195:: ds 1 ; c195
 wUnusedBCDNumber:: ds 1 ; c196
 wc197:: ds 1 ; c197
 
-wCurMusicByte:: ds 1 ; c198
-wc199:: ds 1 ; c199
-wVolume:: ds 1 ; c19a
-wc19b:: ds 1 ; c19b
-wSoundInput:: ds 1 ; c19c
+wCurMusicByte:: db
+wCurChannel:: db
+wVolume::
+; corresponds to rNR50
+; Channel control / ON-OFF / Volume (R/W)
+;   bit 7 - Vin->SO2 ON/OFF
+;   bit 6-4 - SO2 output level (volume) (# 0-7)
+;   bit 3 - Vin->SO1 ON/OFF
+;   bit 2-0 - SO1 output level (volume) (# 0-7)
+	db
+wSoundOutput::
+; corresponds to rNR51
+; bit 4-7: ch1-4 so2 on/off
+; bit 0-3: ch1-4 so1 on/off
+	db
+wPitchSweep::
+; corresponds to rNR10
+; bit 7:   unused
+; bit 4-6: sweep time
+; bit 3:   sweep direction
+; but 0-2: sweep shift
+	db
+
 wc19d:: ds 1 ; c19d
 wc19e:: ds 1 ; c19e
 wc19f:: ds 1 ; c19f
@@ -385,15 +403,29 @@ wVirtualOAMSprite39:: sprite_oam_struct wVirtualOAMSprite39
 wVirtualOAMEnd::
 
 SECTION "Tilemap", WRAM0
-wTilemap:: ; c3a0
-	ds SCREEN_HEIGHT * SCREEN_WIDTH
-wTilemapEnd:: ; c508
 
-SECTION "Animated Objects", WRAM0
+wTilemap::
+; 20x18 grid of 8x8 tiles
+	ds SCREEN_WIDTH * SCREEN_HEIGHT
+wTilemapEnd::
+
+
+SECTION "Miscellaneous", WRAM0
+
+; This union spans 480 bytes.
+UNION
+; surrounding tiles
+; This buffer determines the size for the rest of the union;
+; it uses exactly 480 bytes.
+wSurroundingTiles:: ds SURROUNDING_WIDTH * SURROUNDING_HEIGHT
+
+NEXTU
+; 20x18 grid of 8x8 tiles
+wTempTilemap::
+	ds SCREEN_WIDTH * SCREEN_HEIGHT
+
+NEXTU
 wMisc:: ; c508
-wTempTilemap:: ; c508
-	; ds SCREEN_HEIGHT * SCREEN_WIDTH
-
 wc508:: ds 1 ; c508
 wc509:: ds 1 ; c509
 wc50a:: ds 1 ; c50a
@@ -579,9 +611,10 @@ wc5bd:: ds 1 ; c5bd
 wc5be:: ds 1 ; c5be
 wc5bf:: ds 1 ; c5bf
 
-wAnimatedObjectStructIDBuffer:: ds 1 ; c5c0
-
-wc5c1:: ds 1 ; c5c1
+wSpriteAnimAddrBackup::
+wSpriteAnimIDBuffer::
+wCurSpriteOAMFlags::
+	dw
 wc5c2:: ds 1 ; c5c2
 wc5c3:: ds 1 ; c5c3
 wc5c4:: ds 1 ; c5c4
@@ -876,30 +909,12 @@ wc6e4:: ds 1 ; c6e4
 wc6e5:: ds 1 ; c6e5
 wc6e6:: ds 1 ; c6e6
 wc6e7:: ds 1 ; c6e7
-wc6e8:: ds 1 ; c6e8
-wc6e9:: ds 1 ; c6e9
-wc6ea:: ds 1 ; c6ea
-wc6eb:: ds 1 ; c6eb
-wc6ec:: ds 1 ; c6ec
-wc6ed:: ds 1 ; c6ed
-wc6ee:: ds 1 ; c6ee
-wc6ef:: ds 1 ; c6ef
-wc6f0:: ds 1 ; c6f0
-wc6f1:: ds 1 ; c6f1
-wc6f2:: ds 1 ; c6f2
-wc6f3:: ds 1 ; c6f3
-wc6f4:: ds 1 ; c6f4
-wc6f5:: ds 1 ; c6f5
-wc6f6:: ds 1 ; c6f6
-wc6f7:: ds 1 ; c6f7
-wc6f8:: ds 1 ; c6f8
-wc6f9:: ds 1 ; c6f9
-wc6fa:: ds 1 ; c6fa
-wc6fb:: ds 1 ; c6fb
-wc6fc:: ds 1 ; c6fc
-wc6fd:: ds 1 ; c6fd
-wc6fe:: ds 1 ; c6fe
-wc6ff:: ds 1 ; c6ff
+ENDU
+
+; This was a buffer for map-related pointers in the 1997 G/S prototype.
+; See wMapBuffer in pokegold-spaceworld's wram.asm.
+wUnusedMapBuffer:: ds 24
+wUnusedMapBufferEnd::
 
 SECTION "Overworld Map", WRAM0
 
@@ -942,6 +957,81 @@ NEXTU
 	ds $100 - SCREEN_HEIGHT_PX
 wLYOverridesBackup:: ds SCREEN_HEIGHT_PX
 wLYOverridesBackupEnd:: ds $100 - SCREEN_HEIGHT_PX
+ENDU
+
+UNION
+; blank credits tile buffer
+wCreditsBlankFrame2bpp:: ds 4 * 4 tiles
+wCreditsBlankFrame2bppEnd::
+
+NEXTU
+; mystery gift data
+wUnusedMysteryGiftStagedDataLength:: db
+wMysteryGiftMessageCount:: db
+wMysteryGiftStagedDataLength:: db
+
+NEXTU
+; battle
+wBattleAnimTileDict::
+; wBattleAnimTileDict pairs keys with values
+; keys: ANIM_GFX_* indexes (taken from anim_*gfx arguments)
+; values: vTiles0 offsets
+	ds NUM_BATTLEANIMTILEDICT_ENTRIES * 2
+
+wActiveAnimObjects::
+wAnimObject01:: battle_anim_struct wAnimObject01
+wAnimObject02:: battle_anim_struct wAnimObject02
+wAnimObject03:: battle_anim_struct wAnimObject03
+wAnimObject04:: battle_anim_struct wAnimObject04
+wAnimObject05:: battle_anim_struct wAnimObject05
+wAnimObject06:: battle_anim_struct wAnimObject06
+wAnimObject07:: battle_anim_struct wAnimObject07
+wAnimObject08:: battle_anim_struct wAnimObject08
+wAnimObject09:: battle_anim_struct wAnimObject09
+wAnimObject10:: battle_anim_struct wAnimObject10
+
+wActiveBGEffects::
+wBGEffect1:: battle_bg_effect wBGEffect1
+wBGEffect2:: battle_bg_effect wBGEffect2
+wBGEffect3:: battle_bg_effect wBGEffect3
+wBGEffect4:: battle_bg_effect wBGEffect4
+wBGEffect5:: battle_bg_effect wBGEffect5
+
+wLastAnimObjectIndex:: db
+
+wBattleAnimFlags:: db
+wBattleAnimAddress:: dw
+wBattleAnimDelay:: db
+wBattleAnimParent:: dw
+wBattleAnimLoops:: db
+wBattleAnimVar:: db
+wBattleAnimByte:: db
+wBattleAnimOAMPointerLo:: db
+
+UNION
+; unidentified
+wBattleAnimTemp0:: db
+wBattleAnimTemp1:: db
+wBattleAnimTemp2:: db
+wBattleAnimTemp3:: db
+
+NEXTU
+wBattleObjectTempID:: db
+wBattleObjectTempXCoord:: db
+wBattleObjectTempYCoord:: db
+wBattleObjectTempParam:: db
+
+NEXTU
+wBattleAnimTempOAMFlags:: db
+wBattleAnimTempFixY:: db
+wBattleAnimTempTileID:: db
+wBattleAnimTempXCoord:: db
+wBattleAnimTempYCoord:: db
+wBattleAnimTempXOffset:: db
+wBattleAnimTempYOffset:: db
+wBattleAnimTempFrameOAMFlags:: db
+wBattleAnimTempPalette:: db
+ENDU
 ENDU
 
 NEXTU
@@ -1833,19 +1923,10 @@ wcb26:: ds 1 ; cb26
 wcb27:: ds 1 ; cb27
 wcb28:: ds 1 ; cb28
 wcb29:: ds 1 ; cb29
-wcb2a:: ds 1 ; cb2a
-wcb2b:: ds 1 ; cb2b
-wcb2c:: ds 1 ; cb2c
-wcb2d:: ds 1 ; cb2d
-wcb2e:: ds 1 ; cb2e
-wcb2f:: ds 1 ; cb2f
-wcb30:: ds 1 ; cb30
-wcb31:: ds 1 ; cb31
-wcb32:: ds 1 ; cb32
-wcb33:: ds 1 ; cb33
-wcb34:: ds 1 ; cb34
 
-wCurOTMon:: ds 1 ; cb35
+wOTClassName:: ds TRAINER_CLASS_NAME_LENGTH
+
+wCurOTMon:: db
 
 wcb36:: ds 1 ; cb36
 wcb37:: ds 1 ; cb37
@@ -2005,8 +2086,9 @@ wDisabledMove:: ds 1 ; cbc7
 wcbc8:: ds 1 ; cbc8
 wcbc9:: ds 1 ; cbc9
 
-wLastEnemyCounterMove:: ds 1 ; cbca
-wLastPlayerCounterMove:: ds 1 ; cbcb
+; exists so you can't counter on switch
+wLastPlayerCounterMove:: db
+wLastEnemyCounterMove:: db
 
 wcbcc:: ds 1 ; cbcc
 wcbcd:: ds 1 ; cbcd
@@ -2084,136 +2166,18 @@ wcc12:: ds 1 ; cc12
 wcc13:: ds 1 ; cc13
 ENDU
 
-wBGMapBuffer:: ds 1 ; cc14
+SECTION "Video", WRAM0
 
-wcc15:: ds 1 ; cc15
-wcc16:: ds 1 ; cc16
-wcc17:: ds 1 ; cc17
-wcc18:: ds 1 ; cc18
-wcc19:: ds 1 ; cc19
-wcc1a:: ds 1 ; cc1a
-wcc1b:: ds 1 ; cc1b
-wcc1c:: ds 1 ; cc1c
-wcc1d:: ds 1 ; cc1d
-wcc1e:: ds 1 ; cc1e
-wcc1f:: ds 1 ; cc1f
-wcc20:: ds 1 ; cc20
-wcc21:: ds 1 ; cc21
-wcc22:: ds 1 ; cc22
-wcc23:: ds 1 ; cc23
-wcc24:: ds 1 ; cc24
-wcc25:: ds 1 ; cc25
-wcc26:: ds 1 ; cc26
-wcc27:: ds 1 ; cc27
-wcc28:: ds 1 ; cc28
-wcc29:: ds 1 ; cc29
-wcc2a:: ds 1 ; cc2a
-wcc2b:: ds 1 ; cc2b
-wcc2c:: ds 1 ; cc2c
-wcc2d:: ds 1 ; cc2d
-wcc2e:: ds 1 ; cc2e
-wcc2f:: ds 1 ; cc2f
-wcc30:: ds 1 ; cc30
-wcc31:: ds 1 ; cc31
-wcc32:: ds 1 ; cc32
-wcc33:: ds 1 ; cc33
-wcc34:: ds 1 ; cc34
-wcc35:: ds 1 ; cc35
-wcc36:: ds 1 ; cc36
-wcc37:: ds 1 ; cc37
-wcc38:: ds 1 ; cc38
-wcc39:: ds 1 ; cc39
-wcc3a:: ds 1 ; cc3a
-wcc3b:: ds 1 ; cc3b
+; wBGMapBuffer
+wBGMapBuffer::     ds 40
+wBGMapPalBuffer::  ds 40
+wBGMapBufferPtrs:: ds 40 ; 20 bg map addresses (16x8 tiles)
+wBGMapBufferEnd::
 
-wBGMapPalBuffer:: ds 1 ; cc3c
+wDefaultSGBLayout:: db
 
-wcc3d:: ds 1 ; cc3d
-wcc3e:: ds 1 ; cc3e
-wcc3f:: ds 1 ; cc3f
-wcc40:: ds 1 ; cc40
-wcc41:: ds 1 ; cc41
-wcc42:: ds 1 ; cc42
-wcc43:: ds 1 ; cc43
-wcc44:: ds 1 ; cc44
-wcc45:: ds 1 ; cc45
-wcc46:: ds 1 ; cc46
-wcc47:: ds 1 ; cc47
-wcc48:: ds 1 ; cc48
-wcc49:: ds 1 ; cc49
-wcc4a:: ds 1 ; cc4a
-wcc4b:: ds 1 ; cc4b
-wcc4c:: ds 1 ; cc4c
-wcc4d:: ds 1 ; cc4d
-wcc4e:: ds 1 ; cc4e
-wcc4f:: ds 1 ; cc4f
-wcc50:: ds 1 ; cc50
-wcc51:: ds 1 ; cc51
-wcc52:: ds 1 ; cc52
-wcc53:: ds 1 ; cc53
-wcc54:: ds 1 ; cc54
-wcc55:: ds 1 ; cc55
-wcc56:: ds 1 ; cc56
-wcc57:: ds 1 ; cc57
-wcc58:: ds 1 ; cc58
-wcc59:: ds 1 ; cc59
-wcc5a:: ds 1 ; cc5a
-wcc5b:: ds 1 ; cc5b
-wcc5c:: ds 1 ; cc5c
-wcc5d:: ds 1 ; cc5d
-wcc5e:: ds 1 ; cc5e
-wcc5f:: ds 1 ; cc5f
-wcc60:: ds 1 ; cc60
-wcc61:: ds 1 ; cc61
-wcc62:: ds 1 ; cc62
-wcc63:: ds 1 ; cc63
-
-wBGMapBufferPtrs:: ds 1 ; cc64
-
-wcc65:: ds 1 ; cc65
-wcc66:: ds 1 ; cc66
-wcc67:: ds 1 ; cc67
-wcc68:: ds 1 ; cc68
-wcc69:: ds 1 ; cc69
-wcc6a:: ds 1 ; cc6a
-wcc6b:: ds 1 ; cc6b
-wcc6c:: ds 1 ; cc6c
-wcc6d:: ds 1 ; cc6d
-wcc6e:: ds 1 ; cc6e
-wcc6f:: ds 1 ; cc6f
-wcc70:: ds 1 ; cc70
-wcc71:: ds 1 ; cc71
-wcc72:: ds 1 ; cc72
-wcc73:: ds 1 ; cc73
-wcc74:: ds 1 ; cc74
-wcc75:: ds 1 ; cc75
-wcc76:: ds 1 ; cc76
-wcc77:: ds 1 ; cc77
-wcc78:: ds 1 ; cc78
-wcc79:: ds 1 ; cc79
-wcc7a:: ds 1 ; cc7a
-wcc7b:: ds 1 ; cc7b
-wcc7c:: ds 1 ; cc7c
-wcc7d:: ds 1 ; cc7d
-wcc7e:: ds 1 ; cc7e
-wcc7f:: ds 1 ; cc7f
-wcc80:: ds 1 ; cc80
-wcc81:: ds 1 ; cc81
-wcc82:: ds 1 ; cc82
-wcc83:: ds 1 ; cc83
-wcc84:: ds 1 ; cc84
-wcc85:: ds 1 ; cc85
-wcc86:: ds 1 ; cc86
-wcc87:: ds 1 ; cc87
-wcc88:: ds 1 ; cc88
-wcc89:: ds 1 ; cc89
-wcc8a:: ds 1 ; cc8a
-wcc8b:: ds 1 ; cc8b
-
-wDefaultSGBLayout:: db ; cc8c
-
-wPlayerHPPal:: db ; cc8d
-wEnemyHPPal:: db ; cc8e
+wPlayerHPPal:: db
+wEnemyHPPal:: db
 
 wcc8f:: ds 1 ; cc8f
 wcc90:: ds 1 ; cc90
@@ -2280,48 +2244,39 @@ wccca:: ds 1 ; ccca
 wcccb:: ds 1 ; cccb
 wcccc:: ds 1 ; cccc
 
-wAttrmap:: ; cccd
-	ds SCREEN_HEIGHT * SCREEN_WIDTH
-wAttrmapEnd:: ; ce35
+wAttrmap::
+; 20x18 grid of bg tile attributes for 8x8 tiles
+; read horizontally from the top row
+;		bit 7: priority
+;		bit 6: y flip
+;		bit 5: x flip
+;		bit 4: pal # (non-cgb)
+;		bit 3: vram bank (cgb only)
+;		bit 2-0: pal # (cgb only)
+	ds SCREEN_WIDTH * SCREEN_HEIGHT
+wAttrmapEnd::
 
-wTileAnimBuffer::
-wce35:: ds 1 ; ce35
-wce36:: ds 1 ; ce36
-wce37:: ds 1 ; ce37
-wce38:: ds 1 ; ce38
-wce39:: ds 1 ; ce39
-wce3a:: ds 1 ; ce3a
-wce3b:: ds 1 ; ce3b
-wce3c:: ds 1 ; ce3c
-wce3d:: ds 1 ; ce3d
-wce3e:: ds 1 ; ce3e
-wce3f:: ds 1 ; ce3f
-wce40:: ds 1 ; ce40
-wce41:: ds 1 ; ce41
-wce42:: ds 1 ; ce42
-wce43:: ds 1 ; ce43
-wce44:: ds 1 ; ce44
-wce45:: ds 1 ; ce45
-wce46:: ds 1 ; ce46
-wce47:: ds 1 ; ce47
-wce48:: ds 1 ; ce48
-wce49:: ds 1 ; ce49
-wce4a:: ds 1 ; ce4a
-wce4b:: ds 1 ; ce4b
-wce4c:: ds 1 ; ce4c
-wce4d:: ds 1 ; ce4d
-wce4e:: ds 1 ; ce4e
-wce4f:: ds 1 ; ce4f
-wce50:: ds 1 ; ce50
-wce51:: ds 1 ; ce51
-wce52:: ds 1 ; ce52
+wTileAnimBuffer:: ds 1 tiles
 
-wMonType:: ds 1 ; ce53
-wCurSpecies:: ds 1 ; ce54
-wNamedObjectTypeBuffer:: ds 1 ; ce55
+wOtherPlayerLinkMode:: db
+wOtherPlayerLinkAction::
+wBattleAction:: db
+	ds 3
+wPlayerLinkAction:: db
+wce57:: db
+	ds 3
+wLinkTimeoutFrames:: dw
+wLinkByteTimeout:: dw
 
-wce56:: ds 1 ; ce56
-wJumptableIndex:: ds 1 ; ce57
+wMonType:: db
+
+wCurSpecies:: db
+
+wNamedObjectTypeBuffer:: db
+
+	ds 1
+
+wJumptableIndex:: db
 wce58:: ds 1 ; ce58
 wce59:: ds 1 ; ce59
 wce5a:: ds 1 ; ce5a
@@ -2451,57 +2406,73 @@ wcee9:: ds 1 ; cee9
 wceea:: ds 1 ; ceea
 wceeb:: ds 1 ; ceeb
 
+; menu header
 wMenuHeader::
-wMenuFlags::
-wceec:: ds 1 ; ceec
-wMenuBorderTopCoord:: ds 1 ; ceed
-wMenuBorderLeftCoord:: ds 1 ; ceee
-wMenuBorderBottomCoord:: ds 1 ; ceef
-wMenuBorderRightCoord:: ds 1 ; cef0
-wMenuDataPointer:: ds 2 ; cef1
-wMenuCursorBuffer:: ds 1 ; cef3
-wcef4:: ds 1 ; cef4
-wcef5:: ds 1 ; cef5
-wcef6:: ds 1 ; cef6
-wcef7:: ds 1 ; cef7
-wcef8:: ds 1 ; cef8
-wcef9:: ds 1 ; cef9
-wcefa:: ds 1 ; cefa
-wcefb:: ds 1 ; cefb
+wMenuFlags:: db
+wMenuBorderTopCoord:: db
+wMenuBorderLeftCoord:: db
+wMenuBorderBottomCoord:: db
+wMenuBorderRightCoord:: db
+wMenuDataPointer:: dw
+wMenuCursorBuffer:: dw
+	ds 7
 wMenuHeaderEnd::
 
 wMenuData::
-wMenuDataFlags:: ds 1 ; cefc
-wMenuDataItems:: ds 1 ; cefd
-wMenuDataIndicesPointer:: ds 1 ; cefe
-wMenuDataBank:: ds 1 ; ceff
-wMenuDataDisplayFunctionPointer:: ds 2 ; cf00
-wMenuDataPointerTableAddr:: ds 1 ; cf02
-wcf03:: ds 1 ; cf03
-wcf04:: ds 1 ; cf04
-wcf05:: ds 1 ; cf05
-wcf06:: ds 1 ; cf06
-wcf07:: ds 1 ; cf07
-wcf08:: ds 1 ; cf08
-wcf09:: ds 1 ; cf09
-wcf0a:: ds 1 ; cf0a
-wcf0b:: ds 1 ; cf0b
+wMenuDataFlags:: db
+
+UNION
+; Vertical Menu/DoNthMenu/SetUpMenu
+wMenuDataItems:: db
+wMenuDataIndicesPointer:: dw
+wMenuDataDisplayFunctionPointer:: dw
+wMenuDataPointerTableAddr:: dw
+
+NEXTU
+; 2D Menu
+wMenuData_2DMenuDimensions:: db
+wMenuData_2DMenuSpacing:: db
+wMenuData_2DMenuItemStringsBank:: db
+wMenuData_2DMenuItemStringsAddr:: dw
+wMenuData_2DMenuFunctionBank:: db
+wMenuData_2DMenuFunctionAddr:: dw
+
+NEXTU
+; Scrolling Menu
+wMenuData_ScrollingMenuHeight:: db
+wMenuData_ScrollingMenuWidth:: db
+wMenuData_ScrollingMenuItemFormat:: db
+wMenuData_ItemsPointerBank:: db
+wMenuData_ItemsPointerAddr:: dw
+wMenuData_ScrollingMenuFunction1:: ds 3
+wMenuData_ScrollingMenuFunction2:: ds 3
+wMenuData_ScrollingMenuFunction3:: ds 3
+ENDU
 wMenuDataEnd::
 
-wMenuData3::
-w2DMenuCursorInitY:: ds 1 ; cf0c
-w2DMenuCursorInitX:: ds 1 ; cf0d
-w2DMenuNumRows:: ds 1 ; cf0e
-w2DMenuNumCols:: ds 1 ; cf0f
-w2DMenuFlags1:: ds 1 ; cf10
-w2DMenuFlags2:: ds 1 ; cf11
-w2DMenuCursorOffsets:: ds 1 ; cf12
-wMenuJoypadFilter:: ds 1 ; cf13
-wMenuCursorY:: ds 1 ; cf14
-wMenuCursorX:: ds 1 ; cf15
-wcf16:: ds 1 ; cf16
-wCursorCurrentTile:: ds 1 ; cf17
-wcf18:: ds 1 ; cf18
+w2DMenuData::
+w2DMenuCursorInitY:: db
+w2DMenuCursorInitX:: db
+w2DMenuNumRows:: db
+w2DMenuNumCols:: db
+w2DMenuFlags1::
+; bit 7: Disable checking of wMenuJoypadFilter
+; bit 6: Enable sprite animations
+; bit 5: Wrap around vertically
+; bit 4: Wrap around horizontally
+; bit 3: Set bit 7 in w2DMenuFlags2 and exit the loop if bit 5 is disabled and we tried to go too far down
+; bit 2: Set bit 7 in w2DMenuFlags2 and exit the loop if bit 5 is disabled and we tried to go too far up
+; bit 1: Set bit 7 in w2DMenuFlags2 and exit the loop if bit 4 is disabled and we tried to go too far left
+; bit 0: Set bit 7 in w2DMenuFlags2 and exit the loop if bit 4 is disabled and we tried to go too far right
+	db
+w2DMenuFlags2:: db
+w2DMenuCursorOffsets:: db
+wMenuJoypadFilter:: db
+w2DMenuDataEnd::
+wMenuCursorY:: db
+wMenuCursorX:: db
+wCursorOffCharacter:: db
+wCursorCurrentTile:: dw
 wcf19:: ds 1 ; cf19
 wcf1a:: ds 1 ; cf1a
 wcf1b:: ds 1 ; cf1b
@@ -2600,41 +2571,60 @@ wcf50:: ds 1 ; cf50
 wcf51:: ds 1 ; cf51
 wcf52:: ds 1 ; cf52
 
-wSeenTrainerBank:: ; cf53
-wcf53:: ds 1 ; cf53
-wCallerContact::
-wSeenTrainerDistance:: ds 1 ; cf54
-wSeenTrainerDirection:: ds 1 ; cf55
-
-wTempTrainer:: ; cf56
-wcf56:: ds 1 ; cf56
-wcf57:: ds 1 ; cf57
-wcf58:: ds 1 ; cf58
-wcf59:: ds 1 ; cf59
-wcf5a:: ds 1 ; cf5a
-wcf5b:: ds 1 ; cf5b
-wWinTextPointer:: ds 2 ; cf5c
-wLossTextPointer:: ds 2 ; cf5e
-wcf60:: ds 1 ; cf60
-wcf61:: ds 1 ; cf61
-wRunningTrainerBattleScript:: ds 1 ; cf62
+UNION
+; trainer data
+wSeenTrainerBank:: db
+wSeenTrainerDistance:: db
+wSeenTrainerDirection:: db
+wTempTrainer::
+wTempTrainerEventFlag:: dw
+wTempTrainerClass:: db
+wTempTrainerID:: db
+wSeenTextPointer:: dw
+wWinTextPointer:: dw
+wLossTextPointer:: dw
+wScriptAfterPointer:: dw
+wRunningTrainerBattleScript:: db
 wTempTrainerEnd::
 
-wcf63:: ds 1 ; cf63
-wcf64:: ds 1 ; cf64
+NEXTU
+; coord event data
+wCurCoordEvent::
+wCurCoordEventSceneID:: db
+wCurCoordEventMapY:: db
+wCurCoordEventMapX:: db
+	ds 1
+wCurCoordEventScriptAddr:: dw
+
+NEXTU
+; BG event data
+wCurBGEvent::
+wCurBGEventYCoord:: db
+wCurBGEventXCoord:: db
+wCurBGEventType:: db
+wCurBGEventScriptAddr:: dw
+
+NEXTU
+; phone caller contact
+	ds 1
+wCallerContact:: ds PHONE_CONTACT_SIZE
+ENDU
+
+	ds 2
 
 wBoxAlignment:: ds 1 ; cf65
+wcf66:: ds 2 ; cf66
+wcf68:: ds 2 ; cf68
 
-wcf66:: ds 1 ; cf66
-wcf67:: ds 1 ; cf67
-wcf68:: ds 1 ; cf68
-wcf69:: ds 1 ; cf69
 wcf6a:: ds 1 ; cf6a
 wcf6b:: ds 1 ; cf6b
 wTileAnimationTimer:: ds 1 ; cf6c
-wcf6d:: ds 1 ; cf6d
-wcf6e:: ds 1 ; cf6e
-wcf6f:: ds 1 ; cf6f
+
+; palette backups?
+wBGP:: db
+wOBP0:: db
+wOBP1:: db
+
 wcf70:: ds 1 ; cf70
 wcf71:: ds 1 ; cf71
 wMonOrItemNameBuffer:: ds 1 ; cf72
@@ -2703,7 +2693,7 @@ wcfca:: ds 1 ; cfca
 wcfcb:: ds 1 ; cfcb
 wcfcc:: ds 1 ; cfcc
 wcfcd:: ds 1 ; cfcd
-wcfce:: ds 1 ; cfce
+wMenuScrollPosition:: ds 1 ; cfce
 wcfcf:: ds 1 ; cfcf
 
 wcfd0:: ds 1 ; cfd0
@@ -2751,8 +2741,7 @@ wcff4:: ds 1 ; cff4
 wcff5:: ds 1 ; cff5
 wcff6:: ds 1 ; cff6
 wcff7:: ds 1 ; cff7
-wcff8:: ds 1 ; cff8
-wcff9:: ds 1 ; cff9
+wUnusedNamesPointer:: dw
 wcffa:: ds 1 ; cffa
 wcffb:: ds 1 ; cffb
 wCurItem:: ds 1 ; cffc
@@ -2761,7 +2750,7 @@ wcffd:: ds 1 ; cffd
 wCurPartySpecies:: ds 1 ; cffe
 wCurPartyMon:: ds 1 ; cfff
 
-SECTION "WRAM1", WRAMX, BANK[$1]
+SECTION "WRAM 1", WRAMX, BANK[$1]
 wd000:: ds 1 ; d000
 wd001:: ds 1 ; d001
 wPokemonWithdrawDepositParameter:: ds 1 ; d002
@@ -2831,12 +2820,13 @@ wLinkMode:: db
 ; 0 not in link battle
 ; 1 link battle
 
-wNextWarpNumber:: ds 1 ; d03d
-wNextMapGroup:: ds 1 ; d03e
-wNextMapNumber:: ds 1 ; d03f
-wPrevWarpNumber:: ds 1 ; d040
-wPrevMapGroup:: ds 1 ; d041
-wPrevMapNumber:: ds 1 ; d042
+; used when following a map warp
+wNextWarp:: db
+wNextMapGroup:: db
+wNextMapNumber:: db
+wPrevWarp:: db
+wPrevMapGroup:: db
+wPrevMapNumber:: db
 
 wd043:: ds 1 ; d043
 wd044:: ds 1 ; d044
@@ -2856,89 +2846,45 @@ wUsedSpritesEnd::
 	ds 8
 
 wOverworldMapAnchor:: dw
-wd071:: ds 1 ; d071
-wd072:: ds 1 ; d072
+wMetatileStandingY:: db
+wMetatileStandingX:: db
 
-wd073:: ds 1 ; d073
-wd074:: ds 1 ; d074
+wMapPartial::
+wMapAttributesBank:: db
+wMapTileset:: db
+wEnvironment:: db
+wMapAttributesPointer:: dw
+wMapPartialEnd::
 
-wEnvironment:: db ; d075
+wMapAttributes::
+wMapBorderBlock:: db
+; width/height are in blocks (2x2 walkable tiles, 4x4 graphics tiles)
+wMapHeight:: db
+wMapWidth:: db
+wMapBlocksBank:: db
+wMapBlocksPointer:: dw
+wMapScriptsBank:: db
+wMapScriptsPointer:: dw
+wMapEventsPointer:: dw
+; bit set
+wMapConnections:: db
+wMapAttributesEnd::
 
-wd076:: ds 1 ; d076
-wd077:: ds 1 ; d077
-
-wMapBorderBlock:: ds 1 ; d078
-wd079:: ds 1 ; d079
-wMapWidth:: ds 1 ; d07a
-
-wd07b:: ds 1 ; d07b
-wd07c:: ds 1 ; d07c
-wd07d:: ds 1 ; d07d
-wd07e:: ds 1 ; d07e
-wd07f:: ds 1 ; d07f
-wd080:: ds 1 ; d080
-wd081:: ds 1 ; d081
-wd082:: ds 1 ; d082
-wd083:: ds 1 ; d083
-wd084:: ds 1 ; d084
-wd085:: ds 1 ; d085
-wd086:: ds 1 ; d086
-wd087:: ds 1 ; d087
-wd088:: ds 1 ; d088
-wd089:: ds 1 ; d089
-wd08a:: ds 1 ; d08a
-wd08b:: ds 1 ; d08b
-wd08c:: ds 1 ; d08c
-wd08d:: ds 1 ; d08d
-wd08e:: ds 1 ; d08e
-wd08f:: ds 1 ; d08f
-wd090:: ds 1 ; d090
-wd091:: ds 1 ; d091
-wd092:: ds 1 ; d092
-wd093:: ds 1 ; d093
-wd094:: ds 1 ; d094
-wd095:: ds 1 ; d095
-wd096:: ds 1 ; d096
-wd097:: ds 1 ; d097
-wd098:: ds 1 ; d098
-wd099:: ds 1 ; d099
-wd09a:: ds 1 ; d09a
-wd09b:: ds 1 ; d09b
-wd09c:: ds 1 ; d09c
-wd09d:: ds 1 ; d09d
-wd09e:: ds 1 ; d09e
-wd09f:: ds 1 ; d09f
-wd0a0:: ds 1 ; d0a0
-wd0a1:: ds 1 ; d0a1
-wd0a2:: ds 1 ; d0a2
-wd0a3:: ds 1 ; d0a3
-wd0a4:: ds 1 ; d0a4
-wd0a5:: ds 1 ; d0a5
-wd0a6:: ds 1 ; d0a6
-wd0a7:: ds 1 ; d0a7
-wd0a8:: ds 1 ; d0a8
-wd0a9:: ds 1 ; d0a9
-wd0aa:: ds 1 ; d0aa
-wd0ab:: ds 1 ; d0ab
-wd0ac:: ds 1 ; d0ac
-wd0ad:: ds 1 ; d0ad
-wd0ae:: ds 1 ; d0ae
-wd0af:: ds 1 ; d0af
-wd0b0:: ds 1 ; d0b0
-wd0b1:: ds 1 ; d0b1
-wd0b2:: ds 1 ; d0b2
-wd0b3:: ds 1 ; d0b3
+wNorthMapConnection:: map_connection_struct wNorth
+wSouthMapConnection:: map_connection_struct wSouth
+wWestMapConnection::  map_connection_struct wWest
+wEastMapConnection::  map_connection_struct wEast
 
 wTileset::
-wTilesetBank:: db ; d0b4
-wTilesetAddress:: dw ; d0b5
-wTilesetBlocksBank:: db ; d0b7
-wTilesetBlocksAddress:: dw ; d0b8
-wTilesetCollisionBank:: db ; d0ba
-wTilesetCollisionAddress:: dw ; d0bb
-wTilesetAnim:: dw ; d0bd
-wd0bf:: ds 2 ; d0bf
-wTilesetPalettes:: dw ; d0c1
+wTilesetBank:: db
+wTilesetAddress:: dw
+wTilesetBlocksBank:: db
+wTilesetBlocksAddress:: dw
+wTilesetCollisionBank:: db
+wTilesetCollisionAddress:: dw
+wTilesetAnim:: dw ; bank 3f
+	ds 2 ; unused
+wTilesetPalettes:: dw ; bank 3f
 wTilesetEnd::
 
 wd0c3:: ds 1 ; d0c3
@@ -3095,21 +3041,28 @@ wd144:: ds 1 ; d144
 wd145:: ds 1 ; d145
 wd146:: ds 1 ; d146
 
-wROMBankBackup:: ds 1 ; d147
-wBuffer:: ds 1 ; d148
-wTimeOfDay:: ds 1 ; d149
+wROMBankBackup:: db
+wFarByte::
+wTempBank:: db
 
-wd14a:: ds 1 ; d14a
-wd14b:: ds 1 ; d14b
-wd14c:: ds 1 ; d14c
-wd14d:: ds 1 ; d14d
-wd14e:: ds 1 ; d14e
+wTimeOfDay:: db
+
+	ds 1
+
+wMapStatus:: ds 1 ; d14b
+wMapEventStatus:: ds 1 ; d14c
+
+wScriptFlags::
+; bit 3: priority jump
+	db
+	ds 1
 wd14f:: ds 1 ; d14f
-wd150:: ds 1 ; d150
-wd151:: ds 1 ; d151
-wScriptBank:: ds 1 ; d152
-wd153:: ds 1 ; d153
-wd154:: ds 1 ; d154
+
+wScriptMode:: db
+wScriptRunning:: db
+wScriptBank:: db
+wScriptPos:: dw
+
 wd155:: ds 1 ; d155
 wd156:: ds 1 ; d156
 wd157:: ds 1 ; d157
@@ -3135,15 +3088,15 @@ wd168:: ds 1 ; d168
 wd169:: ds 1 ; d169
 wd16a:: ds 1 ; d16a
 wd16b:: ds 1 ; d16b
-wd16c:: ds 1 ; d16c
-wd16d:: ds 1 ; d16d
-wd16e:: ds 1 ; d16e
-wd16f:: ds 1 ; d16f
-wd170:: ds 1 ; d170
-wd171:: ds 1 ; d171
+
+wXYComparePointer:: dw
+wXYCompareFlags:: flag_array MAX_XYCOMPARE_LENGTH
+
 wd172:: ds 1 ; d172
 wd173:: ds 1 ; d173
-wd174:: ds 1 ; d174
+wPlayerSpriteSetupFlags::
+	db
+
 wMapReentryScriptQueueFlag::
 wd175:: ds 1 ; d175
 wd176:: ds 1 ; d176
@@ -3214,46 +3167,28 @@ wOptions2:: ds 3 ; d1b0
 
 wOptionsEnd::
 
-wd1b3:: ds 1 ; d1b3
-wd1b4:: ds 1 ; d1b4
+SECTION "Game Data", WRAMX
 
-wPlayerName:: ds 1 ; d1b5
+wGameData::
+wPlayerData::
+wPlayerData1::
+wPlayerID:: dw
 
-wd1b6:: ds 1 ; d1b6
-wd1b7:: ds 1 ; d1b7
-wd1b8:: ds 1 ; d1b8
-wd1b9:: ds 1 ; d1b9
-wd1ba:: ds 1 ; d1ba
-wd1bb:: ds 1 ; d1bb
-wd1bc:: ds 1 ; d1bc
-wd1bd:: ds 1 ; d1bd
-wd1be:: ds 1 ; d1be
-wd1bf:: ds 1 ; d1bf
-wd1c0:: ds 1 ; d1c0
-wd1c1:: ds 1 ; d1c1
-wd1c2:: ds 1 ; d1c2
-wd1c3:: ds 1 ; d1c3
-wd1c4:: ds 1 ; d1c4
-wd1c5:: ds 1 ; d1c5
-wd1c6:: ds 1 ; d1c6
-wd1c7:: ds 1 ; d1c7
-wd1c8:: ds 1 ; d1c8
-wd1c9:: ds 1 ; d1c9
-wd1ca:: ds 1 ; d1ca
-wd1cb:: ds 1 ; d1cb
-wd1cc:: ds 1 ; d1cc
-wd1cd:: ds 1 ; d1cd
-wd1ce:: ds 1 ; d1ce
-wd1cf:: ds 1 ; d1cf
-wd1d0:: ds 1 ; d1d0
-wd1d1:: ds 1 ; d1d1
-wd1d2:: ds 1 ; d1d2
-wd1d3:: ds 1 ; d1d3
-wd1d4:: ds 1 ; d1d4
-wd1d5:: ds 1 ; d1d5
-wd1d6:: ds 1 ; d1d6
-wd1d7:: ds 1 ; d1d7
-wd1d8:: ds 1 ; d1d8
+wPlayerName:: ds NAME_LENGTH
+wMomsName::   ds NAME_LENGTH
+wRivalName::  ds NAME_LENGTH
+wRedsName::   ds NAME_LENGTH
+wGreensName:: ds NAME_LENGTH
+
+wSavedAtLeastOnce:: db
+wSpawnAfterChampion:: db
+
+; init time set at newgame
+wStartDay::    db
+wStartHour::   db
+wStartMinute:: db
+wStartSecond:: db
+
 wd1d9:: ds 1 ; d1d9
 wd1da:: ds 1 ; d1da
 wd1db:: ds 1 ; d1db
@@ -3390,22 +3325,8 @@ wMap14Object::  map_object wMap14   ; d518
 wMap15Object::  map_object wMap15   ; d528
 wMapObjectsEnd:: ; d538
 
-wd538:: ds 1 ; d538
-wd539:: ds 1 ; d539
-wd53a:: ds 1 ; d53a
-wd53b:: ds 1 ; d53b
-wd53c:: ds 1 ; d53c
-wd53d:: ds 1 ; d53d
-wd53e:: ds 1 ; d53e
-wd53f:: ds 1 ; d53f
-wd540:: ds 1 ; d540
-wd541:: ds 1 ; d541
-wd542:: ds 1 ; d542
-wd543:: ds 1 ; d543
-wd544:: ds 1 ; d544
-wd545:: ds 1 ; d545
-wd546:: ds 1 ; d546
-wd547:: ds 1 ; d547
+wObjectMasks:: ds NUM_OBJECTS
+
 wd548:: ds 1 ; d548
 wd549:: ds 1 ; d549
 wd54a:: ds 1 ; d54a
@@ -3422,7 +3343,8 @@ wd554:: ds 1 ; d554
 wd555:: ds 1 ; d555
 wd556:: ds 1 ; d556
 wd557:: ds 1 ; d557
-wEnteredMapFromContinue:: db
+wEnteredMapFromContinue:: 
+wd558:: ds 1 ; d558
 	ds 2
 wTimeOfDayPal:: db
 wd55c:: ds 1 ; d55c
@@ -3788,16 +3710,25 @@ wd7a7:: ds 1 ; d7a7
 wd7a8:: ds 1 ; d7a8
 wd7a9:: ds 1 ; d7a9
 
-wEventFlags:: flag_array NUM_EVENTS ; d7aa
+wEventFlags:: flag_array NUM_EVENTS
 
 wUnusedLinkCommunicationByte:: db
 
-wGameTimerPause:: ds 1 ; d8ab
+wGameTimerPaused::
+; bit 7: game timer paused
+	db
 
-wd8ac:: ds 1 ; d8ac
+	ds 1
 
-wd8ad:: ds 1 ; d8ad
-wd8ae:: ds 1 ; d8ae
+wJoypadDisable::
+; bits 4, 6, or 7 can be used to disable joypad input
+; bit 4
+; bit 6: ongoing mon faint animation
+; bit 7: ongoing sgb data transfer
+	db
+
+	ds 1
+
 wd8af:: ds 1 ; d8af
 wd8b0:: ds 1 ; d8b0
 wd8b1:: ds 1 ; d8b1
@@ -3885,32 +3816,29 @@ wd902:: ds 1 ; d902
 wd903:: ds 1 ; d903
 wd904:: ds 1 ; d904
 
-wBikeFlags:: ds 1 ; d905
-wd906:: ds 1 ; d906
-wCurrentMapTriggerPointer:: ds 2 ; d907
+wBikeFlags::
+; bit 0: using strength
+; bit 1: always on bike
+; bit 2: downhill
+	db
+	ds 1 ; cleared along with wBikeFlags by ResetBikeFlags
 
-wCurCaller::
-wd909:: ds 1 ; d909
-wd90a:: ds 1 ; d90a
+wCurMapSceneScriptPointer:: dw
 
-wCurMapWarpCount:: ds 1 ; d90b
-wCurMapWarpsPointer:: ds 2 ; d90c
+wCurCaller:: dw
+wCurMapWarpCount:: db
+wCurMapWarpsPointer:: dw
+wCurMapCoordEventCount:: db
+wCurMapCoordEventsPointer:: dw
+wCurMapBGEventCount:: db
+wCurMapBGEventsPointer:: dw
+wCurMapObjectEventCount:: db
+wCurMapObjectEventsPointer:: dw
+wCurMapSceneScriptCount:: db
+wCurMapSceneScriptsPointer:: dw
+wCurMapCallbackCount:: db
+wCurMapCallbacksPointer:: dw
 
-wd90e:: ds 1 ; d90e
-wd90f:: ds 1 ; d90f
-wd910:: ds 1 ; d910
-wd911:: ds 1 ; d911
-wd912:: ds 1 ; d912
-wd913:: ds 1 ; d913
-wd914:: ds 1 ; d914
-wd915:: ds 1 ; d915
-wd916:: ds 1 ; d916
-wd917:: ds 1 ; d917
-wd918:: ds 1 ; d918
-wd919:: ds 1 ; d919
-wd91a:: ds 1 ; d91a
-wd91b:: ds 1 ; d91b
-wd91c:: ds 1 ; d91c
 wd91d:: ds 1 ; d91d
 wd91e:: ds 1 ; d91e
 wd91f:: ds 1 ; d91f
@@ -4080,47 +4008,21 @@ wBackupMapNumber:: ds 1 ; d9bd
 wd9be:: ds 1 ; d9be
 wd9bf:: ds 1 ; d9bf
 wd9c0:: ds 1 ; d9c0
-wd9c1:: ds 1 ; d9c1
-wd9c2:: ds 1 ; d9c2
-wd9c3:: ds 1 ; d9c3
-wd9c4:: ds 1 ; d9c4
-wd9c5:: ds 1 ; d9c5
 
-wMapGroup:: ds 1 ; d9c6
-wMapNumber:: ds 1 ; d9c7
-wYCoord:: ds 1 ; d9c8
-wXCoord:: ds 1 ; d9c9
+wLastSpawnMapGroup:: db
+wLastSpawnMapNumber:: db
 
-wd9ca:: ds 1 ; d9ca
-wd9cb:: ds 1 ; d9cb
-wd9cc:: ds 1 ; d9cc
-wd9cd:: ds 1 ; d9cd
-wd9ce:: ds 1 ; d9ce
-wd9cf:: ds 1 ; d9cf
-wd9d0:: ds 1 ; d9d0
-wd9d1:: ds 1 ; d9d1
-wd9d2:: ds 1 ; d9d2
-wd9d3:: ds 1 ; d9d3
-wd9d4:: ds 1 ; d9d4
-wd9d5:: ds 1 ; d9d5
-wd9d6:: ds 1 ; d9d6
-wd9d7:: ds 1 ; d9d7
-wd9d8:: ds 1 ; d9d8
-wd9d9:: ds 1 ; d9d9
-wd9da:: ds 1 ; d9da
-wd9db:: ds 1 ; d9db
-wd9dc:: ds 1 ; d9dc
-wd9dd:: ds 1 ; d9dd
-wd9de:: ds 1 ; d9de
-wd9df:: ds 1 ; d9df
-wd9e0:: ds 1 ; d9e0
-wd9e1:: ds 1 ; d9e1
-wd9e2:: ds 1 ; d9e2
-wd9e3:: ds 1 ; d9e3
-wd9e4:: ds 1 ; d9e4
-wd9e5:: ds 1 ; d9e5
-wd9e6:: ds 1 ; d9e6
-wd9e7:: ds 1 ; d9e7
+	ds 2
+
+wWarpNumber:: db
+wMapGroup:: db
+wMapNumber:: db
+wYCoord:: db
+wXCoord:: db
+wScreenSave:: ds SCREEN_META_WIDTH * SCREEN_META_HEIGHT
+
+wCurMapDataEnd::
+
 
 SECTION "Party", WRAMX, BANK[1]
 
@@ -4594,261 +4496,15 @@ wdefd:: ds 1 ; defd
 wdefe:: ds 1 ; defe
 wdeff:: ds 1 ; deff
 wdf00:: ds 1 ; df00
-wdf01:: ds 1 ; df01
-wdf02:: ds 1 ; df02
-wdf03:: ds 1 ; df03
-wdf04:: ds 1 ; df04
-wdf05:: ds 1 ; df05
-wdf06:: ds 1 ; df06
-wdf07:: ds 1 ; df07
-wdf08:: ds 1 ; df08
-wdf09:: ds 1 ; df09
-wdf0a:: ds 1 ; df0a
-wdf0b:: ds 1 ; df0b
-wdf0c:: ds 1 ; df0c
-wdf0d:: ds 1 ; df0d
-wdf0e:: ds 1 ; df0e
-wdf0f:: ds 1 ; df0f
-wdf10:: ds 1 ; df10
-wdf11:: ds 1 ; df11
-wdf12:: ds 1 ; df12
-wdf13:: ds 1 ; df13
-wdf14:: ds 1 ; df14
-wdf15:: ds 1 ; df15
-wdf16:: ds 1 ; df16
-wdf17:: ds 1 ; df17
-wdf18:: ds 1 ; df18
-wdf19:: ds 1 ; df19
-wdf1a:: ds 1 ; df1a
-wdf1b:: ds 1 ; df1b
-wdf1c:: ds 1 ; df1c
-wdf1d:: ds 1 ; df1d
-wdf1e:: ds 1 ; df1e
-wdf1f:: ds 1 ; df1f
-wdf20:: ds 1 ; df20
-wdf21:: ds 1 ; df21
-wdf22:: ds 1 ; df22
-wdf23:: ds 1 ; df23
-wdf24:: ds 1 ; df24
-wdf25:: ds 1 ; df25
-wdf26:: ds 1 ; df26
-wdf27:: ds 1 ; df27
-wdf28:: ds 1 ; df28
-wdf29:: ds 1 ; df29
-wdf2a:: ds 1 ; df2a
-wdf2b:: ds 1 ; df2b
-wdf2c:: ds 1 ; df2c
-wdf2d:: ds 1 ; df2d
-wdf2e:: ds 1 ; df2e
-wdf2f:: ds 1 ; df2f
-wdf30:: ds 1 ; df30
-wdf31:: ds 1 ; df31
-wdf32:: ds 1 ; df32
-wdf33:: ds 1 ; df33
-wdf34:: ds 1 ; df34
-wdf35:: ds 1 ; df35
-wdf36:: ds 1 ; df36
-wdf37:: ds 1 ; df37
-wdf38:: ds 1 ; df38
-wdf39:: ds 1 ; df39
-wdf3a:: ds 1 ; df3a
-wdf3b:: ds 1 ; df3b
-wdf3c:: ds 1 ; df3c
-wdf3d:: ds 1 ; df3d
-wdf3e:: ds 1 ; df3e
-wdf3f:: ds 1 ; df3f
-wdf40:: ds 1 ; df40
-wdf41:: ds 1 ; df41
-wdf42:: ds 1 ; df42
-wdf43:: ds 1 ; df43
-wdf44:: ds 1 ; df44
-wdf45:: ds 1 ; df45
-wdf46:: ds 1 ; df46
-wdf47:: ds 1 ; df47
-wdf48:: ds 1 ; df48
-wdf49:: ds 1 ; df49
-wdf4a:: ds 1 ; df4a
-wdf4b:: ds 1 ; df4b
-wdf4c:: ds 1 ; df4c
-wdf4d:: ds 1 ; df4d
-wdf4e:: ds 1 ; df4e
-wdf4f:: ds 1 ; df4f
-wdf50:: ds 1 ; df50
-wdf51:: ds 1 ; df51
-wdf52:: ds 1 ; df52
-wdf53:: ds 1 ; df53
-wdf54:: ds 1 ; df54
-wdf55:: ds 1 ; df55
-wdf56:: ds 1 ; df56
-wdf57:: ds 1 ; df57
-wdf58:: ds 1 ; df58
-wdf59:: ds 1 ; df59
-wdf5a:: ds 1 ; df5a
-wdf5b:: ds 1 ; df5b
-wdf5c:: ds 1 ; df5c
-wdf5d:: ds 1 ; df5d
-wdf5e:: ds 1 ; df5e
-wdf5f:: ds 1 ; df5f
-wdf60:: ds 1 ; df60
-wdf61:: ds 1 ; df61
-wdf62:: ds 1 ; df62
-wdf63:: ds 1 ; df63
-wdf64:: ds 1 ; df64
-wdf65:: ds 1 ; df65
-wdf66:: ds 1 ; df66
-wdf67:: ds 1 ; df67
-wdf68:: ds 1 ; df68
-wdf69:: ds 1 ; df69
-wdf6a:: ds 1 ; df6a
-wdf6b:: ds 1 ; df6b
-wdf6c:: ds 1 ; df6c
-wdf6d:: ds 1 ; df6d
-wdf6e:: ds 1 ; df6e
-wdf6f:: ds 1 ; df6f
-wdf70:: ds 1 ; df70
-wdf71:: ds 1 ; df71
-wdf72:: ds 1 ; df72
-wdf73:: ds 1 ; df73
-wdf74:: ds 1 ; df74
-wdf75:: ds 1 ; df75
-wdf76:: ds 1 ; df76
-wdf77:: ds 1 ; df77
-wdf78:: ds 1 ; df78
-wdf79:: ds 1 ; df79
-wdf7a:: ds 1 ; df7a
-wdf7b:: ds 1 ; df7b
-wdf7c:: ds 1 ; df7c
-wdf7d:: ds 1 ; df7d
-wdf7e:: ds 1 ; df7e
-wdf7f:: ds 1 ; df7f
-wdf80:: ds 1 ; df80
-wdf81:: ds 1 ; df81
-wdf82:: ds 1 ; df82
-wdf83:: ds 1 ; df83
-wdf84:: ds 1 ; df84
-wdf85:: ds 1 ; df85
-wdf86:: ds 1 ; df86
-wdf87:: ds 1 ; df87
-wdf88:: ds 1 ; df88
-wdf89:: ds 1 ; df89
-wdf8a:: ds 1 ; df8a
-wdf8b:: ds 1 ; df8b
-wdf8c:: ds 1 ; df8c
-wdf8d:: ds 1 ; df8d
-wdf8e:: ds 1 ; df8e
-wdf8f:: ds 1 ; df8f
-wdf90:: ds 1 ; df90
-wdf91:: ds 1 ; df91
-wdf92:: ds 1 ; df92
-wdf93:: ds 1 ; df93
-wdf94:: ds 1 ; df94
-wdf95:: ds 1 ; df95
-wdf96:: ds 1 ; df96
-wdf97:: ds 1 ; df97
-wdf98:: ds 1 ; df98
-wdf99:: ds 1 ; df99
-wdf9a:: ds 1 ; df9a
-wdf9b:: ds 1 ; df9b
-wdf9c:: ds 1 ; df9c
-wdf9d:: ds 1 ; df9d
-wdf9e:: ds 1 ; df9e
-wdf9f:: ds 1 ; df9f
-wdfa0:: ds 1 ; dfa0
-wdfa1:: ds 1 ; dfa1
-wdfa2:: ds 1 ; dfa2
-wdfa3:: ds 1 ; dfa3
-wdfa4:: ds 1 ; dfa4
-wdfa5:: ds 1 ; dfa5
-wdfa6:: ds 1 ; dfa6
-wdfa7:: ds 1 ; dfa7
-wdfa8:: ds 1 ; dfa8
-wdfa9:: ds 1 ; dfa9
-wdfaa:: ds 1 ; dfaa
-wdfab:: ds 1 ; dfab
-wdfac:: ds 1 ; dfac
-wdfad:: ds 1 ; dfad
-wdfae:: ds 1 ; dfae
-wdfaf:: ds 1 ; dfaf
-wdfb0:: ds 1 ; dfb0
-wdfb1:: ds 1 ; dfb1
-wdfb2:: ds 1 ; dfb2
-wdfb3:: ds 1 ; dfb3
-wdfb4:: ds 1 ; dfb4
-wdfb5:: ds 1 ; dfb5
-wdfb6:: ds 1 ; dfb6
-wdfb7:: ds 1 ; dfb7
-wdfb8:: ds 1 ; dfb8
-wdfb9:: ds 1 ; dfb9
-wdfba:: ds 1 ; dfba
-wdfbb:: ds 1 ; dfbb
-wdfbc:: ds 1 ; dfbc
-wdfbd:: ds 1 ; dfbd
-wdfbe:: ds 1 ; dfbe
-wdfbf:: ds 1 ; dfbf
-wdfc0:: ds 1 ; dfc0
-wdfc1:: ds 1 ; dfc1
-wdfc2:: ds 1 ; dfc2
-wdfc3:: ds 1 ; dfc3
-wdfc4:: ds 1 ; dfc4
-wdfc5:: ds 1 ; dfc5
-wdfc6:: ds 1 ; dfc6
-wdfc7:: ds 1 ; dfc7
-wdfc8:: ds 1 ; dfc8
-wdfc9:: ds 1 ; dfc9
-wdfca:: ds 1 ; dfca
-wdfcb:: ds 1 ; dfcb
-wdfcc:: ds 1 ; dfcc
-wdfcd:: ds 1 ; dfcd
-wdfce:: ds 1 ; dfce
-wdfcf:: ds 1 ; dfcf
-wdfd0:: ds 1 ; dfd0
-wdfd1:: ds 1 ; dfd1
-wdfd2:: ds 1 ; dfd2
-wdfd3:: ds 1 ; dfd3
-wdfd4:: ds 1 ; dfd4
-wdfd5:: ds 1 ; dfd5
-wdfd6:: ds 1 ; dfd6
-wdfd7:: ds 1 ; dfd7
-wdfd8:: ds 1 ; dfd8
-wdfd9:: ds 1 ; dfd9
-wdfda:: ds 1 ; dfda
-wdfdb:: ds 1 ; dfdb
-wdfdc:: ds 1 ; dfdc
-wdfdd:: ds 1 ; dfdd
-wdfde:: ds 1 ; dfde
-wdfdf:: ds 1 ; dfdf
-wdfe0:: ds 1 ; dfe0
-wdfe1:: ds 1 ; dfe1
-wdfe2:: ds 1 ; dfe2
-wdfe3:: ds 1 ; dfe3
-wdfe4:: ds 1 ; dfe4
-wdfe5:: ds 1 ; dfe5
-wdfe6:: ds 1 ; dfe6
-wdfe7:: ds 1 ; dfe7
-wdfe8:: ds 1 ; dfe8
-wdfe9:: ds 1 ; dfe9
-wdfea:: ds 1 ; dfea
-wdfeb:: ds 1 ; dfeb
-wdfec:: ds 1 ; dfec
-wdfed:: ds 1 ; dfed
-wdfee:: ds 1 ; dfee
-wdfef:: ds 1 ; dfef
-wdff0:: ds 1 ; dff0
-wdff1:: ds 1 ; dff1
-wdff2:: ds 1 ; dff2
-wdff3:: ds 1 ; dff3
-wdff4:: ds 1 ; dff4
-wdff5:: ds 1 ; dff5
-wdff6:: ds 1 ; dff6
-wdff7:: ds 1 ; dff7
-wdff8:: ds 1 ; dff8
-wdff9:: ds 1 ; dff9
-wdffa:: ds 1 ; dffa
-wdffb:: ds 1 ; dffb
-wdffc:: ds 1 ; dffc
-wdffd:: ds 1 ; dffd
-wdffe:: ds 1 ; dffe
-wdfff:: ds 1 ; dfff
+
+SECTION "Stack", WRAMX
+
+	ds 2
+wStackBottom::
+	ds $fc
+wStackTop::
+	ds 1
+
 
 INCLUDE "sram.asm"
 

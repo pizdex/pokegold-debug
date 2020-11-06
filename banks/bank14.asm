@@ -8,4 +8,7 @@ GetGender::
 	dr $51308,$5188d
 
 unk_014_588d:
-	dr $5188d,$54000
+	dr $5188d,$51aac
+
+BaseData:
+	dr $51aac,$54000

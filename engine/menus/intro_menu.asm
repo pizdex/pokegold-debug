@@ -55,7 +55,7 @@ _ResetWRAM:
 	xor a
 	call ByteFill
 
-	ld hl, wd1b3
+	ld hl, wPlayerID
 	ld bc, $0c83
 	xor a
 	call ByteFill
@@ -64,20 +64,20 @@ _ResetWRAM:
 	ldh [hSecondsBackup], a
 	call DelayFrame
 	ldh a, [hRandomSub]
-	ld [wd1b3], a
+	ld [wPlayerID], a
 
 	ldh a, [rLY]
 	ldh [hSecondsBackup], a
 	call DelayFrame
 	ldh a, [hRandomAdd]
-	ld [wd1b4], a
+	ld [wPlayerID + 1], a
 
 	ld hl, wPartyCount
 	call .InitList
 
 	xor a
 	ld [wd8af], a
-	ld [wd1d3], a
+	ld [wSavedAtLeastOnce], a
 
 	call SetDefaultBoxNames
 
@@ -215,19 +215,19 @@ InitializeMagikarpHouse:
 
 InitializeNPCNames:
 	ld hl, .Rival
-	ld de, wd1c1
+	ld de, wRivalName
 	call .Copy
 
 	ld hl, .Mom
-	ld de, wd1bb
+	ld de, wMomsName
 	call .Copy
 
 	ld hl, .Red
-	ld de, wd1c7
+	ld de, wRedsName
 	call .Copy
 
 	ld hl, .Green
-	ld de, wd1cd
+	ld de, wGreensName
 
 .Copy:
 	ld bc, NAME_LENGTH
@@ -314,7 +314,7 @@ Continue:
 	ld hl, $6575
 	rst FarCall
 	farcall ClockContinue
-	ld a, [wd1d4]
+	ld a, [wSpawnAfterChampion]
 	cp SPAWN_LANCE
 	jr z, .SpawnAfterE4
 	ld a, MAPSETUP_CONTINUE
@@ -336,7 +336,7 @@ SpawnAfterRed:
 
 PostCreditsSpawn:
 	xor a
-	ld [wd1d4], a
+	ld [wSpawnAfterChampion], a
 	ld a, MAPSETUP_WARP
 	ldh [hMapEntryMethod], a
 	ret
@@ -383,10 +383,10 @@ FinishContinueFunction:
 .loop
 	xor a
 	ld [wDontPlayMapMusicOnReload], a
-	ld hl, wGameTimerPause
-	set GAMETIMERPAUSE_TIMER_PAUSED_F, [hl]
+	ld hl, wGameTimerPaused
+	set GAME_TIMER_PAUSED_F, [hl]
 	farcall OverworldLoop
-	ld a, [wd1d4]
+	ld a, [wSpawnAfterChampion]
 	cp SPAWN_RED
 	jr z, .AfterRed
 	jp Reset

@@ -4,7 +4,7 @@ InitString::
 	jr _InitString
 
 InitName::
-; Intended for names, so this function is limited to five characters.
+; Intended for names, so this function is limited to ten characters.
 	push hl
 	ld c, NAME_LENGTH - 1
 _InitString::

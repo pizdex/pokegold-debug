@@ -1,6 +1,6 @@
 ; Functions relating to the timer interrupt and the real-time-clock.
 
-Unreferenced_Timer::
+Timer:: ; unreferenced
 	reti
 
 LatchClock::
@@ -15,9 +15,7 @@ UpdateTime::
 	call GetClock
 	call FixDays
 	call FixTime
-	ld a, $05
-	ld hl, $4032
-	rst FarCall
+	farcall GetTimeOfDay
 	ret
 
 GetClock::
@@ -37,7 +35,6 @@ GetClock::
 	ld a, [de]
 	maskbits 60
 	ldh [hRTCSeconds], a
-
 
 	ld [hl], RTC_M
 	ld a, [de]
@@ -128,7 +125,7 @@ FixTime::
 ; second
 	ldh a, [hRTCSeconds]
 	ld c, a
-	ld a, [wd1d8]
+	ld a, [wStartSecond]
 	add c
 	sub 60
 	jr nc, .updatesec
@@ -140,7 +137,7 @@ FixTime::
 	ccf ; carry is set, so turn it off
 	ldh a, [hRTCMinutes]
 	ld c, a
-	ld a, [wd1d7]
+	ld a, [wStartMinute]
 	adc c
 	sub 60
 	jr nc, .updatemin
@@ -152,7 +149,7 @@ FixTime::
 	ccf ; carry is set, so turn it off
 	ldh a, [hRTCHours]
 	ld c, a
-	ld a, [wd1d6]
+	ld a, [wStartHour]
 	adc c
 	sub 24
 	jr nc, .updatehr
@@ -164,7 +161,7 @@ FixTime::
 	ccf ; carry is set, so turn it off
 	ldh a, [hRTCDayLo]
 	ld c, a
-	ld a, [wd1d5]
+	ld a, [wStartDay]
 	adc c
 	ld [wCurDay], a
 	ret
@@ -176,6 +173,7 @@ InitTimeOfDay::
 	ld [wStringBuffer2 + 3], a
 	jr InitTime
 
+InitDayOfWeek::
 	call UpdateTime
 	ldh a, [hHours]
 	ld [wStringBuffer2 + 1], a
@@ -186,13 +184,10 @@ InitTimeOfDay::
 	jr InitTime ; useless
 
 InitTime::
-	ld a, $05
-	ld hl, $40d1
-	rst FarCall
+	farcall _InitTime
 	ret
 
-
-PanicResetClock::
+ClearClock::
 	call .ClearhRTC
 	call SetClock
 	ret
@@ -253,7 +248,7 @@ SetClock::
 	call CloseSRAM ; unlatch clock, disable clock r/w
 	ret
 
-ClearRTCStatus::
+ClearRTCStatus:: ; unreferenced
 ; clear sRTCStatusFlags
 	xor a
 	push af
@@ -274,7 +269,7 @@ RecordRTCStatus::
 	or [hl]
 	ld [hl], a
 	call CloseSRAM
-ret
+	ret
 
 CheckRTCStatus::
 ; check sRTCStatusFlags

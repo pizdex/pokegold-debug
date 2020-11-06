@@ -56,9 +56,9 @@ GetName::
 
 .done
 	ld a, e
-	ld [wcff8], a
+	ld [wUnusedNamesPointer], a
 	ld a, d
-	ld [wcff8 + 1], a
+	ld [wUnusedNamesPointer + 1], a
 
 	pop de
 	pop bc
@@ -180,15 +180,15 @@ GetTMHMName::
 	push af
 	jr c, .TM
 
-	ld hl, $3732
-	ld bc, $0006
+	ld hl, .HMText
+	ld bc, .HMTextEnd - .HMText
 	jr .copy
 
 .TM:
-	ld hl, $372c
-	ld bc, $0005
+	ld hl, .TMText
+	ld bc, .TMTextEnd - .TMText
 
-.copy:
+.copy
 	ld de, wStringBuffer1
 	call CopyBytes
 
@@ -197,7 +197,7 @@ GetTMHMName::
 	ld a, [wNamedObjectIndexBuffer]
 	ld c, a
 	ld hl, $56e3
-	ld a, 3
+	ld a, $03
 	rst FarCall
 	pop de
 
@@ -206,20 +206,18 @@ GetTMHMName::
 	ld a, c
 	jr c, .not_hm
 	sub NUM_TMS
+.not_hm
 
-.not_hm:
 ; Divide and mod by 10 to get the top and bottom digits respectively
 	ld b, "0"
-
-.mod10:
+.mod10
 	sub 10
 	jr c, .done_mod
 	inc b
 	jr .mod10
 
-.done_mod:
+.done_mod
 	add 10
-
 	push af
 	ld a, b
 	ld [de], a
@@ -243,38 +241,16 @@ GetTMHMName::
 	ret
 
 .TMText:
-	db "わざマシン@"
+	db "わざマシン"
 .TMTextEnd:
+	db "@"
 
 .HMText:
-	db "ひでんマシン@"
+	db "ひでんマシン"
 .HMTextEnd:
+	db "@"
 
-; HM moves can't be forgotten
-
-IsHM::
-	cp HM01
-	jr c, .NotHM
-	scf
-	ret
-.NotHM:
-	and a
-	ret
-
-IsHMMove::
-	ld hl, .HMMoves
-	ld de, 1
-	jp IsInArray
-
-.HMMoves:
-	db CUT
-	db FLY
-	db SURF
-	db STRENGTH
-	db FLASH
-	db WATERFALL
-	db WHIRLPOOL
-	db -1 ; end
+INCLUDE "home/hm_moves.asm"
 
 GetMoveName::
 	push hl

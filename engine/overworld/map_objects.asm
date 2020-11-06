@@ -2251,13 +2251,25 @@ unk_001_50ec:
 	dr $50ec,$545f
 
 Call_001_545f:
-	dr $545f,$570c
+	dr $545f,$5587
+
+UpdateAllObjectsFrozen:
+	dr $5587,$570c
 
 Call_001_570c:
 	dr $570c,$571c
 
 Call_001_571c:
-	dr $571c,$58cd
+	dr $571c,$5738
+
+RefreshPlayerSprite::
+	dr $5738,$579d
+
+StopFollow::
+	dr $579d,$589e
+
+_UpdateSprites::
+	dr $589e,$58cd
 
 ApplyBGMapAnchorToObjects:
 	dr $58cd,$5a55

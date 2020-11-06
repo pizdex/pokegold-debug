@@ -10,8 +10,8 @@ UpdateBGMapBuffer::
 	and a
 	ret z
 
+; Relocate the stack pointer to wBGMapBufferPtrs
 	ld [hSPBuffer], sp
-
 	ld hl, wBGMapBufferPtrs
 	ld sp, hl
 
@@ -22,7 +22,6 @@ UpdateBGMapBuffer::
 
 .next
 ; Copy a pair of 16x8 blocks (one 16x16 block)
-
 
 rept 2
 ; Get our BG Map address
@@ -60,6 +59,7 @@ endr
 
 	jr nz, .next
 
+; Restore the stack pointer
 	ldh a, [hSPBuffer]
 	ld l, a
 	ldh a, [hSPBuffer + 1]
@@ -94,7 +94,7 @@ UpdateBGMap::
 ; Update the BG Map, in thirds, from wTilemap and wAttrmap.
 
 	ldh a, [hBGMapMode]
-	and a
+	and a ; 0
 	ret z
 
 ; BG Map 0
@@ -105,7 +105,7 @@ UpdateBGMap::
 	ld a, 1
 	ldh [rVBK], a
 
-	ld hl, $cccd
+	hlcoord 0, 0, wAttrmap
 	call .update
 
 	ld a, 0
@@ -128,7 +128,7 @@ UpdateBGMap::
 
 THIRD_HEIGHT EQU SCREEN_HEIGHT / 3
 
-.bottom
+; bottom
 	ld de, 2 * THIRD_HEIGHT * SCREEN_WIDTH
 	add hl, de
 	ld sp, hl
@@ -178,7 +178,7 @@ THIRD_HEIGHT EQU SCREEN_HEIGHT / 3
 	ldh [hBGMapThird], a
 
 ; Rows of tiles in a third
-	ld a, SCREEN_HEIGHT / 3
+	ld a, THIRD_HEIGHT
 
 ; Discrepancy between wTilemap and BGMap
 	ld bc, BG_MAP_WIDTH - (SCREEN_WIDTH - 1)
@@ -209,8 +209,6 @@ endr
 	ret
 
 Serve1bppRequest::
-; Only call during the first fifth of VBlank
-
 	ld a, [wRequested1bppSize]
 	and a
 	ret z
@@ -280,8 +278,6 @@ endr
 	ret
 
 Serve2bppRequest::
-; Only call during the first fifth of VBlank
-
 	ld a, [wRequested2bppSize]
 	and a
 	ret z
@@ -343,8 +339,6 @@ endr
 	ret
 
 AnimateTileset::
-; Only call during the first fifth of VBlank
-
 	ldh a, [hMapAnims]
 	and a
 	ret z
@@ -360,15 +354,16 @@ AnimateTileset::
 	rst Bankswitch
 	ret
 
-;Debug only functions
+Video_DummyFunction:: ; unreferenced
 	ret
 
+EnableSpriteDisplay:: ; unreferenced
 	ld hl, rLCDC
 	set 1, [hl]
 	ret
 
 Function15ef::
-	ld a, [$d558]
+	ld a, [wd558]
 	bit 0, a
 	ret z
 
@@ -379,7 +374,7 @@ Function15ef::
 	res 2, a
 	ret z
 
-	ld [$d558], a
+	ld [wd558], a
 	ld [$ffdb], sp
 	ld hl, $cebc
 	ld sp, hl
@@ -387,29 +382,33 @@ Function15ef::
 	ld a, 1
 	jp $14e6
 
-Function160f::
+FillBGMap0WithBlack::
 	nop
-	ldh a, [hVBlankCounter + 1]
-	and a
+	ldh a, [hBlackOutBGMapThird]
+	and a ; 0
 	ret z
 
-	dec a
+	dec a ; 1
 	jr z, .one
-	dec a
+	dec a ; 2
 	jr z, .two
+	; 3
 
+BG_THIRD_HEIGHT EQU (BG_MAP_HEIGHT - SCREEN_HEIGHT) / 2
+
+; Black out the 18 BG Map rows right of the screen area
 	ld a, 2
-	ldh [hVBlankCounter + 1], a
+	ldh [hBlackOutBGMapThird], a
 	ld hl, hBGMapAddress
 	ld a, [hli]
 	ld h, [hl]
 	ld l, a
 	ld de, SCREEN_WIDTH
 	add hl, de
-	ld b, $12
-	ld a, $60
+	ld b, SCREEN_HEIGHT
+	ld a, "■"
 .loop1
-rept 12
+rept BG_MAP_WIDTH - SCREEN_WIDTH
 	ld [hli], a
 endr
 	add hl, de
@@ -418,25 +417,27 @@ endr
 	ret
 
 .two
+; Black out the top 7 BG Map rows below the screen area
 	ld a, 1
-	ld de, $240
+	ld de, BG_MAP_WIDTH * SCREEN_HEIGHT
 	jr .go
 
 .one
+; Black out the bottom 7 BG Map rows below the screen area
 	xor a
-	ld de, $320
+	ld de, BG_MAP_WIDTH * (SCREEN_HEIGHT + BG_THIRD_HEIGHT)
 
 .go
-	ldh [hVBlankCounter + 1], a
+	ldh [hBlackOutBGMapThird], a
 	ld hl, hBGMapAddress
 	ld a, [hli]
 	ld h, [hl]
 	ld l, a
 	add hl, de
-	ld b, $e
-	ld a, $60
+	ld b, BG_THIRD_HEIGHT * 2
+	ld a, "■"
 .loop2
-rept 16
+rept BG_MAP_WIDTH / 2
 	ld [hli], a
 endr
 	dec b

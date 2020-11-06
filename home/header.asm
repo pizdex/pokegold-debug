@@ -6,12 +6,12 @@ SECTION "rst0", ROM0[$0000]
 
 SECTION "rst8", ROM0[$0008]
 FarCall::
-	jp $2e94
+	jp FarCall_hl
 
 SECTION "rst10", ROM0[$0010]
 Bankswitch::
 	ldh [hROMBank], a
-	ld [$2000], a
+	ld [MBC3RomBank], a
 	ret
 
 SECTION "rst18", ROM0[$0018]
@@ -37,22 +37,24 @@ JumpTable::
 SECTION "rst38", ROM0[$0038]
 	rst $38
 
+
 ; Game Boy hardware interrupts
 
 SECTION "vblank", ROM0[$0040]
-	jp $0150
+	jp VBlank
 
 SECTION "lcd", ROM0[$0048]
-	jp $041b
+	jp LCD
 
 SECTION "timer", ROM0[$0050]
 	reti
 
 SECTION "serial", ROM0[$0058]
-	jp $06a9
+	jp Serial
 
 SECTION "joypad", ROM0[$0060]
-	jp $08de
+	jp Joypad
+
 
 SECTION "Header", ROM0[$0100]
 
@@ -65,4 +67,4 @@ Start::
 ; The Game Boy cartridge header data is patched over by rgbfix.
 ; This makes sure it doesn't get used for anything else.
 
-	ds $0150 - @
+	ds $0150 - @, $00

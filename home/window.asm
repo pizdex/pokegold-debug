@@ -1,13 +1,13 @@
 RefreshScreen::
-	call $1df6
+	call ClearWindowData
 	ldh a, [hROMBank]
 	push af
-	ld a, 1 ; aka BANK(LoadFonts_NoOAMUpdate)
+	ld a, BANK(ReanchorBGMap_NoOAMUpdate) ; aka BANK(LoadFonts_NoOAMUpdate)
 	rst Bankswitch
 
-	call $6779
-	call $2f50
-	call $67f3
+	call ReanchorBGMap_NoOAMUpdate
+	call _OpenAndCloseMenu_HDMATransferTilemapAndAttrmap
+	call LoadFonts_NoOAMUpdate
 
 	pop af
 	rst Bankswitch
@@ -16,7 +16,7 @@ RefreshScreen::
 CloseText::
 	ldh a, [hOAMUpdate]
 	push af
-	ld a, 1
+	ld a, $1
 	ldh [hOAMUpdate], a
 
 	call .CloseText
@@ -26,36 +26,34 @@ CloseText::
 	ret
 
 .CloseText:
-	call $1df6
+	call ClearWindowData
 	xor a
-	ldh [$d6], a
-	call $1fe2
-	call $2f50
+	ldh [hBGMapMode], a
+	call OverworldTextModeSwitch
+	call _OpenAndCloseMenu_HDMATransferTilemapAndAttrmap
 	xor a
-	ldh [$d6], a
-	call $2f5e
+	ldh [hBGMapMode], a
+	call SafeUpdateSprites
 	ld a, $90
-	ldh [$d4], a
-	ld a, $05
-	ld hl, $412e
-	rst FarCall
-	call $0d80
-	ld hl, $d558
+	ldh [hWY], a
+	farcall _ClearSprites
+	call UpdatePlayerSprite
+	ld hl, wEnteredMapFromContinue
 	res 7, [hl]
-	call $1e8f
+	call ResetBGWindow
 	ret
 
 OpenText::
-	call $1df6
+	call ClearWindowData
 	ldh a, [hROMBank]
 	push af
-	ld a, 1 ; aka BANK(LoadFonts_NoOAMUpdate)
+	ld a, BANK(ReanchorBGMap_NoOAMUpdate) ; aka BANK(LoadFonts_NoOAMUpdate)
 	rst Bankswitch
 
-	call $6779 ; clear bgmap
-	call $0f17
+	call ReanchorBGMap_NoOAMUpdate ; clear bgmap
+	call SpeechTextbox
 	call _OpenAndCloseMenu_HDMATransferTilemapAndAttrmap ; anchor bgmap
-	call $67f3 ; load font
+	call LoadFonts_NoOAMUpdate ; load font
 	pop af
 	rst Bankswitch
 
@@ -64,10 +62,10 @@ OpenText::
 _OpenAndCloseMenu_HDMATransferTilemapAndAttrmap::
 	ldh a, [hOAMUpdate]
 	push af
-	ld a, 1
+	ld a, $1
 	ldh [hOAMUpdate], a
 
-	call $34a1
+	call CGBOnly_CopyTilemapAtOnce
 
 	pop af
 	ldh [hOAMUpdate], a
@@ -80,10 +78,10 @@ SafeUpdateSprites::
 	push af
 	xor a
 	ldh [hBGMapMode], a
-	ld a, 1
+	ld a, $1
 	ldh [hOAMUpdate], a
 
-	call $193c
+	call UpdateSprites
 
 	xor a
 	ldh [hOAMUpdate], a
@@ -94,6 +92,6 @@ SafeUpdateSprites::
 	ldh [hOAMUpdate], a
 	ret
 
-; unused
+SetCarryFlag:: ; unreferenced
 	scf
 	ret

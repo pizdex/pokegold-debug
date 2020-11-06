@@ -1,4 +1,6 @@
-Functiond59::
+TILES_PER_CYCLE EQU 8
+
+FarDecompressBufferedPic:: ; unreferenced
 	ld b, a
 	ldh a, [hROMBank]
 	push af
@@ -8,7 +10,7 @@ Functiond59::
 	ld a, BANK(sDecompressBuffer)
 	call OpenSRAM
 	ld hl, sDecompressBuffer
-	ld bc, 7 * 7 * $10
+	ld bc, 7 * 7 tiles
 	xor a
 	call ByteFill
 
@@ -24,10 +26,8 @@ Functiond59::
 	rst Bankswitch
 	ret
 
-ReplacePlayerSprite::
-	ld a, $05
-	ld hl, $410e
-	rst FarCall
+UpdatePlayerSprite::
+	farcall _UpdatePlayerSprite
 	ret
 
 LoadStandardFont::
@@ -63,10 +63,10 @@ DecompressRequest2bpp::
 FarCopyBytes::
 ; copy bc bytes from a:hl to de
 
-	ld [wBuffer], a
+	ld [wTempBank], a
 	ldh a, [hROMBank]
 	push af
-	ld a, [wBuffer]
+	ld a, [wTempBank]
 	rst Bankswitch
 
 	call CopyBytes
@@ -75,15 +75,14 @@ FarCopyBytes::
 	rst Bankswitch
 	ret
 
-
 FarCopyBytesDouble::
 ; Copy bc bytes from a:hl to bc*2 bytes at de,
 ; doubling each byte in the process.
 
-	ld [wBuffer], a
+	ld [wTempBank], a
 	ldh a, [hROMBank]
 	push af
-	ld a, [wBuffer]
+	ld a, [wTempBank]
 	rst Bankswitch
 
 ; switcheroo, de <> hl
@@ -133,9 +132,9 @@ Request2bpp::
 	ld [wRequested2bppDest], a
 	ld a, h
 	ld [wRequested2bppDest + 1], a
-.check
+.loop
 	ld a, c
-	cp 8 ; TilesPerCycle
+	cp TILES_PER_CYCLE
 	jr nc, .cycle
 
 	ld [wRequested2bppSize], a
@@ -149,14 +148,14 @@ Request2bpp::
 	ret
 
 .cycle
-	ld a, 8 ; TilesPerCycle
+	ld a, TILES_PER_CYCLE
 	ld [wRequested2bppSize], a
 
 	call DelayFrame
 	ld a, c
-	sub 8 ; TilesPerCycle
+	sub TILES_PER_CYCLE
 	ld c, a
-	jr .check
+	jr .loop
 
 Request1bpp::
 ; Load 1bpp at b:de to occupy c tiles of hl.
@@ -178,9 +177,9 @@ Request1bpp::
 	ld [wRequested1bppDest], a
 	ld a, h
 	ld [wRequested1bppDest + 1], a
-.check
+.loop
 	ld a, c
-	cp 8 ; TilesPerCycle
+	cp TILES_PER_CYCLE
 	jr nc, .cycle
 
 	ld [wRequested1bppSize], a
@@ -194,22 +193,20 @@ Request1bpp::
 	ret
 
 .cycle
-	ld a, 8 ; TilesPerCycle
+	ld a, TILES_PER_CYCLE
 	ld [wRequested1bppSize], a
 
 	call DelayFrame
 	ld a, c
-	sub 8 ; TilesPerCycle
+	sub TILES_PER_CYCLE
 	ld c, a
-	jr .check
+	jr .loop
 
 Get2bpp::
+; copy c 2bpp tiles from b:de to hl
 	ldh a, [rLCDC]
 	bit rLCDC_ENABLE, a
 	jp nz, Request2bpp
-
-Copy2bpp::
-; copy c 2bpp tiles from b:de to hl
 
 	push hl
 	ld h, d
@@ -219,10 +216,10 @@ Copy2bpp::
 ; bank
 	ld a, b
 
-; bc = c * $10
+; bc = c * LEN_2BPP_TILE
 	push af
 	swap c
-	ld a, $f
+	ld a, $0f
 	and c
 	ld b, a
 	ld a, $f0
@@ -233,12 +230,10 @@ Copy2bpp::
 	jp FarCopyBytes
 
 Get1bpp::
+; copy c 1bpp tiles from b:de to hl
 	ldh a, [rLCDC]
 	bit rLCDC_ENABLE, a
 	jp nz, Request1bpp
-
-Copy1bpp::
-; copy c 1bpp tiles from b:de to hl
 
 	push de
 	ld d, h
@@ -247,7 +242,7 @@ Copy1bpp::
 ; bank
 	ld a, b
 
-; bc = c * $10 / 2
+; bc = c * LEN_1BPP_TILE
 	push af
 	ld h, 0
 	ld l, c

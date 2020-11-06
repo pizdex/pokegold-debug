@@ -156,23 +156,19 @@ ROMX $3e
 ROMX $3f
 	"bank3F"
 WRAM0
-	org $c000
 	"Audio RAM"
 	"WRAM"
 	"GBC Palettes"
 	"Sprites"
 	"Tilemap"
-	"Animated Objects"
+	"Miscellaneous"
+	"Overworld Map"
+	"Video"
 WRAMX 1
-	org $d000
-	"WRAM1"
+	"WRAM 1"
+	"Game Data"
 	"Party"
-WRAMX 2
-WRAMX 3
-WRAMX 4
-WRAMX 5
-WRAMX 6
-WRAMX 7
+	"Stack"
 VRAM $00
 VRAM $01
 SRAM $00

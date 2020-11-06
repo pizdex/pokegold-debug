@@ -1,12 +1,12 @@
 Reset::
-	call $3d21
+	call InitSound
 	xor a
 	ldh [hMapAnims], a
-	call $3577
+	call ClearPalettes
 	ei
 
-	ld hl, wd8ad
-	set 7, [hl]
+	ld hl, wJoypadDisable
+	set JOYPAD_DISABLE_SGB_TRANSFER_F, [hl]
 
 	ld c, 32
 	call DelayFrames
@@ -16,11 +16,11 @@ Reset::
 _Start::
 	cp $11
 	jr z, .cgb
-	xor a
+	xor a ; FALSE
 	jr .load
 
 .cgb
-	ld a, 1
+	ld a, TRUE
 
 .load
 	ldh [hCGB], a
@@ -56,9 +56,9 @@ Init::
 	xor a
 	ldh [rLCDC], a
 
-; Clear WRAM bank 0
+; Clear WRAM
 	ld hl, WRAM0_Begin
-	ld bc, $2000
+	ld bc, WRAM1_End - WRAM0_Begin
 .ByteFill:
 	ld [hl], 0
 	inc hl
@@ -67,24 +67,26 @@ Init::
 	or c
 	jr nz, .ByteFill
 
-	ld sp, wdfff
+	ld sp, wStackTop
 
 	call ClearVRAM
+
+; Clear HRAM
 	ldh a, [hCGB]
 	push af
 	xor a
 	ld hl, HRAM_Begin
 	ld bc, HRAM_End - HRAM_Begin
-	call $31b9
+	call ByteFill
 	pop af
 	ldh [hCGB], a
 
-	call $316c
+	call ClearSprites
 
-	ld a, $01
-	rst $10
+	ld a, BANK(WriteOAMDMACodeToHRAM) ; aka BANK(GameInit)
+	rst Bankswitch
 
-	call $403a
+	call WriteOAMDMACodeToHRAM
 
 	xor a
 	ldh [hMapAnims], a
@@ -106,23 +108,19 @@ Init::
 	ld a, CONNECTION_NOT_ESTABLISHED
 	ldh [hSerialConnectionStatus], a
 
-	ld h, $98
-	call $0698
-	ld h, $9c
-	call $0698
+	ld h, HIGH(vBGMap0)
+	call BlankBGMap
+	ld h, HIGH(vBGMap1)
+	call BlankBGMap
 
-	ld hl, $5fc1
-	ld a, $02
-	rst FarCall
+	callfar InitCGBPals
 
-	ld a, $9c
-	ldh [$d9], a
-	xor a
+	ld a, HIGH(vBGMap1)
+	ldh [hBGMapAddress + 1], a
+	xor a ; LOW(vBGMap1)
 	ldh [hBGMapAddress], a
 
-	ld a, $05
-	ld hl, $4089
-	rst FarCall
+	farcall StartClock
 
 	ld a, SRAM_ENABLE
 	ld [MBC3SRamEnable], a
@@ -141,7 +139,7 @@ Init::
 	; BG on
 	ldh [rLCDC], a
 
-	ld a, $1f
+	ld a, IE_DEFAULT
 	ldh [rIE], a
 	ei
 
@@ -150,26 +148,28 @@ Init::
 	ld a, $30
 	call Predef
 
-	call $3d21
+	call InitSound
 	xor a
 	ld [wMapMusic], a
-	jp $676d
+	jp GameInit
 
 ClearVRAM::
 	ld hl, VRAM_Begin
 	ld bc, VRAM_End - VRAM_Begin
 	xor a
-	call $31b9
+	call ByteFill
 	ret
 
 BlankBGMap::
-	ld a, $7f
-	jr FillBGMap.asm_69e
+	ld a, " "
+	jr FillBGMap
+
+FillBGMap_l:: ; unreferenced
+	ld a, l
+	; fallthrough
 
 FillBGMap::
-	ld a, l
-.asm_69e
-	ld de, $0400
+	ld de, vBGMap1 - vBGMap0
 	ld l, e
 .loop
 	ld [hli], a

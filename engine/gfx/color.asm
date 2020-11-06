@@ -39,7 +39,10 @@ PushSGBPals:
 	dr $9f3a, $9f84
 
 unk_002_5f84:
-	dr $9f84, $aff1
+	dr $9f84, $9fc1
+
+InitCGBPals::
+	dr $9fc1, $aff1
 
 unkData_002_6ff1:
 	dr $aff1, $b7f1

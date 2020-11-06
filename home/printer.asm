@@ -1,11 +1,5 @@
 PrinterReceive::
-	ldh a, [hROMBank]
-	push af
-	ld a, $21
-	rst Bankswitch
-	call $42d5
-	pop af
-	rst Bankswitch
+	homecall _PrinterReceive
 	ret
 
 AskSerial::
@@ -29,7 +23,7 @@ AskSerial::
 	xor a
 	ld [hl], a
 
-	ld a, 12
+	ld a, $0c
 	ld [wPrinterOpcode], a
 
 ; handshake

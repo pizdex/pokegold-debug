@@ -82,11 +82,11 @@ FoundNone:
 
 NameRival:
 	ld b, $02
-	ld de, wd1c1
+	ld de, wRivalName
 	ld a, $04
 	ld hl, $5a74
 	rst FarCall
-	ld hl, wd1c1
+	ld hl, wRivalName
 	ld de, .DefaultName
 	call InitName
 	ret

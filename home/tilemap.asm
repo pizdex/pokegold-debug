@@ -70,22 +70,22 @@ CopyTilemapAtOnce::
 
 .wait
 	ldh a, [rLY]
-	cp $7f
+	cp $80 - 1
 	jr c, .wait
 
 	di
-	ld a, BANK(vTiles3)
+	ld a, BANK(vBGMap2)
 	ldh [rVBK], a
 	hlcoord 0, 0, wAttrmap
-	call .StackPointerMagic
-	ld a, BANK(vTiles0)
+	call .CopyBGMapViaStack
+	ld a, BANK(vBGMap0)
 	ldh [rVBK], a
 	hlcoord 0, 0
-	call .StackPointerMagic
+	call .CopyBGMapViaStack
 
 .wait2
 	ldh a, [rLY]
-	cp $7f
+	cp $80 - 1
 	jr c, .wait2
 	ei
 
@@ -95,7 +95,7 @@ CopyTilemapAtOnce::
 	ldh [hBGMapMode], a
 	ret
 
-.StackPointerMagic:
+.CopyBGMapViaStack:
 ; Copy all tiles to vBGMap
 	ld [hSPBuffer], sp
 	ld sp, hl
@@ -115,7 +115,7 @@ rept SCREEN_WIDTH / 2
 	ldh a, [c]
 	and b
 	jr nz, .loop\@
-; load BGMap0
+; load vBGMap
 	ld [hl], e
 	inc l
 	ld [hl], d
@@ -180,7 +180,7 @@ ClearPalettes::
 	ld a, $ff
 	call ByteFill
 ; Request palette update
-	ld a, 1
+	ld a, TRUE
 	ldh [hCGBPalUpdate], a
 	ret
 
@@ -198,8 +198,7 @@ GetSGBLayout::
 	ret z
 
 .sgb
-	ld a, $31
-	jp Predef
+	predef_jump LoadSGBLayout
 
 SetHPPal::
 ; Set palette for hp bar pixel length e at hl.

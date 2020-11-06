@@ -1,8 +1,7 @@
 ; Functions to fade the screen in and out.
 
-Unreferenced_Function360::
-; TimeOfDayFade
-	ld a, [$d55b]
+TimeOfDayFade:: ; unreferenced
+	ld a, [wTimeOfDayPal]
 	ld b, a
 	ld hl, IncGradGBPalTable_11
 	ld a, l
@@ -44,53 +43,48 @@ RotateThreePalettesRight::
 .dmg
 	ld hl, IncGradGBPalTable_13
 	ld b, 3
-
 RotatePalettesRight::
 ; Rotate palettes to the right and fill with loaded colors from the left
 ; If we're already at the leftmost color, fill with the leftmost color
 	push de
 	ld a, [hli]
-	call $0c4a
+	call DmgToCgbBGPals
 	ld a, [hli]
 	ld e, a
 	ld a, [hli]
 	ld d, a
-	call $0c6c
-	ld c, $08
-	call $033c
+	call DmgToCgbObjPals
+	ld c, 8
+	call DelayFrames
 	pop de
 	dec b
 	jr nz, RotatePalettesRight
-
 	ret
 
 RotateFourPalettesLeft::
-	ldh a, [$e8]
+	ldh a, [hCGB]
 	and a
-	jr z, jr_000_03bd
-
-	ld hl, $03f6
-	ld b, $04
+	jr z, .dmg
+	ld hl, IncGradGBPalTable_04 - 1
+	ld b, 4
 	jr RotatePalettesLeft
 
-jr_000_03bd:
-	ld hl, $040e
-	ld b, $04
+.dmg
+	ld hl, IncGradGBPalTable_12 - 1
+	ld b, 4
 	jr RotatePalettesLeft
 
 RotateThreePalettesLeft::
-	ldh a, [$e8]
+	ldh a, [hCGB]
 	and a
-	jr z, jr_000_03d0
-
-	ld hl, $03ff
-	ld b, $03
+	jr z, .dmg
+	ld hl, IncGradGBPalTable_07 - 1
+	ld b, 3
 	jr RotatePalettesLeft
 
-jr_000_03d0:
-	ld hl, $0417
-	ld b, $03
-
+.dmg
+	ld hl, IncGradGBPalTable_15 - 1
+	ld b, 3
 RotatePalettesLeft::
 ; Rotate palettes to the left and fill with loaded colors from the right
 ; If we're already at the rightmost color, fill with the rightmost color
@@ -99,16 +93,15 @@ RotatePalettesLeft::
 	ld d, a
 	ld a, [hld]
 	ld e, a
-	call $0c6c
+	call DmgToCgbObjPals
 	ld a, [hld]
-	call $0c4a
-	ld c, $08
-	call $033c
+	call DmgToCgbBGPals
+	ld c, 8
+	call DelayFrames
 	pop de
 	dec b
 	jr nz, RotatePalettesLeft
 	ret
-
 
 IncGradGBPalTable_00:: dc 3,3,3,3, 3,3,3,3, 3,3,3,3
 IncGradGBPalTable_01:: dc 3,3,3,2, 3,3,3,2, 3,3,3,2

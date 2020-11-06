@@ -996,15 +996,15 @@ DebugColor_FillBoxWithByte:
 Call_03f_7ae1:
 ; SGB Related
 
-	ld a, [wd8ad]
+	ld a, [wJoypadDisable]
 	push af
 	set 7, a
-	ld [wd8ad], a
+	ld [wJoypadDisable], a
 
 	call Call_03f_7af2
 
 	pop af
-	ld [wd8ad], a
+	ld [wJoypadDisable], a
 	ret
 
 Call_03f_7af2:
