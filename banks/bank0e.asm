@@ -7,5 +7,5 @@ unk_00e_5534:
 unk_00e_555f:
 	dr $3955f, $3995c
 
-unkData_00e_595c:
+TrainerGroups:
 	dr $3995c, $3c000

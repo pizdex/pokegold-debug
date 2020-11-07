@@ -3354,45 +3354,52 @@ wd55f:: ds 1 ; d55f
 wd560:: ds 1 ; d560
 wTimeOfDayPalset:: ds 1 ; d561
 wd562:: ds 1 ; d562
+
 wd563:: ds 1 ; d563
 
-wStatusFlags:: ds 1 ; d564
-wStatusFlags2:: ds 1 ; d565
+wPlayerData2End::
+wPlayerData3::
+wStatusFlags::
+	db
+wStatusFlags2:: db
 
-wMoney:: ds 3 ; d566
+wMoney:: ds 3
+wMomsMoney:: ds 3
 
-wMomsMoney:: ds 1 ; d569
-wd56a:: ds 1 ; d56a
-wd56b:: ds 1 ; d56b
-wd56c:: ds 1 ; d56c
+wMomSavingMoney::
+; bit 0: saving some money
+; bit 1: saving half money (unused)
+; bit 2: saving all money (unused)
+; bit 7: active
+	db
 
-wCoins:: ds 2 ; d56d
+wCoins:: dw
 
 wBadges::
-wJohtoBadges:: ds 1 ; d56f
-wKantoBadges:: ds 1 ; d570
+wJohtoBadges:: flag_array NUM_JOHTO_BADGES
+wKantoBadges:: flag_array NUM_KANTO_BADGES
 
-wTMsHMs:: ds NUM_TMS + NUM_HMS ; d571
-wTMsHMsEnd::
+wTMsHMs:: ds NUM_TMS + NUM_HMS
 
-wNumItems:: ds 1 ; d5aa
-wItems:: ds MAX_ITEMS * 2 + 1 ; d5ab
-wItemsEnd::
+wNumItems:: db
+wItems:: ds MAX_ITEMS * 2 + 1
 
-wNumKeyItems:: ds 1 ; d5d4
-wKeyItems:: ds MAX_KEY_ITEMS + 1 ; d5d5
-wKeyItemsEnd::
+wNumKeyItems:: db
+wKeyItems:: ds MAX_KEY_ITEMS + 1
 
-wNumBalls:: ds 1 ; d5ef
-wBalls:: ds MAX_BALLS * 2 + 1 ; d5f0
-wBallsEnd::
+wNumBalls:: db
+wBalls:: ds MAX_BALLS * 2 + 1
 
-wNumPCItems::
-wPCItems:: ds MAX_PC_ITEMS * 2 + 1 ; d609
-wPCItemsEnd::
+wNumPCItems:: db
+wPCItems:: ds MAX_PC_ITEMS * 2 + 1
 
-wd66e:: ds 1 ; d66e
-wd66f:: ds 1 ; d66f
+wPokegearFlags::
+; bit 0: map
+; bit 1: radio
+; bit 2: phone
+; bit 3: expn
+; bit 7: on/off
+	db
 wd670:: ds 1 ; d670
 wd671:: ds 1 ; d671
 wd672:: ds 1 ; d672
@@ -3941,28 +3948,20 @@ wd97f:: ds 1 ; d97f
 wd980:: ds 1 ; d980
 wd981:: ds 1 ; d981
 wd982:: ds 1 ; d982
+
 wd983:: ds 1 ; d983
 wd984:: ds 1 ; d984
 wd985:: ds 1 ; d985
 wd986:: ds 1 ; d986
-wHappinessStepCount:: ds 1 ; d987
-wd988:: ds 1 ; d988
+wHappinessStepCount:: db
+	ds 1
 
-wParkBallsRemaining:: ds 1 ; d989
+wParkBallsRemaining::
+wSafariBallsRemaining:: db
+wSafariTimeRemaining:: dw
 
-wd98a:: ds 1 ; d98a
-wd98b:: ds 1 ; d98b
-wd98c:: ds 1 ; d98c
-wd98d:: ds 1 ; d98d
-wd98e:: ds 1 ; d98e
-wd98f:: ds 1 ; d98f
-wd990:: ds 1 ; d990
-wd991:: ds 1 ; d991
-wd992:: ds 1 ; d992
-wd993:: ds 1 ; d993
-wd994:: ds 1 ; d994
-wd995:: ds 1 ; d995
-wd996:: ds 1 ; d996
+wPhoneList:: ds CONTACT_LIST_SIZE + 1
+
 wd997:: ds 1 ; d997
 wd998:: ds 1 ; d998
 wd999:: ds 1 ; d999
@@ -3985,10 +3984,11 @@ wd9a9:: ds 1 ; d9a9
 wd9aa:: ds 1 ; d9aa
 wd9ab:: ds 1 ; d9ab
 wd9ac:: ds 1 ; d9ac
-wd9ad:: ds 1 ; d9ad
-wd9ae:: ds 1 ; d9ae
-wd9af:: ds 1 ; d9af
-wd9b0:: ds 1 ; d9b0
+
+wLuckyNumberShowFlag:: db
+	ds 1
+wLuckyIDNumber:: dw
+
 wd9b1:: ds 1 ; d9b1
 wd9b2:: ds 1 ; d9b2
 wd9b3:: ds 1 ; d9b3
@@ -4090,40 +4090,15 @@ wdb75:: ds 1 ; db75
 wdb76:: ds 1 ; db76
 wdb77:: ds 1 ; db77
 
-wPokedexCaught:: flag_array NUM_POKEMON ; db78
+wPokedexCaught:: flag_array NUM_POKEMON
 wEndPokedexCaught::
 
-wPokedexSeen::   flag_array NUM_POKEMON ; db98
+wPokedexSeen:: flag_array NUM_POKEMON
 wEndPokedexSeen::
 
-wdbb8:: ds 1 ; dbb8
-wdbb9:: ds 1 ; dbb9
-wdbba:: ds 1 ; dbba
-wdbbb:: ds 1 ; dbbb
-wdbbc:: ds 1 ; dbbc
-wdbbd:: ds 1 ; dbbd
-wdbbe:: ds 1 ; dbbe
-wdbbf:: ds 1 ; dbbf
-wdbc0:: ds 1 ; dbc0
-wdbc1:: ds 1 ; dbc1
-wdbc2:: ds 1 ; dbc2
-wdbc3:: ds 1 ; dbc3
-wdbc4:: ds 1 ; dbc4
-wdbc5:: ds 1 ; dbc5
-wdbc6:: ds 1 ; dbc6
-wdbc7:: ds 1 ; dbc7
-wdbc8:: ds 1 ; dbc8
-wdbc9:: ds 1 ; dbc9
-wdbca:: ds 1 ; dbca
-wdbcb:: ds 1 ; dbcb
-wdbcc:: ds 1 ; dbcc
-wdbcd:: ds 1 ; dbcd
-wdbce:: ds 1 ; dbce
-wdbcf:: ds 1 ; dbcf
-wdbd0:: ds 1 ; dbd0
-wdbd1:: ds 1 ; dbd1
-wdbd2:: ds 1 ; dbd2
-wdbd3:: ds 1 ; dbd3
+wUnownDex:: ds NUM_UNOWN
+wUnlockedUnowns:: db
+wFirstUnownSeen:: db
 
 wDayCareMan::
 ; bit 7: active
@@ -4162,27 +4137,11 @@ wContestMon:: party_struct wContestMon
 wdc8d:: ds 1 ; dc8d
 wdc8e:: ds 1 ; dc8e
 wdc8f:: ds 1 ; dc8f
-wdc90:: ds 1 ; dc90
-wdc91:: ds 1 ; dc91
-wdc92:: ds 1 ; dc92
-wdc93:: ds 1 ; dc93
-wdc94:: ds 1 ; dc94
-wdc95:: ds 1 ; dc95
-wdc96:: ds 1 ; dc96
-wdc97:: ds 1 ; dc97
-wdc98:: ds 1 ; dc98
-wdc99:: ds 1 ; dc99
-wdc9a:: ds 1 ; dc9a
-wdc9b:: ds 1 ; dc9b
-wdc9c:: ds 1 ; dc9c
-wdc9d:: ds 1 ; dc9d
-wdc9e:: ds 1 ; dc9e
-wdc9f:: ds 1 ; dc9f
-wdca0:: ds 1 ; dca0
-wdca1:: ds 1 ; dca1
-wdca2:: ds 1 ; dca2
-wdca3:: ds 1 ; dca3
-wdca4:: ds 1 ; dca4
+
+wRoamMon1:: roam_struct wRoamMon1
+wRoamMon2:: roam_struct wRoamMon2
+wRoamMon3:: roam_struct wRoamMon3
+
 wdca5:: ds 1 ; dca5
 wdca6:: ds 1 ; dca6
 wdca7:: ds 1 ; dca7

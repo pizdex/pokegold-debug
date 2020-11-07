@@ -366,7 +366,7 @@ ResetLuckyNumberShowFlag:
 	ld a, $04
 	ld hl, $58e8
 	rst FarCall
-	ld hl, wd9ad
+	ld hl, wLuckyNumberShowFlag
 	res 0, [hl]
 	ld a, $01
 	ld hl, $5de5
@@ -380,7 +380,7 @@ CheckLuckyNumberShowFlag:
 	jp ScriptReturnCarry
 
 CountUnown:
-	ld hl, wdbb8
+	ld hl, wUnownDex
 	ld b, 0
 .loop
 	ld a, [hli]

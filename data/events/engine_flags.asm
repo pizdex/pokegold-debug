@@ -8,11 +8,11 @@ EngineFlags:
 ; entries correspond to ENGINE_* constants
 
 	; pokegear
-	engine_flag wd66f, POKEGEAR_RADIO_CARD_F
-	engine_flag wd66f, POKEGEAR_MAP_CARD_F
-	engine_flag wd66f, POKEGEAR_PHONE_CARD_F
-	engine_flag wd66f, POKEGEAR_EXPN_CARD_F
-	engine_flag wd66f, POKEGEAR_OBTAINED_F
+	engine_flag wPokegearFlags, POKEGEAR_RADIO_CARD_F
+	engine_flag wPokegearFlags, POKEGEAR_MAP_CARD_F
+	engine_flag wPokegearFlags, POKEGEAR_PHONE_CARD_F
+	engine_flag wPokegearFlags, POKEGEAR_EXPN_CARD_F
+	engine_flag wPokegearFlags, POKEGEAR_OBTAINED_F
 
 	; unknown
 	dr $c05c, $c164

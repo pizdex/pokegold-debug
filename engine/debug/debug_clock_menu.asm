@@ -29,7 +29,7 @@ DebugClockOW_Init:
 	call WaitBGMap
 	pop af
 	jr nc, .joypad_loop
-	cp 1
+	cp B_BUTTON_F
 	ret z
 	call InitTime
 	ret
@@ -355,7 +355,6 @@ DebugClock_DisplayRegisters:
 
 DebugClock_PrintRTCDayHi:
 ; Display hRTCDayHi as a binary number
-
 	push bc
 	ld c, a
 	ld b, 8
@@ -378,7 +377,7 @@ DebugClock_PlaceText:
 	hlcoord 9, 6
 	ld de, .DebugClock_HeaderText
 	call PlaceString
-   hlcoord 1, 8
+	hlcoord 1, 8
 	ld de, .DebugClock_DayCounter
 	call PlaceString
 	hlcoord 1, 10
@@ -402,19 +401,19 @@ DebugClock_PlaceText:
 	db "せってい じっさい@" ; Set	| Current
 
 .DebugClock_DayCounter:
-	db "にちカウンタ@"
+	db "にちカウンタ@"  ; Day counter
 
 .DebugClock_HourCounter:
-	db "じカウンタ@"
+	db "じカウンタ@"   ; Hour counter
 
 .DebugClock_MinuteCounter:
-	db "ふんカウンタ@"
+	db "ふんカウンタ@"  ; Minute counter
 
 .DebugClock_SecondCounter:
-	db "びょうカウンタ@"
+	db "びょうカウンタ@" ; Second counter
 
 .DebugClock_Reset:
-	db "りセット@"
+	db "りセット@" ; Reset
 
 DebugClock_UpdateMBC3RTC:
 ; Write value b into RTC register c

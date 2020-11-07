@@ -31,14 +31,14 @@ _DebugMenu::
 	dw .DebugMenuPointers
 
 .DebugMenuPointers:
-	dw DebugMenuOptionFight, .DebugFightText
-	dw DebugMenuOptionLink, .DebugLinkText
-	dw DebugMenuOptionField, .DebugFieldText
-	dw DebugMenuOptionSound, .DebugSoundText
-	dw DebugMenuOptionMonster, .DebugMonsterText
-	dw DebugMenuOptionTrainer, .DebugTrainerText
+	dw DebugMenuOptionFight,    .DebugFightText
+	dw DebugMenuOptionLink,     .DebugLinkText
+	dw DebugMenuOptionField,    .DebugFieldText
+	dw DebugMenuOptionSound,    .DebugSoundText
+	dw DebugMenuOptionMonster,  .DebugMonsterText
+	dw DebugMenuOptionTrainer,  .DebugTrainerText
 	dw DebugMenuOptionPassword, .DebugPasswordText
-	dw DebugMenuOptionClock, .DebugClockText
+	dw DebugMenuOptionClock,    .DebugClockText
 
 .DebugFightText:	db "ファイト@"		; Fight
 .DebugLinkText:		db "つうしんよう@"	; Communication
@@ -50,7 +50,7 @@ _DebugMenu::
 .DebugClockText		db "とけいきのう@"	; Clock (RTC) Function
 
 FIGHT		EQU 0
-COMM		EQU 1
+LINK		EQU 1
 FIELD		EQU 2
 SOUND		EQU 3
 MON			EQU 4
@@ -61,7 +61,7 @@ CLOCK		EQU 7
 .DebugMenuItems:
 	db 8
 	db FIGHT
-	db COMM
+	db LINK
 	db FIELD
 	db SOUND
 	db CLOCK
@@ -71,11 +71,11 @@ CLOCK		EQU 7
 	db -1
 
 DebugMenuOptionField:
-	farcall unk_001_5c3e
+	farcall DebugField_SpawnHome
 	ret
 
 DebugMenuOptionLink:
-	farcall unk_001_5c5e
+	farcall DebugField_SpawnPokecenter
 	ret
 
 DebugMenuOptionFight:
@@ -112,9 +112,13 @@ DebugMenuOptionClock:
 	farcall DebugClockMenu
 	ret
 
-unk_03f_43ae:
-	call Call_03f_44fb
+Debug_InitField:
+; Does everything needed to have a nice time in the world
 
+; Give the player and rival a name
+	call Debug_SetPlayerAndRivalNames
+
+; Give max money
 ; $0f423f = 999999
 	ld a, $0f
 	ld [wMoney], a
@@ -123,54 +127,69 @@ unk_03f_43ae:
 	ld a, $3f
 	ld [wMoney + 2], a
 
+; Give 0099 coins
 	xor a
 	ld [wCoins], a
 	ld a, 99
 	ld [wCoins + 1], a
 
-	call RandomizeFieldStarter
+; Give evolved starter mon
+	call Debug_RandomizeFieldStarter
 
-	ld b, 20
-	ld c, 5
-	ld c, 30
-	call Call_03f_44b0
+; Fill box with random mons
+	ld b, 20 ; last mon's level - 1
+	ld c, 5  ; test
+	ld c, 30 ; no. of mons to load
+	call GenerateRandomMonsIntoBox
+
+; Give 1 of every TM and HM
 	call Debug_GiveTMsHMs
 
-	ld de, Call_03f_4445.KeyItemData
-	call Call_03f_4445
+; Load bag with items
+	ld de, Debug_ItemData
+	call Debug_LoadItemData
+
+; Set all Pokemon as caught and seen
 	ld hl, wPokedexCaught
-	call Call_03f_442d
+	call Debug_CompletePokedex
 	ld hl, wPokedexSeen
-	call Call_03f_442d
+	call Debug_CompletePokedex
 
-	ld hl, wdbb8
+; Set the "G" Unown as seen
+	ld hl, wUnownDex
 	ld [hl], 1
-	ld hl, wdbd3
-	ld [hl], 7
+	ld hl, wFirstUnownSeen
+	ld [hl], UNOWN_G ; G for Gamefreak?
 
-	call Call_03f_4420
-	call Call_03f_452b
-	call Call_03f_44ec
+; Get all contacts, pokegear cards and decorations
+	call Debug_FillPhoneList
+	call Debug_SetPokegearFlags
+	call Debug_SetDecorationFlags
 
-	farcall unk_00a_688d
-	call Call_03f_44f3
+; Release the three roaming mons
+	farcall InitRoamMons
 
+; Elm's mystery egg event
+	call Debug_SetMysteryEggEvent
+
+; Set time of day to 12:34 PM (Displayed as 【ごご 0じ 34ふん】 in-game)
 	ld a, 12 ; Hour
 	ld [wStringBuffer2 + 1], a
 	ld a, 34 ; Minutes
 	ld [wStringBuffer2 + 2], a
 	call InitTimeOfDay
 
+; Randomise lucky ID number
 	call Random
-	ld [wd9af], a
+	ld [wLuckyIDNumber], a
 	call Random
-	ld [wd9b0], a
+	ld [wLuckyIDNumber + 1], a
 	ret
 
-Call_03f_4420:
+Debug_FillPhoneList:
 	ld a, 1
-	ld b, 10
-	ld hl, wd98c
+	ld b, CONTACT_LIST_SIZE
+	ld hl, wPhoneList
 .loop
 	ld [hli], a
 	inc a
@@ -178,14 +197,17 @@ Call_03f_4420:
 	jr nz, .loop
 	ret
 
-Call_03f_442d:
-	ld b, $1f
-	ld a, $ff
+Debug_CompletePokedex:
+; Input: hl = wPokedexCaught or wPokedexSeen
+	ld b, (((NUM_POKEMON) + 7) / 8) - 1 ; sizeof(flag_array NUM_POKEMON)
+	ld a, %11111111
 .loop
 	ld [hli], a
 	dec b
 	jr nz, .loop
-	ld [hl], 7
+; sizeof(flag_array NUM_POKEMON) * 8 bits = 248 mons
+; NUM_POKEMON - 248 = 3 mons (bits) left to set
+	ld [hl], %00000111
 	ret
 
 Debug_GiveTMsHMs:
@@ -199,165 +221,180 @@ Debug_GiveTMsHMs:
 	jr nz, .loop
 	ret
 
-Call_03f_4445:
+Debug_LoadItemData:
 	ld hl, wNumItems
 .loop
-	ld a, [de]
-	cp $ff
+	ld a, [de]  ; Item ID
+; check for terminator
+	cp -1
 	ret z
+; item is valid, receive it
 	ld [wCurItem], a
 	inc de
-	ld a, [de]
+	ld a, [de] ; Quantity
 	inc de
 	ld [wItemQuantityChangeBuffer], a
 	call ReceiveItem
 	jr .loop
 	ret
 
+Debug_ItemData:
+; Item data that gets loaded into the bag in the field
 .KeyItemData:
-	db BICYCLE, 1
-	db OLD_ROD, 1
-	db GOOD_ROD, 1
-	db SUPER_ROD, 1
-	db COIN_CASE, 1
+	;   ITEM    QUANTITY
+	db BICYCLE,    1
+	db OLD_ROD,    1
+	db GOOD_ROD,   1
+	db SUPER_ROD,  1
+	db COIN_CASE,  1
 	db ITEMFINDER, 1
-
-.MailData1:
-	db FLOWER_MAIL, 6
-	db SURF_MAIL, 6
+	; fallthrough
+.MailData:
+	db FLOWER_MAIL,  6
+	db SURF_MAIL,    6
 	db LITEBLUEMAIL, 6
 	db PORTRAITMAIL, 6
-	db LOVELY_MAIL, 6
-	db EON_MAIL, 6
-	db MORPH_MAIL, 6
+	db LOVELY_MAIL,  6
+	db EON_MAIL,     6
+	db MORPH_MAIL,   6
 	db BLUESKY_MAIL, 6
-	db MUSIC_MAIL, 6
-	db  MIRAGE_MAIL, 6
-
+	db MUSIC_MAIL,   6
+	db MIRAGE_MAIL,  6
+	; fallthrough
 .BallData:
 	db MASTER_BALL, 99
-	db ULTRA_BALL, 99
-	db POKE_BALL, 99
-	db HEAVY_BALL, 99
-	db LEVEL_BALL, 99
-	db LURE_BALL, 99
-	db FAST_BALL , 99
-
-.ItemData2:
-	db POTION, 30
+	db ULTRA_BALL,  99
+	db POKE_BALL,   99
+	db HEAVY_BALL,  99
+	db LEVEL_BALL,  99
+	db LURE_BALL,   99
+	db FAST_BALL,   99
+	; fallthrough
+.ItemData:
+	db POTION,     30
 	db RARE_CANDY, 20
-	db FULL_HEAL, 99
+	db FULL_HEAL,  99
 	db -1
 
-RandomizeFieldStarter:
-; Sets wCurPartySpecies to either Meganium ($9a), Typhlosion ($9d) or Feraligatr ($a0)
-
+Debug_RandomizeFieldStarter:
+; Sets wCurPartySpecies to either Meganium (154), Typhlosion (157) or Feraligatr (160)
 .loop
 	call Random
 	and 3
 	jr z, .loop
 	dec a
-
 ; a is now either 0, 1 or 2
+; multiply by 3 and add to Meganium's species index
 	ld b, a
 	add a
 	add b
-	add $9a
-	ld b, $50
-	call Call_03f_44a3
+	add MEGANIUM
+	ld b, 80 ; level
+	call _TryAddMonToParty
 	ret
 
-Call_03f_44a3:
+_TryAddMonToParty:
 	ld [wCurPartySpecies], a
 	ld a, b
 	ld [wCurPartyLevel], a
-	ld a, 6
-	call Predef
+	predef TryAddMonToParty
 	ret
 
-Call_03f_44b0:
+GenerateRandomMonsIntoBox:
+; Loads a number of random mons into the first box
+; starting from the bottom position.
+; c = number of mons to load
+; b = level
+
+; Make sure we're loading 1 or more mons into the box
 	ld a, c
 	and a
 	ret z
+; level is incremented each time the loop is run
 	ld a, b
 	ld [wCurPartyLevel], a
 .loop
 	push bc
 	xor a
 	ld [wEnemySubStatus5], a
-	call Call_03f_44dd
-
+; Randomise the mon
+	call GenerateRandomSpecies
 	ld [wTempEnemyMonSpecies], a
+; Increment level
 	ld hl, wCurPartyLevel
 	inc [hl]
-	ld a, $0f
-	ld hl, $6802
-	rst FarCall
+; Generate that species' data into EnemyMon
+	farcall LoadEnemyMon
+; Send it to the box
 	ld a, [wTempEnemyMonSpecies]
 	ld [wCurPartySpecies], a
-	farcall unk_003_611b
+	farcall SendMonIntoBox
+; Loop until all mons are generated
 	pop bc
 	dec c
 	jr nz, .loop
 	ret
 
-Call_03f_44dd:
+GenerateRandomSpecies:
+; Load a random mon species between 1 (BULBASAUR) and 246 (LARVITAR) into a
+; excluding UNOWN
 .loop
 	call Random
 	and a
 	jr z, .loop
-	cp $f6
+	cp LARVITAR
 	jr nc, .loop
-	cp $c9
+	cp UNOWN
 	jr z, .loop
 	ret
 
-Call_03f_44ec:
-	farcall unk_009_7450
+Debug_SetDecorationFlags:
+	farcall SetAllDecorationFlags
 	ret
 
-Call_03f_44f3:
+Debug_SetMysteryEggEvent:
 	ld de, EVENT_GAVE_MYSTERY_EGG_TO_ELM
-	ld b, 1
+	ld b, SET_FLAG
 	jp EventFlagAction
 
-Call_03f_44fb:
+Debug_SetPlayerAndRivalNames:
 .loop
+; Load random trainer class into a
 	call Random
-	cp $42
+	cp NUM_TRAINER_CLASSES - 1
 	jr nc, .loop
-
+; Get the Trainer's name from the class and copy it into the Player's name
 	ld c, a
 	ld b, 0
-	ld hl, unkData_00e_595c
+	ld hl, TrainerGroups
 	add hl, bc
 	add hl, bc
-	ld a, BANK(unkData_00e_595c)
+	ld a, BANK(TrainerGroups)
 	call GetFarHalfword
-
 	ld de, wPlayerName
-	ld bc, 6
-	ld a, BANK(unkData_00e_595c)
+	ld bc, NAME_LENGTH
+	ld a, BANK(TrainerGroups)
 	call FarCopyBytes
-
+; Rival's name is レッド (Red)
 	ld hl, .RivalName
 	ld de, wRivalName
-	ld bc, 6
+	ld bc, NAME_LENGTH
 	call CopyBytes
 	ret
 
 .RivalName:
 	db "レッド@" ; Red
 
-Call_03f_452b::
+Debug_SetPokegearFlags::
 	ld hl, wStatusFlags
-	set 0, [hl]
-	ld hl, wd66f
-	set 7, [hl]
-	ld hl, wd66f
-	set 1, [hl]
-	ld hl, wd66f
-	set 2, [hl]
-	ld hl, wd66f
-	set 0, [hl]
+	set STATUSFLAGS_POKEDEX_F, [hl]
+
+	ld hl, wPokegearFlags
+	set POKEGEAR_OBTAINED_F, [hl]
+	ld hl, wPokegearFlags
+	set POKEGEAR_RADIO_CARD_F, [hl]
+	ld hl, wPokegearFlags
+	set POKEGEAR_PHONE_CARD_F, [hl]
+	ld hl, wPokegearFlags
+	set POKEGEAR_MAP_CARD_F, [hl]
 	ret

@@ -13,11 +13,11 @@ NewGame:
 	ldh [hMapEntryMethod], a
 	jp FinishContinueFunction
 
-unk_001_5c3e:
+DebugField_SpawnHome:
 	ld hl, wDebugFlags
 	set 1, [hl]
 	call ResetWRAM
-	farcall unk_03f_43ae
+	farcall Debug_InitField
 	call ClearTilemapEtc
 	call InitializeWorld
 
@@ -28,11 +28,11 @@ unk_001_5c3e:
 	ldh [hMapEntryMethod], a
 	jp FinishContinueFunction
 
-unk_001_5c5e:
+DebugField_SpawnPokecenter:
 	ld hl, wDebugFlags
 	set 1, [hl]
 	call ResetWRAM
-	farcall unk_03f_43ae
+	farcall Debug_InitField
 	call ClearTilemapEtc
 	call InitializeWorld
 
@@ -96,20 +96,20 @@ _ResetWRAM:
 	ld hl, wNumBalls
 	call .InitList
 
-	ld hl, wPCItems
+	ld hl, wNumPCItems
 	call .InitList
 
 	xor a
-	ld [wdc90], a
-	ld [wdc97], a
-	ld [wdc9e], a
+	ld [wRoamMon1Species], a
+	ld [wRoamMon2Species], a
+	ld [wRoamMon3Species], a
 	ld a, -1
-	ld [wdc92], a
-	ld [wdc99], a
-	ld [wdca0], a
-	ld [wdc93], a
-	ld [wdc9a], a
-	ld [wdca1], a
+	ld [wRoamMon1MapGroup], a
+	ld [wRoamMon2MapGroup], a
+	ld [wRoamMon3MapGroup], a
+	ld [wRoamMon1MapNumber], a
+	ld [wRoamMon2MapNumber], a
+	ld [wRoamMon3MapNumber], a
 
 	ld a, BANK(s0_ab50)
 	call OpenSRAM
@@ -268,10 +268,10 @@ LoadOrRegenerateLuckyIDNumber:
 	call Random
 
 .skip:
-	ld [wd9af], a
+	ld [wLuckyIDNumber], a
 	ld [s0_b101], a
 	ld a, c
-	ld [wd9af + 1], a
+	ld [wLuckyIDNumber + 1], a
 	ld [s0_b101 + 1], a
 	jp CloseSRAM
 

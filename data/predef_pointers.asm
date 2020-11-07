@@ -16,7 +16,7 @@ PredefPointers::
 	add_predef TryAddMonToParty
 	add_predef unk_003_5d43
 	add_predef unk_003_5dec ; $8
-	add_predef unk_003_611b
+	add_predef SendMonIntoBox
 	add_predef unk_003_6239
 	add_predef AnimateHPBar
 	add_predef unk_003_6415

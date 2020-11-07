@@ -23,10 +23,28 @@ _InitScrollingMenu::
 	dr $24539, $24555
 
 _ScrollingMenu::
-	dr $24555, $27428
+	dr $24555, $26f78
+
+DecorationFlagAction:
+	dr $26f78, $27428
 
 DecorationFlagAction_c::
 	dr $27428, $27450
 
-unk_009_7450::
-	dr $27450, $28000
+SetAllDecorationFlags:
+	ld hl, DecorationIDs
+.loop
+	ld a, [hli]
+	cp -1
+	jr z, .done
+	push hl
+	ld b, SET_FLAG
+	call DecorationFlagAction
+	pop hl
+	jr .loop
+
+.done
+	ret
+
+DecorationIDs:
+	dr $27462, $28000

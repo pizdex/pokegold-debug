@@ -31,7 +31,7 @@ unk_003_5d43:
 unk_003_5dec:
 	dr $ddec, $e11b
 
-unk_003_611b:
+SendMonIntoBox:
 	dr $e11b, $e239
 
 unk_003_6239:
