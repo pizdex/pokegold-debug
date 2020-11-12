@@ -69,5 +69,5 @@ LoadMysteryGiftBackgroundGFX::
 LoadMysteryGiftGFX2::
 	dr $1778a, $178f0
 
-unk_005_78f0:
+CheckBreedmonCompatibility:
 	dr $178f0, $18000

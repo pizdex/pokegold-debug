@@ -311,6 +311,8 @@ NUM_TM_HM EQU __tmhm_value__ - 1
 
 	const ITEM_FA       ; fa
 
+NUM_TOTAL_ITEMS EQU const_value ; fb
+
 USE_SCRIPT_VAR EQU $00
 ITEM_FROM_MEM  EQU $ff
 

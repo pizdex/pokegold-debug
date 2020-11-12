@@ -417,7 +417,6 @@ DebugClock_PlaceText:
 
 DebugClock_UpdateMBC3RTC:
 ; Write value b into RTC register c
-
 	ld a, SRAM_ENABLE
 	ld [MBC3SRamEnable], a
 

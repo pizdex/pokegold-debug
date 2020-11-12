@@ -2924,7 +2924,9 @@ s0_affc:: ds 1 ; 0:affc
 s0_affd:: ds 1 ; 0:affd
 s0_affe:: ds 1 ; 0:affe
 s0_afff:: ds 1 ; 0:afff
-s0_b000:: ds 1 ; 0:b000
+
+sRTCStatusFlags:: ds 1 ; 0:b000
+
 s0_b001:: ds 1 ; 0:b001
 s0_b002:: ds 1 ; 0:b002
 s0_b003:: ds 1 ; 0:b003

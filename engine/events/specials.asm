@@ -245,7 +245,7 @@ CardFlip:
 	call StartGameCornerGame
 	ret
 
-UnusedDummyGame:
+MemoryGame:
 	call CheckCoinsAndCoinCase
 	ret c
 	ld a, $38
@@ -298,9 +298,10 @@ CheckCoinsAndCoinCase:
 .NoCoinCaseText:
 	dr $c53a, $c54b
 
-ClearBGPalettesBufferScreen:
+PicrossGame:
 	call ClearBGPalettes
 	call BufferScreen
+; Game is dummied out
 	ret
 
 ScriptReturnCarry:

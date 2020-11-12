@@ -42,7 +42,10 @@ EnableScriptMode::
 	dr $96bb9,$96bc1
 
 ScriptEvents::
-	dr $96bc1,$96fb0
+	dr $96bc1,$96d6a
+
+unk_025_6d6a:
+	dr $96d6a,$96fb0
 
 unk_025_6fb0:
 	call GetScriptByte
@@ -89,7 +92,10 @@ CallCallback::
 	dr $973b9,$97463
 
 Jump_025_7463:
-	dr $97463,$97ad4
+	dr $97463,$97aad
+
+WarpToSpawnPoint::
+	dr $97aad,$97ad4
 
 LoadScriptBDE::
 	dr $97ad4,$97ae4

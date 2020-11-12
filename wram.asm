@@ -2649,53 +2649,35 @@ wcf84:: ds 1 ; cf84
 wcf85:: ds 1 ; cf85
 wcf86:: ds 1 ; cf86
 
-wStringBuffer1:: ds 11 ; cf87
-wStringBuffer2:: ds 11 ; cf92
-wStringBuffer3:: ds 11 ; cf9d
+wStringBuffer1:: ds 11
+wStringBuffer2:: ds 11
+wStringBuffer3:: ds 11
+wStringBuffer4:: ds 11
+wStringBuffer5:: ds 11
 
-wcfa8:: ds 1 ; cfa8
-wcfa9:: ds 1 ; cfa9
-wcfaa:: ds 1 ; cfaa
-wcfab:: ds 1 ; cfab
-wcfac:: ds 1 ; cfac
-wcfad:: ds 1 ; cfad
-wcfae:: ds 1 ; cfae
-wcfaf:: ds 1 ; cfaf
-wcfb0:: ds 1 ; cfb0
-wcfb1:: ds 1 ; cfb1
-wcfb2:: ds 1 ; cfb2
-wcfb3:: ds 1 ; cfb3
-wcfb4:: ds 1 ; cfb4
-wcfb5:: ds 1 ; cfb5
-wcfb6:: ds 1 ; cfb6
-wcfb7:: ds 1 ; cfb7
-wcfb8:: ds 1 ; cfb8
-wcfb9:: ds 1 ; cfb9
-wcfba:: ds 1 ; cfba
-wcfbb:: ds 1 ; cfbb
-wcfbc:: ds 1 ; cfbc
-wcfbd:: ds 1 ; cfbd
 wcfbe:: ds 1 ; cfbe
 wcfbf:: ds 1 ; cfbf
+wCurBattleMon:: db
+wCurMoveNum:: db
+wLastPocket:: db
 
-wCurBattleMon:: ds 1 ; cfc0
-
-wcfc1:: ds 1 ; cfc1
-wcfc2:: ds 1 ; cfc2
 wPartyMenuCursor:: ds 1 ; cfc3
 wcfc4:: ds 1 ; cfc4
 wcfc5:: ds 1 ; cfc5
 wcfc6:: ds 1 ; cfc6
 wcfc7:: ds 1 ; cfc7
+
 wcfc8:: ds 1 ; cfc8
+
 wcfc9:: ds 1 ; cfc9
 wcfca:: ds 1 ; cfca
 wcfcb:: ds 1 ; cfcb
 wcfcc:: ds 1 ; cfcc
+
 wcfcd:: ds 1 ; cfcd
+
 wMenuScrollPosition:: ds 1 ; cfce
 wcfcf:: ds 1 ; cfcf
-
 wcfd0:: ds 1 ; cfd0
 wcfd1:: ds 1 ; cfd1
 
@@ -3035,7 +3017,8 @@ wBreedingCompatibility::
 wMoveGrammar::
 wApplyStatLevelMultipliersToEnemy::
 wUsePPUp::
-wd143:: db
+wd143::
+	db
 
 wd144:: ds 1 ; d144
 wd145:: ds 1 ; d145
@@ -3347,7 +3330,7 @@ wEnteredMapFromContinue::
 wd558:: ds 1 ; d558
 	ds 2
 wTimeOfDayPal:: db
-wd55c:: ds 1 ; d55c
+wDebugToolgearStatus:: ds 1 ; d55c
 wd55d:: ds 1 ; d55d
 wd55e:: ds 1 ; d55e
 wd55f:: ds 1 ; d55f
@@ -3846,8 +3829,8 @@ wCurMapSceneScriptsPointer:: dw
 wCurMapCallbackCount:: db
 wCurMapCallbacksPointer:: dw
 
-wd91d:: ds 1 ; d91d
-wd91e:: ds 1 ; d91e
+wWildPokemonCounter:: ds 2 ; d91d
+
 wd91f:: ds 1 ; d91f
 wd920:: ds 1 ; d920
 wd921:: ds 1 ; d921
@@ -3949,7 +3932,7 @@ wd980:: ds 1 ; d980
 wd981:: ds 1 ; d981
 wd982:: ds 1 ; d982
 
-wd983:: ds 1 ; d983
+wStepCount:: db
 wd984:: ds 1 ; d984
 wd985:: ds 1 ; d985
 wd986:: ds 1 ; d986

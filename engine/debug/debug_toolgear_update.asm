@@ -1,7 +1,7 @@
 ; Updates the values for the toolgear to display at the bottom of the screen
 
 UpdateDebugToolgear::
-	ld a, [wEnteredMapFromContinue]
+	ld a, [wd558]
 	bit 0, a
 	ret z
 
@@ -13,7 +13,7 @@ UpdateDebugToolgear::
 
 ; Bit 0 set = Coordinates
 ; Bit 0 reset = Date and Time
-	ld hl, wd55c
+	ld hl, wDebugToolgearStatus
 	bit 0, [hl]
 	jr z, .UpdateDateAndTime
 
@@ -52,10 +52,10 @@ UpdateDebugToolgear::
 	call ConvertByteToDecimalTiles
 
 	call GetWeekday
-	add $71
+	add $70 + 1
 	ld [wToolgearBuffer + 14], a
 
-	ld a, $78
+	ld a, $70 + 7 + 1
 	ld [wToolgearBuffer + 16], a
 	inc a
 	ld [wToolgearBuffer + 17], a

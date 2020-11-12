@@ -1220,7 +1220,7 @@ DebugFight_TrainerText:
 	db "ディーラー    @" ; Dealer (Trainer)
 
 DebugFight_OpponentPartyHeaderText1:
-     ; No.  Name        LVL
+    ;  No.  Name        LVL
 	db "№．  なまえ        レべル<NEXT>"
 DebugFight_OpponentPartyHeaderText2:
 	db "000 ーーーーーーーーーー 000@"
@@ -1240,7 +1240,7 @@ unkData_03f_57d4:
 	db $12, 99
 	db $13, 99
 	db $14, 99
-	db $FF
+	db -1
 
 unk_03f_57e6:
 	ld a, 1

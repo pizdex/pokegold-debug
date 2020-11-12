@@ -185,6 +185,9 @@ while count != 0:
 		elif byte == 0x31:
 			arg = int.from_bytes(file.read(2), "little")
 			print("\tcheckevent $%04x ; TEMP" % arg)
+		elif byte == 0x32:
+			arg = int.from_bytes(file.read(2), "little")
+			print("\tclearevent $%04x ; TEMP" % arg)
 
 		elif byte == 0x40:
 			arg1 = int.from_bytes(file.read(1), "little")

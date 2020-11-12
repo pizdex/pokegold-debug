@@ -23,7 +23,10 @@ _InitScrollingMenu::
 	dr $24539, $24555
 
 _ScrollingMenu::
-	dr $24555, $26f78
+	dr $24555, $2682c
+
+ProfOaksPCBoot::
+	dr $2682c, $26f78
 
 DecorationFlagAction:
 	dr $26f78, $27428

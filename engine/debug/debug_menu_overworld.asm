@@ -1,46 +1,53 @@
 	db 0
 
+	const_def
+	const DEBUG_CANCEL    ; 0
+	const DEBUG_NEXT
+	const DEBUG_GAME
+	const DEBUG_CHARACTER
+	const DEBUG_TOOLGEAR
+	const DEBUG_TEST1     ; 5
+	const DEBUG_TEST2
+	const DEBUG_TEST3
+	const DEBUG_TEST4
+	const DEBUG_RECOVERY
+	const DEBUG_WARP      ; 10
+	const DEBUG_PC
+	const DEBUG_EXPERIMENT
+	const DEBUG_BUILD
+	const DEBUG_TIMER
+	const DEBUG_ELEVATOR  ; 15
+	const DEBUG_RECORD
+	const DEBUG_ITEM
+	const DEBUG_BUGCATCHING
+	const DEBUG_BREEDING
+	const DEBUG_HATCH     ; 20
+
+	const_def
+	const QUICKMENU_UPDATE
+	const QUICKMENU_EXITWINDOW
+	const QUICKMENU_EXIT
+	const QUICKMENU_EXITSCRIPT1
+	const QUICKMENU_EXITSCRIPT2
+
 QuickDebug_MenuHeader:
 	db MENU_BACKUP_TILES ; flags
 	menu_coords 0, 0, 7, 17
 	dw .MenuData
-	db 1
+	db 1 ; default option
 
 .MenuData:
 	db STATICMENU_ENABLE_LEFT_RIGHT | STATICMENU_ENABLE_START | STATICMENU_WRAP | STATICMENU_CURSOR ; flags
 	db 0 ; items
 	dw QuickDebug_MenuItems
 	dw PlaceNthMenuStrings
-	dw unk_03f_4556
+	dw QuickDebug_MenuOptions
 
-	const_def
-	const DEBUG_CANCEL ; 0
-	const DEBUG_NEXT
-	const DEBUG_GAME
-	const DEBUG_CHARACTER
-	const DEBUG_TOOLGEAR
-	const DEBUG_TEST1 ; 5
-	const DEBUG_TEST2
-	const DEBUG_TEST3
-	const DEBUG_TEST4
-	const DEBUG_RECOVERY
-	const DEBUG_WARP ; 10
-	const DEBUG_PC
-	const DEBUG_EXPERIMENT
-	const DEBUG_BUILD
-	const DEBUG_TIMER
-	const DEBUG_ELEVATOR ; 15
-	const DEBUG_RECORD
-	const DEBUG_ITEM
-	const DEBUG_BUGCATCHING
-	const DEBUG_BREEDING
-	const DEBUG_HATCH ; 20
-
-unk_03f_4556:
+QuickDebug_MenuOptions:
 	dw QuickDebug_CloseOption,       .QuickDebug_Cancel
 	dw QuickDebug_NextPageOption,    .QuickDebug_Next
-	dw QuickDebug_MinigameOption,    .QuickDebug_Game ; unused
-	dw QuickDebug_CharacterOption,   .QuickDebug_Character
+	dw QuickDebug_MinigameOption,    .QuickDebug_Game
+	dw QuickDebug_CharacterOption,   .QuickDebug_Character ; unused
 	dw QuickDebug_ToolgearOption,    .QuickDebug_Toolgear
 	dw QuickDebug_Test1Option,       .QuickDebug_Test1
 	dw QuickDebug_Test2Option,       .QuickDebug_Test2
@@ -116,8 +123,8 @@ QuickDebug_MenuItems:
 	db DEBUG_CANCEL
 	db -1 ; end
 
+QuickDebug_Main:
 ; Overworld Debug Menu
-unk_03f_462a:
 	call RefreshScreen
 	ld de, SFX_MENU
 	call PlaySFX
@@ -126,57 +133,58 @@ unk_03f_462a:
 	ld a, 0
 	ld [wWhichIndexSet], a
 
-unk_03f_463e:
+QuickDebug_Update:
 	call UpdateTimePals
 	call UpdateSprites
 	ld a, [wcfbf]
 	ld [wMenuCursorBuffer], a
 	call DoNthMenu
-	jr c, unk_03f_467c
-
+	jr c, .exit_menu_window
+; Player made selection
 	ld a, [wMenuCursorBuffer]
 	ld [wcfbf], a
 	call PlaceHollowCursor
+; Run selected option if A_BUTTON is pressed
 	ld a, [wMenuJoypad]
-	cp 1
-	jr z, jr_03f_4664
-
+	cp A_BUTTON
+	jr z, .RunSelectedOption
+; Either D_RIGHT or D_LEFT was pressed, switch page
 	call QuickDebug_SwitchPage
-	jr jr_03f_466d
+	jr .MenuAction
 
-jr_03f_4664:
+.RunSelectedOption:
 	ld a, [wMenuSelection]
-	ld hl, unk_03f_4556
+	ld hl, QuickDebug_MenuOptions
 	call MenuJumptable
 
-jr_03f_466d:
-	ld hl, unk_03f_4672
+.MenuAction:
+	ld hl, .Jumptable
 	rst JumpTable
 	ret
 
-unk_03f_4672:
-	dw unk_03f_463e
-	dw unk_03f_467c
-	dw unk_03f_467f
-	dw unk_03f_4685
-	dw unk_03f_468e
+.Jumptable:
+	dw QuickDebug_Update
+	dw .exit_menu_window
+	dw .exit_menu
+	dw .exit_menu_after_script
+	dw .exit_menu_before_script
 
-unk_03f_467c:
+.exit_menu_window
 	call CloseWindow
 
-unk_03f_467f:
+.exit_menu
 	push af
 	call CloseText
 	pop af
 	ret
 
-unk_03f_4685:
+.exit_menu_after_script:
 	call ExitMenu
-	ld a, $80
+	ld a, HMENURETURN_SCRIPT
 	ldh [hMenuReturn], a
-	jr unk_03f_467f
+	jr .exit_menu
 
-unk_03f_468e:
+.exit_menu_before_script:
 	call ExitMenu
 	ld hl, wQueuedScriptAddr
 	ld a, [hli]
@@ -184,12 +192,12 @@ unk_03f_468e:
 	ld l, a
 	ld a, [wQueuedScriptBank]
 	rst FarCall
-	ld a, $80
+	ld a, HMENURETURN_SCRIPT
 	ldh [hMenuReturn], a
-	jr unk_03f_467f
+	jr .exit_menu
 
 QuickDebug_CloseOption:
-	ld a, 1
+	ld a, QUICKMENU_EXITWINDOW
 	ret
 
 QuickDebug_SwitchPage:
@@ -233,187 +241,200 @@ QuickDebug_NextPageOption:
 QuickDebug_ChangePageSFX:
 	ld de, SFX_MENU
 	call PlaySFX
-	ld a, 0
+	ld a, QUICKMENU_UPDATE
 	ret
 
-Call_03f_46df:
+QuickDebug_TextboxWaitAorB:
 	call MenuTextbox
-	ld a, 3
-	call Call_03f_46eb
+	ld a, A_BUTTON | B_BUTTON
+	call .Joypad
 	call CloseWindow
 	ret
 
-Call_03f_46eb:
+.Joypad:
 	push bc
 	ld b, a
-.asm_46ed:
+.loop
 	call GetJoypad
 	ldh a, [hJoyPressed]
 	and b
-	jr z, .asm_46ed
+	jr z, .loop
 	pop bc
 	ret
 
-unk_03f_46f7:
-	ld hl, .unkData_03f_46fe
+QuickDebug_Unavailable:
+	ld hl, .FeatureCurrentlyUnavailableText
 	call MenuTextboxBackup
 	ret
 
-.unkData_03f_46fe:
+.FeatureCurrentlyUnavailableText:
+; "This feature is currently unavailable"
 	text "げんざい このきのうは"
 	line "つかうことが できません"
 	prompt
 
 QuickDebug_ItemOption:
 	call LoadStandardMenuHeader
-	call Call_03f_4729
-.asm_471e:
-	call Call_03f_4732
-	jr nc, .asm_471e
+	call DebugItem_LoadDefaultItem
+.loop
+	call DebugItem_Main
+	jr nc, .loop
+; B was pressed
 	call ExitMenu
-	ld a, 0
+	ld a, QUICKMENU_UPDATE
 	ret
 
-Call_03f_4729:
+DebugItem_LoadDefaultItem:
 	ld a, 1
 	ld [wDebugItem], a
 	ld [wDebugItemQuantity], a
 	ret
 
-Call_03f_4732:
+DebugItem_Main:
 .loop
-	call Call_03f_47ef
+	call DebugItem_PrintTextbox
 	call WaitBGMap
-	call Call_03f_4797
-	ret c
+	call DebugItem_Joypad
+	ret c ; Pressing B sets carry
 	jr z, .loop
-
+; Pressing A unsets the zero flag
+; Place selected item into Bag
 	ld a, [wDebugItem]
 	and a
 	ret z
-	call Call_03f_4748
+	call DebugItem_GiveSelectedItem
 	and a
 	ret
 
-Call_03f_4748:
+DebugItem_GiveSelectedItem:
 	ld hl, wNumItems
+; Load selected item
 	ld a, [wDebugItem]
 	ld [wCurItem], a
+; Load selected item quantity
 	ld a, [wDebugItemQuantity]
 	ld [wItemQuantityChangeBuffer], a
 	call ReceiveItem
-	jr c, .asm_4763
-
-	ld hl, .unkData_03f_4770
+	jr c, .success
+; Failed to receive item
+	ld hl, .CantPlaceItemText
 	call MenuTextboxWaitButton
 	ret
 
-.asm_4763:
+.success
 	ld de, SFX_FULL_HEAL
 	call PlaySFX
-	ld hl, .unkData_03f_4785
+	ld hl, .PlacedItemText
 	call MenuTextboxWaitButton
 	ret
 
-.unkData_03f_4770:
+.CantPlaceItemText:
+; "That item can't be put in the PACK."
 	text "どうぐを りュックに"
 	line "いれられません!"
 	done
 
-.unkData_03f_4785:
+.PlacedItemText:
+ ; "The [wStringBuffer1] was put in the PACK."
 	text_ram wStringBuffer1
 	text "を "
-	line "りュックにいれました"
+	line "リュックにいれました"
 	done
 
-Call_03f_4797:
-.loop:
+DebugItem_Joypad:
+.joypad_loop
 	call JoyTextDelay_ForcehJoyDown
 	ld a, c
-	bit 6, a
-	jr nz, jr_03f_47b5
-	bit 7, a
-	jr nz, jr_03f_47c4
-	bit 5, a
-	jr nz, jr_03f_47d3
-	bit 4, a
-	jr nz, jr_03f_47dd
-	bit 1, a
-	jr nz, jr_03f_47e9
-	bit 0, a
-	jr nz, jr_03f_47eb
-	jr .loop
+; DPAD
+	bit D_UP_F, a
+	jr nz, .increment_item
+	bit D_DOWN_F, a
+	jr nz, .decrement_item
+	bit D_LEFT_F, a
+	jr nz, .decrement_quantity
+	bit D_RIGHT_F, a
+	jr nz, .increment_quantity
+; BUTTONS
+	bit B_BUTTON_F, a
+	jr nz, .exit
+	bit A_BUTTON_F, a
+	jr nz, .receive_item
+; LOOP
+	jr .joypad_loop
 
-jr_03f_47b5:
+.increment_item:
 	ld hl, wDebugItem
 	ld a, [hl]
-	cp $fb
-	jr z, jr_03f_47c0
-
+	cp NUM_TOTAL_ITEMS
+	jr z, .max
 	inc [hl]
 	xor a
 	ret
 
-jr_03f_47c0:
+.max
 	ld [hl], 1
 	xor a
 	ret
 
-jr_03f_47c4:
+.decrement_item:
 	ld hl, wDebugItem
 	ld a, [hl]
-	cp $01
-	jr z, jr_03f_47cf
+	cp 1
+	jr z, .min
 	dec [hl]
 	xor a
 	ret
 
-jr_03f_47cf:
-	ld [hl], $fb
+.min
+	ld [hl], NUM_TOTAL_ITEMS
 	xor a
 	ret
 
-jr_03f_47d3:
+.decrement_quantity:
 	ld hl, wDebugItemQuantity
 	dec [hl]
-	jr nz, jr_03f_47db
-	ld [hl], $63
-jr_03f_47db:
+	jr nz, .above_0
+	ld [hl], MAX_ITEM_STACK
+.above_0
 	xor a
 	ret
 
-jr_03f_47dd:
+.increment_quantity:
 	ld hl, wDebugItemQuantity
 	inc [hl]
-	cp $64
-	jr c, jr_03f_47e7
+; BUG: Item quantity is never loaded into 'a', and the initial value
+; means that the quantity can be always be incremented (even past 99!)
+	cp MAX_ITEM_STACK + 1
+	jr c, .below_100
 	ld [hl], 1
-jr_03f_47e7:
+.below_100
 	xor a
 	ret
 
-jr_03f_47e9:
+.exit
 	scf
 	ret
 
-jr_03f_47eb:
+.receive_item
 	ld a, 1
 	and a
 	ret
 
-Call_03f_47ef:
+DebugItem_PrintTextbox:
 	ld hl, wOptions
 	ld a, [hl]
 	push af
-	set 4, [hl]
+	set NO_TEXT_SCROLL, [hl]
 	ldh a, [hBGMapMode]
 	push af
 	xor a
 	ldh [hBGMapMode], a
+; Get the name of the selected item
 	ld a, [wDebugItem]
-	ld [wd143], a
+	ld [wNamedObjectIndexBuffer], a
 	call GetItemName
-	ld hl, .unkData_03f_4813
+; Print the data into a textbox
+	ld hl, .ItemNameAndQuantityText
 	call PrintText
 	pop af
 	ldh [hBGMapMode], a
@@ -421,10 +442,10 @@ Call_03f_47ef:
 	ld [wOptions], a
 	ret
 
-.unkData_03f_4813:
+.ItemNameAndQuantityText:
 	text "ばんごう@" ; Number
 	text_decimal wDebugItem, 1, 3
-	text ""
+	text_start
 	line "@"
 	text_ram wStringBuffer1
 	text "  ×@"
@@ -434,131 +455,144 @@ Call_03f_47ef:
 QuickDebug_BugCatchingOption:
 	ld hl, .RemainingTimeText
 	call MenuTextbox
-.asm_4833:
+.update:
 	call UpdateTime
 	farcall CheckBugContestTimer
+
+; Print minutes
 	hlcoord 5, 16
 	ld de, wBugContestMinsRemaining
-	lb bc, $81, 2
+	lb bc, PRINTNUM_LEADINGZEROS | 1, 2
 	call PrintNum
+; Print seconds
 	hlcoord 8, 16
 	ld de, wBugContestSecsRemaining
-	lb bc, $81, 2
+	lb bc, PRINTNUM_LEADINGZEROS | 1, 2
 	call PrintNum
 	call WaitBGMap
+
+; Continually update until A or B is pressed
 	call GetJoypad
 	ldh a, [hJoyPressed]
-	and 3
-	jr z, .asm_4833
+	and A_BUTTON | B_BUTTON
+	jr z, .update
+; Exit
 	call ExitMenu
-	ld a, 0
+	ld a, QUICKMENU_UPDATE
 	ret
 
 .RemainingTimeText:
+; "Remaining Time"
 	text "たいかい のこりじかん"
 	done
 
 QuickDebug_CharacterOption:
-	ld a, 0
+; Dummied out
+	ld a, QUICKMENU_UPDATE
 	ret
 
 QuickDebug_ToolgearOption:
-	call Call_03f_48e4
-	jr c, .asm_4890
+	call DebugToolgear_DisplayMenu
+	jr c, .return
+; Get pointer from selection
 	ld a, [wMenuCursorY]
 	dec a
-	ld hl, .unkData_03f_4884
+	ld hl, .JumpTable
 	rst JumpTable
 	ret
 
-.unkData_03f_4884:
-	dw unk_03f_48c4
-	dw unk_03f_48d5
-	dw unk_03f_48a1
-	dw unk_03f_4893
-	dw unk_03f_489a
-	dw unk_03f_48cf
+.JumpTable:
+	dw .ShowClock       ; Clock
+	dw .ShowCoordinates ; Coordinates
+	dw .AdjustTime      ; Adjust
+	dw .asm_4893        ; 60 Seconds
+	dw .asm_489a        ; 24 Hours
+	dw .RemoveHUD       ; Erase
 
-.asm_4890:
-	ld a, 0
+.return
+	ld a, QUICKMENU_UPDATE
 	ret
 
-unk_03f_4893:
-	ld hl, wd55c
+.asm_4893:
+; Supposedly will make a day to night to darkness transition every 60 seconds.
+	ld hl, wDebugToolgearStatus
 	set 7, [hl]
-	jr jr_03f_48a7
+	jr .UpdateTimePals
 
-unk_03f_489a:
-	ld hl, wd55c
+.asm_489a:
+	ld hl, wDebugToolgearStatus
 	res 7, [hl]
-	jr jr_03f_48a7
+	jr .UpdateTimePals
 
-unk_03f_48a1:
+.AdjustTime:
 	farcall DebugClockMenu_Overworld
 
-jr_03f_48a7:
+.UpdateTimePals:
 	farcall FadeOutPalettes
 	farcall UpdateTimeOfDayPal
-	ld b, 9
+	ld b, SCGB_MAPPALS
 	call GetSGBLayout
 	farcall FadeInPalettes
 	call UpdateTimePals
-	ld a, 1
+	ld a, QUICKMENU_EXITWINDOW
 	ret
 
-unk_03f_48c4:
+.ShowClock:
 	call Function1e7c
-	ld hl, wd55c
+	ld hl, wDebugToolgearStatus
 	res 0, [hl]
-	ld a, 1
+	ld a, QUICKMENU_EXITWINDOW
 	ret
 
-unk_03f_48cf:
+.RemoveHUD:
 	call Function1e82
-	ld a, 1
+	ld a, QUICKMENU_EXITWINDOW
 	ret
 
-unk_03f_48d5:
-	call Call_03f_48db
-	ld a, 1
+.ShowCoordinates:
+	call .show ; Useless call
+	ld a, QUICKMENU_EXITWINDOW
 	ret
 
-Call_03f_48db:
+.show
 	call Function1e7c
-	ld hl, wd55c
+	ld hl, wDebugToolgearStatus
 	set 0, [hl]
 	ret
 
-Call_03f_48e4:
-	ld hl, MenuHeader_03f_490a
+DebugToolgear_DisplayMenu:
+	ld hl, DebugToolgear_MenuHeader
 	call LoadMenuHeader
-	call Call_03f_48f7
+	call .PlaceCursor
 	ld [wMenuCursorBuffer], a
 	call VerticalMenu
 	call CloseWindow
 	ret
 
-Call_03f_48f7:
-	ld a, [wEnteredMapFromContinue]
+.PlaceCursor:
+; Place cursor at 3rd option if Toolgear HUD is displayed
+	ld a, [wd558]
 	bit 0, a
 	ld a, 3
 	ret nz
-	ld hl, wd55c
+; Place cursor at 1st option if coordinates are displayed
+	ld hl, wDebugToolgearStatus
 	bit 0, [hl]
 	ld a, 1
 	ret nz
+; Place cursor at 2nd option otherwise
 	ld a, 2
 	ret
 
-MenuHeader_03f_490a:
+DebugToolgear_MenuHeader:
 	db MENU_BACKUP_TILES ; flags
-	db 0, 0, 14, 7
-	dw MenuData_03f_4912
+	menu_coords 0, 0, 7, 14
+	dw .MenuData
 	db 1 ; default option
 
-MenuData_03f_4912:
+.MenuData:
 	db STATICMENU_CURSOR ; flags
-	db 6
+	db 6 ; items
 	db "とけい@" ; Clock
 	db "ざひょう@" ; Coordinates
 	db "アジャスト@" ; Adjust
@@ -567,14 +601,14 @@ MenuData_03f_4912:
 	db "けす@" ; Erase
 
 QuickDebug_RecoverHPOption:
-	ld a, 2
-	call Predef
-	ld hl, unkData_03f_4940
+	predef HealParty
+	ld hl, .MonsHPWasHealedText
 	call MenuTextboxBackup
-	ld a, 0
+	ld a, QUICKMENU_UPDATE
 	ret
 
-unkData_03f_4940:
+.MonsHPWasHealedText:
+; "Your #MON's HP was healed."
 	text "#の たいりょくを"
 	line "かいふくしました"
 	prompt
@@ -584,72 +618,69 @@ QuickDebug_WarpOption:
 	ldh [hMapAnims], a
 	call LoadStandardMenuHeader
 	call ClearSprites
+; Show first party mon's icon, whether or not it knows Fly
 	ld a, 0
 	ld [wCurPartyMon], a
-	farcall unk_024_6398
+	farcall EntireFlyMap
 	ld a, e
 	ld [wMenuSelection], a
 	call CloseSubmenu
 	ld a, [wMenuSelection]
 	cp -1
-	jr z, .asm_499d
+	jr z, .return
 	ld a, [wMenuSelection]
 	cp -1
-	jr z, .asm_499d
+	jr z, .return
 	cp $1c
-	jr nc, .asm_499d
+	jr nc, .return
 	ld [wDefaultSpawnpoint], a
 	ld hl, wVramState
 	set 6, [hl]
 	ldh a, [hROMBank]
-	ld hl, unk_03f_4a5b
+	ld hl, DebugWarp_Main
 	call FarQueueScript
 	ld de, SFX_ELEVATOR_END
 	call PlaySFX
 	call DelayFrame
-	ld a, 4
+	ld a, QUICKMENU_EXITSCRIPT2
 	ret
 
-.asm_499d:
-	ld a, 0
+.return
+	ld a, QUICKMENU_UPDATE
 	ret
 
-unkData_03f_49a0:
+DebugWarp_MenuHeader:
 	db MENU_BACKUP_TILES ; flags
 	db 01, 01 ; start coords
 	db 10, 11 ; end coords
-	dw MenuData_03f_49a8
+	dw .MenuData
 	db 1 ; default option
 
-MenuData_03f_49a8:
+.MenuData:
 	db 0 ; flags
 	db 4, 0 ; rows, columns
 	db 1 ; spacing
-	dba unkData_03f_4a43
-	dba unk_03f_49b8
-	; placeholders
-	db $00
-	dw $0000
-	db $00
-	dw $0000
+	dba .DestinationMaps
+	dba .SelectDestination
+	dba NULL
+	dba NULL
 
-unk_03f_49b8:
+.SelectDestination:
 	push de
 	ld a, [wMenuSelection]
-	call Call_03f_49c4
+	call .GetDestinationName
 	pop hl
 	call PlaceString
 	ret
 
-Call_03f_49c4:
-	ld hl, unkData_03f_49cd
+.GetDestinationName:
+	ld hl, .DestinationNames
 	call GetNthString
 	ld d, h
 	ld e, l
 	ret
 
-; Warp destinations
-unkData_03f_49cd:
+.DestinationNames:
 	db "じぶんのうち@" ; My home
 	db "マサラ@" ; Pallet Town
 	db "トキワ@" ; Viridian City
@@ -676,30 +707,33 @@ unkData_03f_49cd:
 	db "フスべ@" ; Blackthorn City
 	db "シロガネ@" ; Mt. Silver
 
-unkData_03f_4a43:
-	db SPAWN_NEW_BARK, SPAWN_CHERRYGROVE, SPAWN_VIOLET, SPAWN_AZALEA, SPAWN_CIANWOOD, SPAWN_GOLDENROD, SPAWN_OLIVINE, SPAWN_ECRUTEAK, SPAWN_MAHOGANY, SPAWN_LAKE_OF_RAGE, SPAWN_BLACKTHORN, SPAWN_MT_SILVER
+.DestinationMaps:
+	db SPAWN_NEW_BARK, SPAWN_CHERRYGROVE, SPAWN_VIOLET, SPAWN_AZALEA, SPAWN_CIANWOOD, SPAWN_GOLDENROD
+	db SPAWN_OLIVINE, SPAWN_ECRUTEAK, SPAWN_MAHOGANY, SPAWN_LAKE_OF_RAGE, SPAWN_BLACKTHORN, SPAWN_MT_SILVER
 
-	db SPAWN_PALLET, SPAWN_VIRIDIAN, SPAWN_PEWTER, SPAWN_CERULEAN, SPAWN_ROCK_TUNNEL, SPAWN_VERMILION, SPAWN_LAVENDER, SPAWN_SAFFRON, SPAWN_CELADON, SPAWN_FUCHSIA, SPAWN_CINNABAR
+	db SPAWN_PALLET, SPAWN_VIRIDIAN, SPAWN_PEWTER, SPAWN_CERULEAN, SPAWN_ROCK_TUNNEL, SPAWN_VERMILION
+	db SPAWN_LAVENDER, SPAWN_SAFFRON, SPAWN_CELADON, SPAWN_FUCHSIA, SPAWN_CINNABAR
 
 	db -1
 
-unk_03f_4a5b:
-	call Call_03f_4a67
+DebugWarp_Main:
+	call DebugWarp_Textbox
 	ldh a, [hROMBank]
-	ld hl, unkScript_03f_4a77
+	ld hl, DebugWarp_TeleportScript
 	call FarQueueScript
 	ret
 
-Call_03f_4a67:
-	ld hl, unkData_03f_4a6e
-	call Call_03f_46df
+DebugWarp_Textbox:
+	ld hl, .WarpText
+	call QuickDebug_TextboxWaitAorB
 	ret
 
-unkData_03f_4a6e:
-	text "ワープします!" ; Warp!
+.WarpText:
+; "Warping…"
+	text "ワープします!"
 	done
 
-unkScript_03f_4a77:
+DebugWarp_TeleportScript:
 	applymovement PLAYER, .TeleportFrom
 	newloadmap MAPSETUP_TELEPORT
 	applymovement PLAYER, .TeleportTo
@@ -717,11 +751,13 @@ QuickDebug_OTIDOption:
 	call LoadStandardMenuHeader
 	call OTID_Init
 	call CloseWindow
-	ld a, 0
+	ld a, QUICKMENU_UPDATE
 	ret
 
-unk_03f_4a92:
-	ld a, 0
+QuickDebug_TestPackAndPokegear: ; unreferenced
+; Dummied out code
+; Presumbly used to test the Pack and Pokegear before the start menu was implemented
+	ld a, QUICKMENU_UPDATE
 	ret
 
 OTID_Init:
@@ -893,17 +929,17 @@ QuickDebug_BuildOption:
 	call LoadStandardMenuHeader
 	farcall unk_03f_57e6
 	call CloseWindow
-	ld a, 0
+	ld a, QUICKMENU_UPDATE
 	ret
 
 QuickDebug_PCOption:
 	farcall PokemonCenterPC
-	ld a, 0
+	ld a, QUICKMENU_UPDATE
 	ret
 
 QuickDebug_ElevatorOption:
 	call DebugElevator
-	ld a, 0
+	ld a, QUICKMENU_UPDATE
 	ret
 
 DebugElevator:
@@ -923,46 +959,49 @@ DebugElevator_FloorData:
 	db -1 ; end
 
 QuickDebug_MinigameOption:
-	call Call_03f_4bdb
-	ld a, 0
+	call ChooseMinigame
+	ld a, QUICKMENU_UPDATE
 	ret
 
-Call_03f_4bdb:
-	ld hl, MenuHeader_03f_4c28
+ChooseMinigame:
+; Load minigame selection menu
+	ld hl, DebugGame_MenuHeader
 	call LoadMenuHeader
-	call VerticalMenu
+	call VerticalMenu ; Wait for either A or B to be pressed
+; Save flags for B button
 	push af
-	call Call_03f_4c07
+	call LoadSelectedMinigame
 	pop af
 	call CloseWindow
-	ret c
-
-	ld hl, unkData_03f_4c56
+	ret c ; pressed B
+; Make sure the tester didn't misclick
+	ld hl, DebugGame_WantToPlayText
 	call MenuTextbox
 	call YesNoBox
 	call CloseWindow
-	ret c
-
+	ret c ; pressed B
+; Confirmed, play the selected minigame
 	call FadeToMenu
 	ld hl, wQueuedScriptBank
 	call CallPointerAt
 	call CloseSubmenu
 	ret
 
-Call_03f_4c07:
+LoadSelectedMinigame:
+; Get the currently selected name
 	ld a, [wMenuCursorY]
 	dec a
 	call CopyNameFromMenu
+; Get pointer to minigame based off of selection
 	ld a, [wMenuCursorY]
-
-Call_03f_4c11:
 	dec a
 	ld e, a
 	ld d, 0
-	ld hl, unkData_03f_4c4d
+	ld hl, DebugGame_PointerTable
 	add hl, de
 	add hl, de
 	add hl, de
+; Load that into the queued script
 	ld a, [hli]
 	ld [wQueuedScriptBank], a
 	ld a, [hli]
@@ -971,26 +1010,27 @@ Call_03f_4c11:
 	ld [wQueuedScriptAddr + 1], a
 	ret
 
-MenuHeader_03f_4c28:
-	db $40
-	db 0, 0, 10, 10
-	dw MenuData_03f_4c30
-	db 1
+DebugGame_MenuHeader:
+	db MENU_BACKUP_TILES ; flags
+	menu_coords 0, 0, 10, 10
+	dw .MenuData
+	db 1 ; default option
 
-MenuData_03f_4c30:
+.MenuData:
 	db STATICMENU_CURSOR ; flags
-	db 3 ; # items
-	db "スロットマシン@" ; Slot Machine
+	db 3 ; items
+	db "スロットマシン@"  ; Slot Machine
 	db "ポーカーゲーム@" ; Poker Game (Card Flip)
-	db "ぺアゲーム@" ; Pair Game
-	db "ピクロス@" ; Picross (Unused)
+	db "ぺアゲーム@"    ; Pair Game
+	db "ピクロス@"      ; Picross (Unused)
 
-unkData_03f_4c4d:
-	dba unk_024_6b85
-	dba unk_038_48bd
-	dba unk_038_667a
+DebugGame_PointerTable:
+	dba _SlotMachine ; Slot Machine
+	dba _CardFlip    ; Poker Game (Card Flip)
+	dba _MemoryGame  ; Pair Game
 
-unkData_03f_4c56:
+DebugGame_WantToPlayText:
+; "Do you want to play [wStringBuffer2]?"
 	text_ram wStringBuffer2
 	text "で "
 	line "あそびますか?"
@@ -1001,343 +1041,378 @@ QuickDebug_TimerOption:
 	farcall BlankScreen
 	farcall DebugClockMenu
 	call CloseSubmenu
-	ld a, 0
+	ld a, QUICKMENU_UPDATE
 	ret
 
 QuickDebug_RecordOption:
-	ld hl, unkData_03f_4c9a
+	ld hl, .MonCounterAndTimerText
 	call MenuTextbox
-	ld a, 0
+; Print RTC status flags to textbox
+	ld a, BANK(sRTCStatusFlags)
 	call OpenSRAM
-	ld a, [s0_b000]
+	ld a, [sRTCStatusFlags]
 	call CloseSRAM
 	hlcoord 2, 16
-	call Call_03f_4cc0
+	call QuickDebug_PrintRTCStatus
+; Wait for button press
 	call PromptButton
+; Exit
 	call CloseWindow
-	ld a, 0
+	ld a, QUICKMENU_UPDATE
 	ret
 
-unkData_03f_4c9a:
+.MonCounterAndTimerText:
+; "Number of times I've fought a wild Pokémon: [wWildPokemonCounter]"
 	text "やせいの#とたたかった"
 	line "かいすう @"
-	text_decimal wd91d, 2, 5
+	text_decimal wWildPokemonCounter, 2, 5
 	text "かい"
 
-	para "タイマーのステータス"
+	para "タイマーのステータス" ; Timer status
+	; Print binary number here
 	done
 
-Call_03f_4cc0:
+QuickDebug_PrintRTCStatus:
+; Display sRTCStatusFlags as an 8 bit binary number
 	push bc
 	ld c, a
 	ld b, 8
-.asm_4cc4
+.print_digit
 	sla c
 	ld a, "0"
-	jr nc, .asm_4ccb
+	jr nc, .no_overflow
 	inc a
-.asm_4ccb
+.no_overflow
 	ld [hli], a
 	dec b
-	jr nz, .asm_4cc4
+	jr nz, .print_digit
 	pop bc
 	ret
 
 QuickDebug_BreedingOption:
+; Check if either slot in the daycare is free
 	ld a, [wDayCareMan]
-	bit 0, a
-	jr z, .asm_4d03
+	bit DAYCAREMAN_HAS_MON_F, a
+	jr z, .need_two_mons
 	ld a, [wDayCareLady]
-	bit 0, a
-	jr z, .asm_4d03
-	farcall unk_005_78f0
-	ld a, [wApplyStatLevelMultipliersToEnemy]
+	bit DAYCARELADY_HAS_MON_F, a
+	jr z, .need_two_mons
+; Check compatibility
+	farcall CheckBreedmonCompatibility
+	ld a, [wBreedingCompatibility]
 	and a
-	jr z, jr_03f_4d22
-	cp $ff
-	jr z, jr_03f_4d22
-	ld hl, unkData_03f_4d36
+	jr z, .incompatible
+	cp -1
+	jr z, .incompatible
+; Deciding time
+	ld hl, .CompatibilityShouldTheyBreedText
 	call MenuTextbox
 	call YesNoBox
 	call ExitMenu
-	jr c, .asm_4d00
-	call Call_03f_4d51
-.asm_4d00:
-	ld a, 0
+	jr c, .return
+	call SetDayCareEggFlags
+.return
+	ld a, QUICKMENU_UPDATE
 	ret
 
-.asm_4d03:
-	ld hl, unkData_03f_4d0c
+.need_two_mons:
+	ld hl, .YouNeedTwoMonForBreedingText
 	call MenuTextboxBackup
-	ld a, 0
+	ld a, QUICKMENU_UPDATE
 	ret
 
-unkData_03f_4d0c:
-; You need two POKéMON for breeding.
+.YouNeedTwoMonForBreedingText:
+; "You need two #MON for breeding"
 	text "2たい いないので"
 	line "こづくり できません"
 	prompt
 
-jr_03f_4d22:
-	ld hl, unkData_03f_4d2b
+.incompatible
+	ld hl, .BreedingIsNotPossibleText
 	call MenuTextboxBackup
-	ld a, 0
+	ld a, QUICKMENU_UPDATE
 	ret
 
-unkData_03f_4d2b:
-; Breeding is not possible.
+.BreedingIsNotPossibleText:
+; "Breeding is not possible"
 	text "こづくりできません"
 	prompt
 
-unkData_03f_4d36:
+.CompatibilityShouldTheyBreedText:
+; "The compatibility is [wBreedingCompatibility]"
+; "Should they breed?"
 	text "あいしょう @"
-	text_decimal wd143, 1, 3
+	text_decimal wBreedingCompatibility, 1, 3
 	text "です"
 	line "こづくり しますか?"
 	done
 
-Call_03f_4d51:
+SetDayCareEggFlags:
 	ld hl, wDayCareMan
-	res 5, [hl]
-	set 6, [hl]
+	res DAYCAREMAN_MONS_COMPATIBLE_F, [hl]
+	set DAYCAREMAN_HAS_EGG_F, [hl]
 	ret
 
 QuickDebug_HatchOption:
-	call Call_03f_4d81
-	jr c, jr_03f_4d67
+	call SetEggToHatch
+	jr c, .success
 
-	ld hl, unkData_03f_4d70
+; Didn't find any Eggs to set...
+	ld hl, .NoEggsText
 	call MenuTextboxBackup
-	ld a, 0
+	ld a, QUICKMENU_UPDATE
 	ret
 
-jr_03f_4d67:
-	ld hl, unkData_03f_4d7a
+.success
+	ld hl, .HatchText
 	call MenuTextboxBackup
-	ld a, 0
+	ld a, QUICKMENU_UPDATE
 	ret
 
-unkData_03f_4d70:
+.NoEggsText:
+; "There is no EGG."
 	text "タマゴが ない!"
 	prompt
 
-unkData_03f_4d7a:
+.HatchText:
+; "It's going to hatch!"
 	text "うまれる!"
 	prompt
 
-Call_03f_4d81:
+SetEggToHatch:
+; Search for the first egg in the party.
+; If found, set it to hatch on the next step.
 	ld hl, wPartySpecies
 	ld c, 0
-jr_03f_4d86:
+.partyloop
 	ld a, [hli]
-	cp $ff
-	jr z, jr_03f_4da5
-	cp $fd
-	jr z, jr_03f_4d92
+	cp -1
+	jr z, .terminator
+	cp EGG
+	jr z, .egg
 	inc c
-	jr jr_03f_4d86
+	jr .partyloop
 
-jr_03f_4d92:
+.egg
 	ld a, c
-	ld bc, $30
+	ld bc, PARTYMON_STRUCT_LENGTH
 	ld hl, wPartyMon1Happiness
 	call AddNTimes
-	ld [hl], 1
-	ld a, $7f
-	ld [wd983], a
+	ld [hl], 1 ; Egg happiness is decremented to 0
+	ld a, 127 ; On the next step
+	ld [wStepCount], a
 	scf
 	ret
 
-jr_03f_4da5:
+.terminator
 	xor a
 	ret
 
 QuickDebug_Test1Option:
 	ld a, 1
-	ld de, unkData_03f_4df9
-	jr jr_03f_4dc3
+	ld de, DebugTest_Tutorial
+	jr DebugTest_RunScript
 
 QuickDebug_Test2Option:
 	ld a, 2
-	ld de, unkData_03f_4dfc
-	jr jr_03f_4dc3
+	ld de, DebugTest_HallOfFame
+	jr DebugTest_RunScript
 
 QuickDebug_Test3Option:
 	ld a, 3
-	ld de, unkData_03f_4dff
-	jr jr_03f_4dc3
+	ld de, DebugTest_Rocket
+	jr DebugTest_RunScript
 
 QuickDebug_Test4Option:
 	ld a, 4
-	ld de, unkData_03f_4e02
-	jr jr_03f_4dc3
+	ld de, DebugTest_FillPCItems
+	jr DebugTest_RunScript
 
-jr_03f_4dc3:
+DebugTest_RunScript:
 	ld [wStringBuffer2], a
+; Confirm selection
 	push de
-	ld hl, unkData_03f_4de3
+	ld hl, .TestEventText
 	call MenuTextbox
 	call YesNoBox
 	call CloseWindow
 	pop de
-	jr c, jr_03f_4de0
+	jr c, .return
+; Queue selected script
 	ld h, d
 	ld l, e
-	ld a, BANK(unk_03f_4e05)
+	ld a, BANK(@)
 	call FarQueueScript
-	ld a, 3
+	ld a, QUICKMENU_EXITSCRIPT1
 	ret
 
-jr_03f_4de0:
-	ld a, 0
+.return
+	ld a, QUICKMENU_UPDATE
 	ret
 
-unkData_03f_4de3:
+.TestEventText:
+; "Do you want to test Event [wStringBuffer2]?"
 	text "イべント@"
 	text_decimal wStringBuffer2, 1, 2
 	text "を テストしますか?"
 	done
 
-unkData_03f_4df9:
-	sjump unk_03f_4e7a
+DebugTest_Tutorial:
+	sjump DebugTest_TutorialScript
 
-unkData_03f_4dfc:
-	sjump unk_03f_4ea7
+DebugTest_HallOfFame:
+	sjump DebugTest_HallOfFameScript
 
-unkData_03f_4dff:
-	sjump unk_03f_4eba
+DebugTest_Rocket:
+	sjump DebugTest_RocketScripts
 
-unkData_03f_4e02:
-	sjump unk_03f_4ec8
+DebugTest_FillPCItems:
+	sjump DebugTest_FillPCItemsScript
 
-unk_03f_4e05:
+DebugTest_LoadGameHeader:
 	opentext
-	loadmenu unkData_03f_4e4f
+	loadmenu DebugTest_GameHeader
 
-unk_03f_4e09:
-	writetext unkData_03f_4e45
+DebugTest_SelectGame:
+.loop
+	writetext WhichOneToPlayText
 	verticalmenu
-	ifequal 0, unk_03f_4e17
-	scall unk_03f_4e1a
-	sjump unk_03f_4e09
+	ifequal 0, .exit
+	scall DebugTest_SelectGameScript
+	sjump .loop
 
-unk_03f_4e17:
+.exit
 	closewindow
 	closetext
 	end
 
-unk_03f_4e1a:
-	ifequal 1, unk_03f_4e2f
-	ifequal 2, unk_03f_4e33
-	ifequal 3, unk_03f_4e37
-	ifequal 4, unk_03f_4e3b
-	ifequal 5, unk_03f_4e3f
+DebugTest_SelectGameScript:
+	ifequal 1, .UnownPuzzle
+	ifequal 2, .SlotMachine
+	ifequal 3, .CardFlip
+	ifequal 4, .MemoryGame
+	ifequal 5, .Picross
 	end
 
-; Special script stuff (to-do)
-
-unk_03f_4e2f:
-	db $0F, $29, $00
+.UnownPuzzle:
+	special UnownPuzzle
 	end
 
-unk_03f_4e33:
-	db $0F, $2A, $00
+.SlotMachine:
+	special SlotMachine
 	end
 
-unk_03f_4e37:
-	db $0F, $2B, $00
+.CardFlip:
+	special CardFlip
 	end
 
-unk_03f_4e3b:
-	db $0F, $2C, $00
+.MemoryGame:
+	special MemoryGame
 	end
 
-unk_03f_4e3f:
-	db $0F, $2D, $00
+.Picross:
+; Crashes
+	special PicrossGame
 	reloadmap
-	db $48
+	db refreshscreen_command
 	end
 
-unkData_03f_4e45:
+WhichOneToPlayText:
+; "Which one do you want to play?"
 	text "どれで あそぶ?"
 	done
 
-unkData_03f_4e4f:
-	db $40, $00
-	db $00, $0C, $0A, $57
-	next "イ゛アガ15パズル@"
+DebugTest_GameHeader:
+	db MENU_BACKUP_TILES ; flags
+	menu_coords 0, 0, 10, 12
+	dw .MenuData
+	db 1 ; default option
 
-	db "スロットマシン@"
-	db "ポーカーゲーム@"
-	db "ぺアゲーム@"
-	db "ピクロス@"
+.MenuData:
+	db STATICMENU_CURSOR ; flags
+	db 5 ; # items
+	db "15パズル@" ; "15 Puzzle"
+	db "スロットマシン@" ; "Slot Machine"
+	db "ポーカーゲーム@" ; "Poker Game"
+	db "ぺアゲーム@" ; "Pair Game"
+	db "ピクロス@" ; "Picross"
 
-unk_03f_4e7a:
-	loadwildmon $13, $05 ; TEMP
-	catchtutorial 3
+DebugTest_TutorialScript:
+	loadwildmon RATTATA, 5
+	catchtutorial BATTLETYPE_TUTORIAL
 	end
 
-unk_03f_4e80:
+DebugTest_HallOfFameScript2:
+; unreferenced
 	halloffame
-	loadmem wSpawnAfterChampion, 1
+	loadmem wSpawnAfterChampion, SPAWN_LANCE
 	end
 
-unk_03f_4e86:
+DebugTest_PokedexCompletion:
+; unreferenced
 	opentext
-	db $0F, $64, $00
+	special ProfOaksPCBoot
 	closetext
 	end
 
-unk_03f_4e8c:
-	giveegg $3f, $14 ; TEMP
+DebugTest_GiveAbraEgg:
+; unreferenced
+	giveegg ABRA, 20
 	end
 
-unk_03f_4e90:
+DebugTest_GiveMailSetSwarmScript:
+; unreferenced
 	opentext
-	writetext unkData_03f_4e99
-	verbosegiveitem $9e, $63 ; TEMP
+	writetext .YouCanHaveThisText
+	verbosegiveitem FLOWER_MAIL, 99
 	closetext
 	end
 
-unkData_03f_4e99:
-	db $00, $BA, $DA, $DD, $7F, $B1, $29, $D6, $B3, $58, $9E, $03, $46
+.YouCanHaveThisText:
+; "You can have this."
+	text "これを あげよう"
+	prompt
+; Set swarm (why?)
+	swarm DARK_CAVE_VIOLET_ENTRANCE
 	end
 
-unk_03f_4ea7:
+DebugTest_HallOfFameScript:
 	warpfacing FACING_STEP_DOWN_1, HALL_OF_FAME, 4, 3
 	playmusic MUSIC_NONE
-	refreshscreen 0
-	setval 2
-	db $0F, $3D, $00
+	refreshscreen
+	setval HEALMACHINE_HALL_OF_FAME
+	special HealMachineAnim
 	closetext
 	halloffame
 	end
 
-unk_03f_4eba:
-	db $0D, $13, $00
-	db $0D, $12, $00
+DebugTest_RocketScripts:
+	callstd RadioTowerRocketsScript
+	callstd GoldenrodRocketsScript
 	end
 
-unk_03f_4ec1:
-	warpfacing FACING_STEP_DOWN_1, TEAM_ROCKET_BASE_B1F, 4, 14 ; TEMP
+DebugTest_RocketBase:
+	warpfacing FACING_STEP_DOWN_1, TEAM_ROCKET_BASE_B1F, 4, 14
 	end
 
-unk_03f_4ec8:
-	callasm unk_03f_4ecd
+DebugTest_FillPCItemsScript:
+	callasm .FillPCItems
 	end
 
-unk_03f_4ecd:
+.FillPCItems:
+; Set max PC items
 	ld hl, wNumPCItems
-	ld [hl], 50
+	ld [hl], MAX_PC_ITEMS
+; Fill the empty slots with items 1 through 50
 	inc hl
-	ld a, 1
-	ld c, 50
-.asm_4ed7
+	ld a, MASTER_BALL
+	ld c, MAX_PC_ITEMS
+.load_item
 	ld [hli], a
-	ld [hl], 99
+	ld [hl], MAX_ITEM_STACK
 	inc hl
 	inc a
 	dec c
-	jr nz, .asm_4ed7
-	ld [hl], -1
+	jr nz, .load_item
+	ld [hl], -1 ; terminator
 	ret

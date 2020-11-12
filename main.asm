@@ -262,8 +262,10 @@ INCBIN "baserom.gbc",$d4000,$4000
 
 
 SECTION "bank36",ROMX,BANK[$36]
-INCBIN "baserom.gbc",$d8000,$4000
 
+INCLUDE "engine/events/std_scripts.asm"
+
+	dr $d9000, $dc000
 
 SECTION "bank37",ROMX,BANK[$37]
 INCBIN "baserom.gbc",$dc000,$4000

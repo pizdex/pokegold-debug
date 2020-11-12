@@ -12,7 +12,7 @@ ENDC
 ENDM
 
 SpecialsPointers::
-	dbw $25, $7aad
+	add_special WarpToSpawnPoint
 
 ; Communications
 	dbw $0a, $5b89
@@ -31,8 +31,8 @@ SpecialsPointers::
 	dbw $0a, $5d4b
 	dbw $0a, $5d21
 	dbw $0a, $5db5
-	dbw $03, $4436
-	dbw $03, $4449
+	add_special CheckMysteryGift
+	add_special GetMysteryGiftItem
 	dbw $0a, $659d
 
 ; Map events
@@ -52,32 +52,32 @@ SpecialsPointers::
 	dbw $0b, $55e2
 	dbw $05, $6760
 	dbw $23, $4edf
-	dbw $03, $43df
+	add_special NameRival
 	dbw $24, $494b
-	dbw $03, $4400
-	dbw $03, $440d
-	dbw $03, $44af
-	dbw $03, $44ba
-	dbw $03, $44cd
-	dbw $03, $44da
-	dbw $03, $44e7
-	dbw $03, $454b
+	add_special OverworldTownMap
+	add_special UnownPrinter
+	add_special MapRadio
+	add_special UnownPuzzle
+	add_special SlotMachine
+	add_special CardFlip
+	add_special MemoryGame
+	add_special PicrossGame
 	dbw $23, $440e
 	dbw $23, $4427
 	dbw $23, $4403
 	dbw $23, $441c
-	dbw $02, $0d2b
-	dbw $00, $345c
-	dbw $00, $0359
-	dbw $00, $0ea1
-	dbw $00, $193c
-	dbw $00, $0d80
-	dbw $03, $4381
-	dbw $03, $4394
-	dbw $03, $3e28
-	dbw $00, $3e8f
-	dbw $00, $3ef7
-	dbw $04, $65a4
+	add_special ReloadSpritesNoPalettes, 2
+	add_special ClearBGPalettes
+	add_special UpdateTimePals
+	add_special ClearTilemap ; unused as special
+	add_special UpdateSprites
+	add_special UpdatePlayerSprite
+	add_special GameCornerPrizeMonCheckDex
+	add_special UnusedSetSeenMon ; unused
+	add_special WaitSFX, 3
+	add_special PlayMapMusic
+	add_special RestartMapMusic
+	add_special HealMachineAnim
 	dbw $02, $4c97
 	dbw $03, $439c
 	dbw $03, $43aa
@@ -115,9 +115,9 @@ SpecialsPointers::
 	dbw $01, $7f5e
 	dbw $01, $7f63
 	dbw $01, $7f68
-	dbw $03, $4621
-	dbw $09, $682c
-	dbw $03, $4627
+	add_special PlayCurMonCry
+	add_special ProfOaksPCBoot
+	add_special GameboyCheck
 	dbw $03, $4668
 	dbw $05, $76c7
 	dbw $0a, $688d

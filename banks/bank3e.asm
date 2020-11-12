@@ -2,7 +2,7 @@
 
 unk_03e_744a:
 	call LoadFrame
-	ld hl, wd55c
+	ld hl, wDebugToolgearStatus
 	bit 0, [hl]
 	jr z, jr_03e_746d
 
