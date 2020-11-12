@@ -40,20 +40,20 @@ _DebugMenu::
 	dw DebugMenuOptionPassword, .DebugPasswordText
 	dw DebugMenuOptionClock,    .DebugClockText
 
-.DebugFightText:	db "ファイト@"		; Fight
-.DebugLinkText:		db "つうしんよう@"	; Communication
-.DebugFieldText:	db "フィールド@"	; Field
-.DebugSoundText:	db "サウンド@"		; Soundtrack
-.DebugMonsterText:	db "モンスター@"	; Monster
-.DebugTrainerText:	db "トレーナー@"	; Trainer
-.DebugPasswordText:	db "パスワード@"	; Password
-.DebugClockText		db "とけいきのう@"	; Clock (RTC) Function
+.DebugFightText:	db "ファイト@" 		; Fight
+.DebugLinkText:		db "つうしんよう@" 	; Communication
+.DebugFieldText:	db "フィールド@" 	; Field
+.DebugSoundText:	db "サウンド@" 		; Soundtrack
+.DebugMonsterText:	db "モンスター@" 	; Monster
+.DebugTrainerText:	db "トレーナー@" 	; Trainer
+.DebugPasswordText:	db "パスワード@" 	; Password
+.DebugClockText		db "とけいきのう@" 	; Clock (RTC) Function
 
 FIGHT		EQU 0
 LINK		EQU 1
 FIELD		EQU 2
 SOUND		EQU 3
-MON			EQU 4
+MON		EQU 4
 TRAINER		EQU 5
 PASSWORD	EQU 6
 CLOCK		EQU 7

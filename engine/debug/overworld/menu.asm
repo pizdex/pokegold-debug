@@ -34,28 +34,28 @@ QuickDebug_MenuOptions:
 	dw QuickDebug_BreedingOption,    .QuickDebug_Breeding
 	dw QuickDebug_HatchOption,       .QuickDebug_Hatch
 
-.QuickDebug_Cancel:      db "とじる@" ; Cancel
-.QuickDebug_Game:        db "ゲーム@" ; Game
-.QuickDebug_Warp:        db "ワープ@" ; Warp
-.QuickDebug_Test1:       db "テスト1@" ; Test 1
-.QuickDebug_Test2:       db "テスト2@" ; Test 2
-.QuickDebug_Test3:       db "テスト3@" ; Test 3
-.QuickDebug_Test4:       db "テスト4@" ; Test 4
-.QuickDebug_Recovery:    db "かいふく@" ; Recovery
-.QuickDebug_Next:        db "つぎ▶@" ; Next
-.QuickDebug_PC:          db "パソコン@" ; PC
-.QuickDebug_Character:   db "キャラ@" ; Character
+.QuickDebug_Cancel:      db "とじる@" 	; Cancel
+.QuickDebug_Game:        db "ゲーム@" 	; Game
+.QuickDebug_Warp:        db "ワープ@" 	; Warp
+.QuickDebug_Test1:       db "テスト1@" 	; Test 1
+.QuickDebug_Test2:       db "テスト2@" 	; Test 2
+.QuickDebug_Test3:       db "テスト3@" 	; Test 3
+.QuickDebug_Test4:       db "テスト4@" 	; Test 4
+.QuickDebug_Recovery:    db "かいふく@" 	; Recovery
+.QuickDebug_Next:        db "つぎ▶@" 	; Next
+.QuickDebug_PC:          db "パソコン@" 	; PC
+.QuickDebug_Character:   db "キャラ@" 	; Character
 .QuickDebug_Toolgear:    db "ツールギア@" ; Toolgear
-.QuickDebug_Experiment:  db "じっけん@" ; Experiment​ (OT ID Editor)
-.QuickDebug_Build:       db "つくる@" ; Build a Pokemon
-.QuickDebug_Elevator:    db "フロア@" ; Floor
-.QuickDebug_Egg:         db "たまご@" ; Egg
-.QuickDebug_Record:      db "きろく@" ; Record
-.QuickDebug_Timer:       db "タイマー@" ; Timer
-.QuickDebug_Item:        db "どうぐ@" ; Item
-.QuickDebug_BugCatching: db "むしとり@" ; Bug Catching
-.QuickDebug_Breeding:    db "こづくり@" ; Breeding
-.QuickDebug_Hatch:       db "うまれる@" ; Hatch
+.QuickDebug_Experiment:  db "じっけん@" 	; Experiment​ (OT ID Editor)
+.QuickDebug_Build:       db "つくる@" 	; Build a Pokemon
+.QuickDebug_Elevator:    db "フロア@" 	; Floor
+.QuickDebug_Egg:         db "たまご@" 	; Egg
+.QuickDebug_Record:      db "きろく@" 	; Record
+.QuickDebug_Timer:       db "タイマー@" 	; Timer
+.QuickDebug_Item:        db "どうぐ@" 	; Item
+.QuickDebug_BugCatching: db "むしとり@" 	; Bug Catching
+.QuickDebug_Breeding:    db "こづくり@" 	; Breeding
+.QuickDebug_Hatch:       db "うまれる@" 	; Hatch
 
 QuickDebug_MenuItems:
 ; First Page
