@@ -109,3 +109,34 @@ HMENURETURN_ASM    EQU %11111111
 	const NAME_6 ; duplicate of NAME_MON
 	const NAME_7 ; duplicate of NAME_MON
 NUM_NAME_TYPES EQU const_value
+
+; Debug overworld menu (see engine/debug/debug_menu_overworld.asm)
+	const_def
+	const DEBUG_CANCEL    ; 0
+	const DEBUG_NEXT
+	const DEBUG_GAME
+	const DEBUG_CHARACTER
+	const DEBUG_TOOLGEAR
+	const DEBUG_TEST1     ; 5
+	const DEBUG_TEST2
+	const DEBUG_TEST3
+	const DEBUG_TEST4
+	const DEBUG_RECOVERY
+	const DEBUG_WARP      ; 10
+	const DEBUG_PC
+	const DEBUG_EXPERIMENT
+	const DEBUG_BUILD
+	const DEBUG_TIMER
+	const DEBUG_ELEVATOR  ; 15
+	const DEBUG_RECORD
+	const DEBUG_ITEM
+	const DEBUG_BUGCATCHING
+	const DEBUG_BREEDING
+	const DEBUG_HATCH     ; 20
+
+	const_def
+	const QUICKMENU_UPDATE
+	const QUICKMENU_EXITWINDOW
+	const QUICKMENU_EXIT
+	const QUICKMENU_EXITSCRIPT1
+	const QUICKMENU_EXITSCRIPT2
