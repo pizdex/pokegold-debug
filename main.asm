@@ -67,7 +67,10 @@ LoadMapGroupRoof::
 
 
 SECTION "bank8",ROMX,BANK[$08]
-	dr $20000, $24000
+	dr $20000, $23b07
+
+EggMovePointers::
+	dr $23b07, $24000
 
 
 SECTION "bank9",ROMX,BANK[$09]
@@ -103,7 +106,28 @@ INCLUDE "banks/bank0f.asm"
 
 
 SECTION "bank10",ROMX,BANK[$10]
-	dr $40000, $44000
+unk_010_4000:
+	dr $40000, $4159f
+
+Pokedex_LoadUnownFont:
+	dr $4159f, $4163e
+
+unk_010_563e:
+	dr $4163e, $41c6c
+
+INCLUDE "data/moves/moves.asm"
+
+unk_010_6349:
+	dr $42349, $4267f
+
+unk_010_667f:
+	dr $4267f, $4292f
+
+unk_010_692f:
+	dr $4292f, $4295f
+
+unk_010_695f:
+	dr $4295f, $44000
 
 
 SECTION "bank11",ROMX,BANK[$11]

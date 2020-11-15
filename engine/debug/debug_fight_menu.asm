@@ -2,9 +2,11 @@ DebugFightMenu:
 	ld a, 1
 	ldh [hInMenu], a
 
-	ld a, 1 << RISINGBADGE ; All pokemon will obey
+; All pokemon will obey
+	ld a, 1 << RISINGBADGE
 	ld [wJohtoBadges], a
 
+; Zero out number of items
 	ld hl, wNumKeyItems
 	xor a
 	ld [hli], a
@@ -23,10 +25,11 @@ DebugFightMenu:
 	dec a
 	ld [hld], a
 
+; Load item data
 	ld de, DebugFight_ItemData
 .load_items
 	ld a, [de]
-	cp $ff
+	cp -1
 	jr z, .ChoosePlayerParty
 	inc de
 	ld [wCurItem], a
@@ -68,7 +71,7 @@ DebugFightMenu:
 	ld [wdcb3], a
 	ld b, a
 	ld c, a
-	ld hl, wDebugFightMonLevel
+	ld hl, wOTPartySpecies
 	call DebugFight_ResetParty
 	ld hl, wPartyCount
 	call DebugFight_ResetParty
@@ -86,12 +89,13 @@ DebugFight_PlaceArrow:
 	add hl, bc
 	ld a, " "
 	ld [hl], a
-	push de ; Extra code?
+	push de
+; Extra code?
 	pop de
 	pop bc
 	pop hl
 
-DebugFight_JoypadSpecies:
+DebugFight_SpeciesJoypad:
 	push bc
 	push de
 	call DelayFrame
@@ -109,77 +113,72 @@ DebugFight_JoypadSpecies:
 	bit D_RIGHT_F, a
 	jp nz, DebugFight_ChangeToLevelColumn
 	bit D_UP_F, a
-	jp nz, DebugFight_PreviousSpecies
+	jp nz, DebugFight_PreviousMon
 	bit D_DOWN_F, a
-	jp nz, DebugFight_NextSpecies
+	jp nz, DebugFight_NextMon
 	bit SELECT_F, a
-	jr z, DebugFight_JoypadSpecies
-
+	jr z, DebugFight_SpeciesJoypad
+; If SELECT is pressed, return to the Debug Menu
 	ld hl, wDebugFlags
 	res 0, [hl]
-	ld a, 1
-	jp Predef
+	predef_jump DebugMenu
 
 DebugFight_ResetParty:
 	xor a
+REPT 6
 	ld [hli], a
-	ld [hli], a
-	ld [hli], a
-	ld [hli], a
-	ld [hli], a
-	ld [hli], a
+ENDR
 	ld [hl], a
 	ret
 
 DebugFight_ItemData:
-	db MASTER_BALL, 99
-	db ULTRA_BALL, 99
-	db GREAT_BALL, 99
-	db POKE_BALL, 99
-	db HEAVY_BALL, 99
-	db LEVEL_BALL, 99
-	db LURE_BALL , 99
-	db FAST_BALL, 99
-	db FRIEND_BALL, 99
-	db MOON_BALL, 99
-	db LOVE_BALL, 99
+	db MASTER_BALL,  99
+	db ULTRA_BALL,   99
+	db GREAT_BALL,   99
+	db POKE_BALL,    99
+	db HEAVY_BALL,   99
+	db LEVEL_BALL,   99
+	db LURE_BALL ,   99
+	db FAST_BALL,    99
+	db FRIEND_BALL,  99
+	db MOON_BALL,    99
+	db LOVE_BALL,    99
 
 	db FULL_RESTORE, 99
-	db REVIVE, 99
-	db MAX_REVIVE, 99
-	db X_ATTACK, 99
-	db X_DEFEND, 99
-	db X_SPEED, 99
-	db X_SPECIAL, 99
-	db ETHER, 99
-	db MAX_ETHER, 99
-	db ELIXER, 99
-	db GUARD_SPEC, 99
-	db POKE_DOLL, 99
-	db X_ACCURACY, 99
+	db REVIVE,       99
+	db MAX_REVIVE,   99
+	db X_ATTACK,     99
+	db X_DEFEND,     99
+	db X_SPEED,      99
+	db X_SPECIAL,    99
+	db ETHER,        99
+	db MAX_ETHER,    99
+	db ELIXER,       99
+	db GUARD_SPEC,   99
+	db POKE_DOLL,    99
+	db X_ACCURACY,   99
 
-	db FULL_HEAL, 99
+	db FULL_HEAL,    99
 	db SUPER_POTION, 99
-	db ANTIDOTE, 99
-	db BURN_HEAL, 99
-	db ICE_HEAL, 99
-	db AWAKENING, 99
-	db PARLYZ_HEAL, 99
+	db ANTIDOTE,     99
+	db BURN_HEAL,    99
+	db ICE_HEAL,     99
+	db AWAKENING,    99
+	db PARLYZ_HEAL,  99
 	db -1
 
 DebugFight_IncrementSpecies:
 	inc b
 	ld a, b
-	cp 254
+	cp EGG + 1
 	jr c, DebugFight_DisplaySpeciesID
 	xor a
 	ld b, a
 
 DebugFight_DisplaySpeciesID:
 ; Display the Species ID of the current Pokemon and clear out the old name
-
 	ld [de], a
-	ld [wDeciramBuffer], a
+	ld [wTempByteValue], a
 	push bc
 	push hl
 	push de
@@ -197,9 +196,10 @@ DebugFight_DisplaySpeciesID:
 	call PlaceString
 
 	pop hl
-	ld a, [wDeciramBuffer]
+	ld a, [wTempByteValue]
 	and a
 	jr nz, .print_monstername
+; If current mon is species 000, print "-----"
 	ld de, DebugFight_ChouonpuText
 	jr .dex_zero
 
@@ -211,73 +211,86 @@ DebugFight_DisplaySpeciesID:
 	pop de
 	pop hl
 	pop bc
-	jp DebugFight_JoypadSpecies
+	jp DebugFight_SpeciesJoypad
 
 DebugFight_DecrementSpecies:
 	dec b
 	ld a, b
-	cp 254
+	cp EGG + 1
 	jp c, DebugFight_DisplaySpeciesID
-	ld a, 253
+	ld a, EGG
 	ld b, a
 	jp DebugFight_DisplaySpeciesID
 
-DebugFight_PreviousSpecies:
+DebugFight_PreviousMon:
+; No need to decrement if we're already on the 0th option
 	ld a, [wCurPartyMon]
 	dec a
-	cp $ff
-	jp z, DebugFight_JoypadSpecies
+	cp -1
+	jp z, DebugFight_SpeciesJoypad
+; Update selected option
 	ld [wCurPartyMon], a
 	dec de
+; Blank out cursor
 	dec hl
 	ld a, " "
 	ld [hl], a
+; And place it on previous line
 	push bc
-	ld bc, -40
+	ld bc, -2 * SCREEN_WIDTH
 	add hl, bc
 	pop bc
 	ld a, "▶"
 	ld [hl], a
 	inc hl
+; Load data from selected option
 	push hl
-	call LoadSelectedSpecies
+	call DebugFight_GetSpeciesAndLevel
 	pop hl
-	jp DebugFight_JoypadSpecies
+	jp DebugFight_SpeciesJoypad
 
-DebugFight_NextSpecies:
+DebugFight_NextMon:
+; No need to increment if we're already on the 5th option
 	ld a, [wCurPartyMon]
 	inc a
-	cp 6
-	jp nc, DebugFight_JoypadSpecies
+	cp PARTY_LENGTH
+	jp nc, DebugFight_SpeciesJoypad
+; Update selected option
 	ld [wCurPartyMon], a
 	inc de
+; Blank out cursor
 	dec hl
 	ld a, " "
 	ld [hl], a
-	ld bc, 40
+; And place it on next line
+	ld bc, 2 * SCREEN_WIDTH
 	add hl, bc
 	ld a, "▶"
 	ld [hl], a
 	inc hl
+; Load data from selected option
 	push hl
-	call LoadSelectedSpecies
+	call DebugFight_GetSpeciesAndLevel
 	pop hl
-	jp DebugFight_JoypadSpecies
+	jp DebugFight_SpeciesJoypad
 
 DebugFight_ChangeToLevelColumn:
 	push hl
 	push bc
+; Blank out cursor
 	dec hl
 	ld a, " "
 	ld [hl], a
+; Go to the level column
 	ld bc, 11
 	add hl, bc
+; Place cursor
 	ld a, "▶"
 	ld [hl], a
 	pop bc
 	pop hl
 
-DebugFight_JoypadLevel:
+DebugFight_LevelJoypad:
 	push bc
 	push de
 	call DelayFrame
@@ -295,28 +308,31 @@ DebugFight_JoypadLevel:
 	bit D_LEFT_F, a
 	jp nz, DebugFight_PlaceArrow
 	bit D_UP_F, a
-	jp nz, DebugFight_PeviousLevel
+	jp nz, DebugFight_PreviousLevel
 	bit D_DOWN_F, a
 	jp nz, DebugFight_NextLevel
-	jr DebugFight_JoypadLevel
+	jr DebugFight_LevelJoypad
 
 DebugFight_IncrementLevel:
 	inc c
 	ld a, c
 	cp MAX_LEVEL + 1
 	jr c, DebugFight_DisplayLevel
+; If level is above MAX_LEVEL, set it back to 1
 	ld a, 1
 	ld c, a
 
 DebugFight_DisplayLevel:
 	ld a, [wCurPartyMon]
 	push de
-	ld de, wDebugFightMonLevel ; dcc7
+; Calculate which mon's level is displayed
+	ld de, wDebugFightMonLevel
 	add e
 	ld e, a
-	jr nc, .asm_50de
+	jr nc, .update
+; Handle overflow
 	inc d
-.asm_50de
+.update
 	ld a, c
 	ld [de], a
 	push bc
@@ -328,95 +344,109 @@ DebugFight_DisplayLevel:
 	pop hl
 	pop bc
 	pop de
-	jp DebugFight_JoypadLevel
+	jp DebugFight_LevelJoypad
 
 DebugFight_DecrementLevel:
 	dec c
 	ld a, c
 	cp MAX_LEVEL + 1
-	jr nc, .level_100
+	jr nc, .invalid
 	and a
 	jp nz, DebugFight_DisplayLevel
 
-.level_100
-	ld a, 100
+.invalid
+; If level is 0 or above MAX_LEVEL, set it back to MAX_LEVEL
+	ld a, MAX_LEVEL
 	ld c, a
 	jp DebugFight_DisplayLevel
 
-DebugFight_PeviousLevel:
+DebugFight_PreviousLevel:
+; No need to go up if we're already on the 0th option
 	ld a, [wCurPartyMon]
 	dec a
-	cp $ff
-	jp z, DebugFight_JoypadLevel
-
+	cp -1
+	jp z, DebugFight_LevelJoypad
+; Update selected option
 	ld [wCurPartyMon], a
 	dec de
-
-	push hl
+; Blank out cursor
+	push hl ; save current pos (in species no. column)
 	ld bc, 10
-	add hl, bc
+	add hl, bc ; move to level cursor column (x = x + 10)
 	ld a, " "
 	ld [hl], a
+; And place it on previous line
 	pop hl
-	ld bc, hBGMapAddress
-	add hl, bc
-
+	ld bc, -2 * SCREEN_WIDTH
+	add hl, bc ; move two lines up (y = y - 2)
 	push hl
 	ld bc, 10
 	add hl, bc
 	ld a, "▶"
 	ld [hl], a
-	call LoadSelectedSpecies
+; Load data from selected option
+	call DebugFight_GetSpeciesAndLevel
 	pop hl
-	jp DebugFight_JoypadLevel
+	jp DebugFight_LevelJoypad
 
 DebugFight_NextLevel:
+; No need to increment if we're already on the 5th option
 	ld a, [wCurPartyMon]
 	inc a
-	cp 6
-	jp nc, DebugFight_JoypadLevel
-
+	cp PARTY_LENGTH
+	jp nc, DebugFight_LevelJoypad
+; Update selected option
 	ld [wCurPartyMon], a
 	inc de
+; Blank out cursor
 	push hl
 	ld bc, 10
 	add hl, bc
 	ld a, " "
 	ld [hl], a
+; And place it on next line
 	pop hl
-	ld bc, 40
+	ld bc, 2 * SCREEN_WIDTH
 	add hl, bc
 	push hl
 	ld bc, 10
 	add hl, bc
 	ld a, "▶"
 	ld [hl], a
-	call LoadSelectedSpecies
+; Load data from selected option
+	call DebugFight_GetSpeciesAndLevel
 	pop hl
-	jp DebugFight_JoypadLevel
+	jp DebugFight_LevelJoypad
 
-LoadSelectedSpecies:
+DebugFight_GetSpeciesAndLevel:
+; RETURN: b = species, c = level
+; Species
 	ld hl, wPartySpecies
 	ld a, [wCurPartyMon]
 	add l
 	ld l, a
-	jr nc, .enemy_species
+	jr nc, .save_species
+; Handle overflow
 	inc h
-.enemy_species
+.save_species
 	ld a, [hl]
 	ld b, a
+
+; Level
 	ld hl, wDebugFightMonLevel
 	ld a, [wCurPartyMon]
 	add l
 	ld l, a
-	jr nc, .done
+	jr nc, .save_level
+; Handle overflow
 	inc h
-.done
+.save_level
 	ld a, [hl]
 	ld c, a
 	ret
 
 DebugFight_StartButton:
+; Player's mon selection screen
 	ld hl, wPartyCount
 	ld de, wDebugFightMonLevel - 1
 	xor a
@@ -424,171 +454,186 @@ DebugFight_StartButton:
 	inc hl
 	ld a, [hli]
 	ld b, a
-	ld c, 6
+; Loop for all pokemon in party
+	ld c, PARTY_LENGTH
 	xor a
 	ld [wBattleMode], a
-.asm_5180:
+.CheckMon:
 	ld a, b
 	ld [wCurPartySpecies], a
 	ld a, [hl]
 	ld b, a
+; Check level
 	inc de
 	ld a, [de]
 	and a
-	jr z, .asm_51a3
+	jr z, .next_mon
 	ld [wCurPartyLevel], a
 	xor a
 	ld [wMonType], a
+; Check species
 	ld a, [wCurPartySpecies]
 	and a
-	jr z, .asm_51a3
+	jr z, .next_mon
+; Mon checks out, add it to the party
 	push hl
 	push de
 	push bc
-	ld a, 6
-	call Predef
+	predef TryAddMonToParty
 	pop bc
 	pop de
 	pop hl
-.asm_51a3
+; fallthrough
+.next_mon
 	inc hl
 	dec c
-	jr nz, .asm_5180
+	jr nz, .CheckMon
 
-	ld b, 7
+	ld b, PARTY_LENGTH + 1
 	ld hl, wPartySpecies
 	ld de, wDebugFightMonLevel - 1
-.asm_51af:
+.check_mon2:
 	inc de
 	dec b
 	jp z, DebugFightMenu
+; Check species
 	ld a, [hli]
 	and a
-	jr z, .asm_51af
+	jr z, .check_mon2
+; Check level
 	ld a, [de]
 	and a
-	jr z, .asm_51af
+	jr z, .check_mon2
 
-	ld hl, wTilemap + 60
+; Clear three times just to be safe
+	hlcoord 0, 3
 	ld b, 15
 	ld c, 20
 	call ClearBox
-	ld hl, wTilemap + 60
+	hlcoord 0, 3
 	ld b, 15
 	ld c, 20
 	call ClearBox
-	ld hl, wTilemap + 60
+	hlcoord 0, 3
 	ld b, 15
 	ld c, 20
 	call ClearBox
-
+; Give time to clear
 	ld c, 20
 	call DelayFrames
 
-	ld a, 1
+; Load wild battle text by default
+	ld a, WILD_BATTLE
 	ld [wBattleMode], a
 	ld de, DebugFight_WildMonsterText
+
 	ld a, [wdcb3]
 	cp 101
-	jr c, .asm_51f6
-	ld a, 2
+	jr c, .place_text
+
+	ld a, TRAINER_BATTLE
 	ld [wBattleMode], a
 	ld de, DebugFight_TrainerText
-.asm_51f6:
-	ld hl, wTilemap + 81
+.place_text:
+; Setup opponent selection screen UI
+	hlcoord 1, 4
 	call PlaceString
 
-	ld hl, wTilemap + 121
+	hlcoord 1, 6
 	ld de, DebugFight_OpponentPartyHeaderText1
 	call PlaceString
 
-	ld hl, wTilemap + 180
+	hlcoord 0, 9
 	ld b, 9
 	ld c, 20
 	call ClearBox
 
-	ld a, [wEnemyMon]
+	ld a, [wEnemyMonSpecies]
 	ld b, a
 	ld a, [wBattleMode]
 	dec a
-	jr z, .asm_524c
+	jr z, .wild_screen
 
 	ld a, [wTrainerClass]
-	ld [wDeciramBuffer], a
+	ld [wTempByteValue], a
 	ld b, a
-	ld de, wDeciramBuffer
-	ld hl, wTilemap + 161
+	ld de, wTempByteValue
+	hlcoord 1, 8
 	push bc
 	lb bc, PRINTNUM_LEADINGZEROS | 1, 3
 	call PrintNum
 
-	ld hl, wTilemap + 165
+	hlcoord 5, 8
 	ld de, DebugFight_EmptyText2
 	call PlaceString
 
 	ld a, [wTrainerClass]
 	ld c, a
-	callfar unk_00e_5534
+	callfar GetOTName
 
-	ld hl, wTilemap + 165
+	hlcoord 5, 8
 	ld de, wOTClassName
 	call PlaceString
 	pop bc
-	jr .asm_5271
+	jr .display_level
 
-.asm_524c:
+.wild_screen:
+; Check if wEnemyMonSpecies is 0
 	ld a, b
 	and a
-	jr z, .asm_5271
+	jr z, .display_level
 
-	ld de, wDeciramBuffer
+; Display species ID
+	ld de, wTempSpecies
 	ld [de], a
-	ld hl, wTilemap + 161
+	hlcoord 1, 8
 	push bc
 	lb bc, PRINTNUM_LEADINGZEROS | 1, 3
 	call PrintNum
-
-	ld hl, wTilemap + 165
+; Display name
+	hlcoord 5, 8
 	ld de, DebugFight_EmptyText2
 	call PlaceString
 	call GetPokemonName
-	ld hl, wTilemap + 165
+	hlcoord 5, 8
 	call PlaceString
 	pop bc
 
-.asm_5271:
+.display_level:
 	ld a, [wEnemyMonLevel]
 	ld c, a
-	ld de, wDeciramBuffer
+	ld de, wTempByteValue
 	ld [de], a
-	ld hl, wTilemap + 176
+	hlcoord 16, 8
 	push bc
 	lb bc, PRINTNUM_LEADINGZEROS | 1, 3
 	call PrintNum
 	pop bc
 
-Jump_03f_5284:
+DebugFight_EnemyHeader:
+; Clear out species and level cursor
 	ld a, " "
 	ldcoord_a 0, 8
 	ldcoord_a 15, 8
+; Place cursor next to battle type
 	ld a, "▶"
 	ldcoord_a 0, 4
 
-Jump_03f_5291:
+.HandleJoypad:
 	push bc
 	call DelayFrame
 	call JoyTextDelay
 	pop bc
 	ldh a, [hJoyLast]
-	bit 0, a
-	jp nz, Jump_03f_52ac
-	bit 3, a
-	jp nz, Jump_03f_55df
-	bit 7, a
-	jp nz, Jump_03f_5307
-	jr Jump_03f_5291
+	bit A_BUTTON_F, a
+	jp nz, .SwitchBattleMode
+	bit START_F, a
+	jp nz, DebugFight_TryStartBattle
+	bit D_DOWN_F, a
+	jp nz, DebugFight_EnemyParty
+	jr .HandleJoypad
 
-Jump_03f_52ac:
+.SwitchBattleMode:
 	hlcoord 1, 8
 	ld de, DebugFight_OpponentPartyHeaderText2
 	call PlaceString
@@ -600,191 +645,218 @@ Jump_03f_52ac:
 	ld c, a
 	ld a, [wBattleMode]
 	dec a
-	jr nz, .asm_52e7
+	jr nz, .switch_to_wild
 
-	ld a, 2
+; Switch to trainer mode
+	ld a, TRAINER_BATTLE
 	ld [wBattleMode], a
+; Remove dakuten leftover from "wild monster" text
 	ld a, " "
 	ldcoord_a 4, 3
+; Place text
 	hlcoord 1, 4
 	ld de, DebugFight_TrainerText
 	call PlaceString
 
 	hlcoord 0, 9
-	ld b, $09
-	ld c, $14
+	ld b, 9
+	ld c, SCREEN_WIDTH
 	call ClearBox
-	jp Jump_03f_5291
+	jp .HandleJoypad
 
-.asm_52e7:
-	ld a, 1
+.switch_to_wild:
+	ld a, WILD_BATTLE
 	ld [wBattleMode], a
+; Remove dakuten leftover from "trainer" text
 	ld a, " "
 	ldcoord_a 1, 3
+; Place text
 	hlcoord 1, 4
 	ld de, DebugFight_WildMonsterText
 	call PlaceString
 
 	hlcoord 0, 9
-	ld b, $09
-	ld c, $14
+	ld b, 9
+	ld c, SCREEN_WIDTH
 	call ClearBox
-	jp Jump_03f_5291
+	jp .HandleJoypad
 
-Jump_03f_5307:
+DebugFight_EnemyParty:
+; Place cursor next to species/trainer number
 	ld a, "▶"
 	ldcoord_a 0, 8
+; Clear out level and header cursor
 	ld a, " "
 	ldcoord_a 15, 8
 	ldcoord_a 0, 4
 
-Jump_03f_5314:
+DebugFight_EnemyPartyJoypad:
 	push bc
 	call DelayFrame
 	call JoyTextDelay
 	pop bc
 	ldh a, [hJoyLast]
-	bit 0, a
-	jp nz, Jump_03f_533e
-	bit 1, a
-	jp nz, Jump_03f_53b4
-	bit 3, a
-	jp nz, Jump_03f_55df
-	bit 4, a
-	jp nz, Jump_03f_53ec
-	bit 6, a
-	jp nz, Jump_03f_5284
-	bit 7, a
-	jp nz, Jump_03f_54cd
-	jr Jump_03f_5314
 
-Jump_03f_533e:
+	bit A_BUTTON_F, a
+	jp nz, .IncrementEnemyID
+	bit B_BUTTON_F, a
+	jp nz, .DecrementEnemyID
+	bit START_F, a
+	jp nz, DebugFight_TryStartBattle
+	bit D_RIGHT_F, a
+	jp nz, .ChangeToLevelColumn
+	bit D_UP_F, a
+	jp nz, DebugFight_EnemyHeader
+	bit D_DOWN_F, a
+	jp nz, DebugFight_EnemyMoves
+	jr DebugFight_EnemyPartyJoypad
+
+
+.IncrementEnemyID:
+; Clear out diacritics
 	push bc
-	ld hl, $c431
+	hlcoord 5, 7
 	ld de, DebugFight_EmptyText2
 	call PlaceString
-	ld hl, $c445
+; Clear out name
+	hlcoord 5, 8
 	ld de, DebugFight_EmptyText2
 	call PlaceString
 	pop bc
+; Check battle mode
 	ld a, [wBattleMode]
 	dec a
-	jr z, Function_03f_538b
+	jr z, .increment_mon
+
+; Increment trainer
 	inc b
 	ld a, b
-	cp $43
-	jr c, Jump_03f_5360
+	cp NUM_TRAINER_CLASSES
+	jr c, .DisplayTrainer
 	ld b, 1
 
-Jump_03f_5360:
+.DisplayTrainer:
 	ld a, b
-	ld [wDeciramBuffer], a
-	ld de, wDeciramBuffer
-	ld hl, $c441
+	ld [wTempByteValue], a
+; Print trainer class ID
+	ld de, wTempByteValue
+	hlcoord 1, 8
 	push bc
 	lb bc, PRINTNUM_LEADINGZEROS | 1, 3
 	call PrintNum
-	ld a, [wDeciramBuffer]
+; Print trainer name
+	ld a, [wTempByteValue]
 	ld [wTrainerClass], a
 	ld c, a
-	callfar unk_00e_5534
-	ld hl, $c445
+	callfar GetOTName
+	hlcoord 5, 8
 	ld de, wOTClassName
 	call PlaceString
 	pop bc
-	jp Jump_03f_5314
+	jp DebugFight_EnemyPartyJoypad
 
-Function_03f_538b:
+.increment_mon:
 	inc b
 	ld a, b
-	cp $fe
-	jr c, Jump_03f_5393
+	cp EGG + 1
+	jr c, .DisplayPokemon
 	ld b, 1
 
-Jump_03f_5393:
+.DisplayPokemon:
 	ld a, b
-	ld [wDeciramBuffer], a
-	ld de, wDeciramBuffer
-	ld hl, $c441
+	ld [wTempByteValue], a
+; Print pokemon ID
+	ld de, wTempByteValue
+	hlcoord 1, 8
 	push bc
 	lb bc, PRINTNUM_LEADINGZEROS | 1, 3
 	call PrintNum
+; Print pokemon name
 	call GetPokemonName
-	ld hl, $c445
+	hlcoord 5, 8
 	call PlaceString
 	pop bc
-	call Call_03f_544d
-	jp Jump_03f_5314
+	call DebugFight_UpdateAllMoves
+	jp DebugFight_EnemyPartyJoypad
 
-Jump_03f_53b4:
+
+.DecrementEnemyID:
+; Display text
 	push bc
-	ld hl, $c431
+	hlcoord 5, 7
 	ld de, DebugFight_EmptyText2
 	call PlaceString
-	ld hl, $c445
+	hlcoord 5, 8
 	ld de, DebugFight_EmptyText2
 	call PlaceString
 	pop bc
+; Check battle mode
 	ld a, [wBattleMode]
 	dec a
-	jr z, .asm_53dd
+	jr z, .decrement_mon
+; Decrement trainer number
 	dec b
 	ld a, b
-	cp $43
-	jr nc, .asm_53d8
+	cp NUM_TRAINER_CLASSES
+	jr nc, .invalid_trainer
+; Check zero
 	and a
-	jp nz, Jump_03f_5360
+	jp nz, .DisplayTrainer
 
-.asm_53d8
-	ld b, $3d
-	jp Jump_03f_5360
+.invalid_trainer
+	ld b, NUM_TRAINER_CLASSES - 6 ; ???
+	jp .DisplayTrainer
 
-.asm_53dd
+.decrement_mon
 	dec b
 	ld a, b
-	cp $fe
-	jr nc, .asm_53e7
+	cp EGG + 1
+	jr nc, .invalid_mon
 	and a
-	jp nz, Jump_03f_5393
+	jp nz, .DisplayPokemon
 
-.asm_53e7
-	ld b, $fd
-	jp Jump_03f_5393
+.invalid_mon
+	ld b, EGG
+	jp .DisplayPokemon
 
-Jump_03f_53ec:
+
+.ChangeToLevelColumn:
 	ld a, " "
-	ld [$c440], a
+	ldcoord_a 0, 8
 	ld a, "▶"
-	ld [$c44f], a
+	ldcoord_a 15, 8
 
-Jump_03f_53f6:
+DebugFight_EnemyLevelJoypad:
 	push bc
 	call DelayFrame
 	call JoyTextDelay
 	pop bc
 	ldh a, [hJoyLast]
-	bit 0, a
-	jp nz, Jump_03f_5420
-	bit 1, a
-	jp nz, Jump_03f_543e
-	bit 3, a
-	jp nz, Jump_03f_55df
-	bit 5, a
-	jp nz, Jump_03f_5307
-	bit 6, a
-	jp nz, Jump_03f_5284
-	bit 7, a
-	jp nz, Jump_03f_54cd
-	jr Jump_03f_53f6
 
-Jump_03f_5420:
+	bit A_BUTTON_F, a
+	jp nz, .IncrementLevel
+	bit B_BUTTON_F, a
+	jp nz, .DecrementLevel
+	bit START_F, a
+	jp nz, DebugFight_TryStartBattle
+	bit D_LEFT_F, a
+	jp nz, DebugFight_EnemyParty
+	bit D_UP_F, a
+	jp nz, DebugFight_EnemyHeader
+	bit D_DOWN_F, a
+	jp nz, DebugFight_EnemyMoves
+	jr DebugFight_EnemyLevelJoypad
+
+.IncrementLevel:
 	inc c
 	ld a, c
-	cp $65
-	jr c, .asm_5428
-	ld c, $01
-.asm_5428:
-	ld hl, $c450
+	cp MAX_LEVEL + 1
+	jr c, .PrintLevel
+; invalid
+	ld c, 1
+
+.PrintLevel
+	hlcoord 16, 8
 	ld a, c
 	ld de, wCurPartyLevel
 	ld [de], a
@@ -792,57 +864,59 @@ Jump_03f_5420:
 	lb bc, PRINTNUM_LEADINGZEROS | 1, 3
 	call PrintNum
 	pop bc
-	call Call_03f_544d
-	jp Jump_03f_53f6
+	call DebugFight_UpdateAllMoves
+	jp DebugFight_EnemyLevelJoypad
 
-Jump_03f_543e:
+.DecrementLevel:
 	dec c
 	ld a, c
-	cp $65
-	jr nc, .asm_5448
-
+	cp MAX_LEVEL + 1
+	jr nc, .invalid
 	and a
-	jp nz, Jump_03f_5420.asm_5428
+	jp nz, .PrintLevel
 
-.asm_5448:
-	ld c, $64
-	jp Jump_03f_5420.asm_5428
+.invalid
+	ld c, MAX_LEVEL
+	jp .PrintLevel
 
-Call_03f_544d:
+DebugFight_UpdateAllMoves:
 	ld a, [wBattleMode]
 	dec a
 	ret nz
-
+; Wild battle
 	push bc
 	ld a, b
 	ld [wCurPartySpecies], a
+; Clear out old moves
 	hlcoord 0, 9
-	ld b, $09
-	ld c, $14
+	ld b, 9
+	ld c, 20
 	call ClearBox
 	xor a
-	ld [wd0c5], a
+	ld [wFieldMoveJumptableIndex], a
 	ld hl, wListMoves_MoveIndicesBuffer
-	ld bc, $0004
+	ld bc, 4
 	call ByteFill
+; Load new moves based on level?
 	ld de, wListMoves_MoveIndicesBuffer
-	ld a, $1b
-	call Predef
-	ld a, $28
-	ld [wd0c5], a
-	ld hl, $c46d
-	ld a, $20
-	call Predef
-	call Call_03f_55ce
-	ld hl, $c469
-	ld de, wListMoves_MoveIndicesBuffer
-	ld b, $04
+	predef unk_010_667f
+	ld a, 40
+	ld [wFieldMoveJumptableIndex], a
+	hlcoord 5, 10
+	predef unk_014_547a
 
-.asm_548e:
+	call DebugFight_PlacePPText
+
+; Print each move and its Max PP amount
+	hlcoord 1, 10
+	ld de, wListMoves_MoveIndicesBuffer
+	ld b, 4
+.next_move:
+; Check if reached end of the move list
 	ld a, [de]
 	and a
-	jr z, .asm_54cb
-
+	jr z, .exit
+; Print move ID
 	push bc
 	push hl
 	push de
@@ -853,232 +927,260 @@ Call_03f_544d:
 	push af
 	call PrintNum
 	pop af
+; Get Max PP from current move
 	dec a
-	ld hl, $5c6c + 5
+	ld hl, Moves + 5
 	ld bc, 7
 	call AddNTimes
-	ld a, $10
+	ld a, BANK(Moves)
 	call GetFarByte
 	ld de, wStringBuffer1
 	ld [de], a
 	pop hl
-	ld bc, $000f
+; Switch to Max PP column and print
+	ld bc, 15
 	add hl, bc
-	ld bc, $0103
+	lb bc, $01, 3
 	call PrintNum
+; Progress to next move
 	pop de
 	pop hl
 	inc de
-	ld bc, $0028
+	ld bc, SCREEN_WIDTH * 2
 	add hl, bc
 	pop bc
 	dec b
-	jr nz, .asm_548e
+	jr nz, .next_move
 
-.asm_54cb
+.exit
 	pop bc
 	ret
 
-Jump_03f_54cd:
-	ld hl, $c440
+DebugFight_EnemyMoves:
+	hlcoord 0, 8
 	ld [hl], " "
-	ld hl, $c44f
+	hlcoord 15, 8
 	ld [hl], " "
 	ld a, [wBattleMode]
 	dec a
-	jp nz, Jump_03f_5307
+	jp nz, DebugFight_EnemyParty
 
 	push bc
-	ld hl, $c468
+	hlcoord 0, 10
 	ld [hl], "▶"
 	ld de, wListMoves_MoveIndicesBuffer
 	ld b, 1
 
-Jump_03f_54e9:
+DebugFight_EnemyMovesJoypad:
 	call DelayFrame
 	call JoyTextDelay
 	ldh a, [hJoyLast]
-	bit 0, a
-	jp nz, Jump_03f_550c
-	bit 1, a
-	jp nz, Jump_03f_5514
-	bit 3, a
-	jp nz, Jump_03f_55ca
-	bit 6, a
-	jp nz, Jump_03f_559b
-	bit 7, a
-	jp nz, Jump_03f_55ad
-	jr Jump_03f_54e9
+	bit A_BUTTON_F, a
+	jp nz, .IncrementMove
+	bit B_BUTTON_F, a
+	jp nz, .DecrementMove
+	bit START_F, a
+	jp nz, .TryStartBattle
+	bit D_UP_F, a
+	jp nz, .PreviousMove
+	bit D_DOWN_F, a
+	jp nz, .NextMove
+	jr DebugFight_EnemyMovesJoypad
 
-Jump_03f_550c:
+.IncrementMove:
 	ld a, [de]
 	inc a
-	cp $fc
-	jr c, Function_03f_553d
-	jr Jump_03f_5514.asm_551e
+	cp NUM_ATTACKS + 1
+	jr c, .UpdateMove
+	jr .empty_move
 
-Jump_03f_5514:
+.DecrementMove:
 	ld a, [de]
 	and a
-	ld a, $fb
-	jr z, Function_03f_553d
+	ld a, NUM_ATTACKS ; Maximum move ID
+	jr z, .UpdateMove
 	ld a, [de]
 	dec a
-	jr nz, Function_03f_553d
+	jr nz, .UpdateMove
 
-.asm_551e:
+.empty_move:
+; Design: While the move name and PP amount
+; are cleared, the "PP" text still remains.
+
+; Reset move to zero
 	xor a
 	ld [de], a
 	push de
 	push bc
 	push hl
-	ld bc, hClockResetTrigger
+; Clear move ID and name
+	ld bc, -1 * SCREEN_WIDTH + 1
 	add hl, bc
-	ld bc, $020b
+	lb bc, 2, 11
 	call ClearBox
 	pop hl
+; Clear move PP amount
 	push hl
-	ld bc, $0011
+	ld bc, 17
 	add hl, bc
 	ld a, " "
 	ld [hli], a
 	ld [hl], a
+
 	pop hl
 	pop bc
 	pop de
-	jp Jump_03f_54e9
+	jp DebugFight_EnemyMovesJoypad
 
-Function_03f_553d:
+.UpdateMove:
+; Similar to UpdateAllMoves, but only works on a single move.
+
+; Save current move ID
 	ld [de], a
 	ld [wCurSpecies], a
 	push hl
 	push de
 	push bc
 	push hl
+; Clear move ID and name
 	push hl
-	ld bc, hClockResetTrigger
+	ld bc, -1 * SCREEN_WIDTH + 1
 	add hl, bc
-	ld bc, $020b
+	lb bc, 2, 11
 	call ClearBox
 	pop hl
+; Clear move PP amount
 	push hl
-	ld bc, $0011
+	ld bc, 17
 	add hl, bc
 	ld a, " "
 	ld [hli], a
 	ld [hl], a
+; Print new move ID
 	pop hl
 	ld de, wCurSpecies
-	ld bc, $0103
-	inc hl
+	lb bc, $01, 3
+	inc hl ; skip cursor
 	call PrintNum
-	ld a, $02
+; Print move name
+	ld a, MOVE_NAME
 	ld [wNamedObjectTypeBuffer], a
 	call GetName
 	ld de, wStringBuffer1
-	inc hl
+	inc hl ; space after move id
 	call PlaceString
+; Get move's max PP
 	ld a, [wCurSpecies]
 	dec a
-	ld hl, $5c6c + 5
+	ld hl, Moves + 5
 	ld bc, 7
 	call AddNTimes
-	ld a, $10
+	ld a, BANK(Moves)
 	call GetFarByte
+; Print max PP
 	ld de, wStringBuffer1
 	ld [de], a
 	pop hl
-	ld bc, $0010
+	ld bc, 16
 	add hl, bc
-	ld bc, $0103
+	lb bc, $01, 3
 	call PrintNum
+
 	pop bc
 	pop de
 	pop hl
-	jp Jump_03f_54e9
+	jp DebugFight_EnemyMovesJoypad
 
-Jump_03f_559b:
+.PreviousMove:
+; Clear out old cursor
 	ld [hl], " "
+; Check if exiting the move editor
 	dec b
-	jp z, Jump_03f_55c6
+	jp z, .ReturnToEnemyParty
+; Decrement "Move List"
 	dec de
+; Place new cursor
 	push bc
-	ld bc, hBGMapAddress
+	ld bc, -2 * SCREEN_WIDTH
 	add hl, bc
 	pop bc
 	ld [hl], "▶"
-	jp Jump_03f_54e9
+	jp DebugFight_EnemyMovesJoypad
 
-Jump_03f_55ad:
+.NextMove:
 	inc b
 	ld a, b
-	cp $05
-	jr nc, .asm_55c1
-
+	cp NUM_MOVES + 1
+	jr nc, .last_move
+; Increment "Move List"
 	inc de
+; Clear out old cursor
 	ld [hl], " "
+; Place new cursor
 	push bc
-	ld bc, $0028
+	ld bc, 2 * SCREEN_WIDTH
 	add hl, bc
 	pop bc
 	ld [hl], "▶"
-	jp Jump_03f_54e9
+	jp DebugFight_EnemyMovesJoypad
 
-.asm_55c1
-	ld b, 4
-	jp Jump_03f_54e9
+.last_move
+	ld b, NUM_MOVES
+	jp DebugFight_EnemyMovesJoypad
 
-Jump_03f_55c6:
+.ReturnToEnemyParty:
 	pop bc
-	jp Jump_03f_5307
+	jp DebugFight_EnemyParty
 
-Jump_03f_55ca:
+.TryStartBattle:
 	pop bc
-	jp Jump_03f_55df
+	jp DebugFight_TryStartBattle
 
-Call_03f_55ce:
-	ld hl, $c475
-	ld de, $0027
-	ld b, $04
-	ld a, $3e
-.asm_55d8
+DebugFight_PlacePPText:
+	hlcoord 13, 10
+	ld de, 2 * SCREEN_WIDTH - 1
+	ld b, NUM_MOVES
+	ld a, "P"
+.loop
 	ld [hli], a
 	ld [hl], a
 	add hl, de
 	dec b
-	jr nz, .asm_55d8
+	jr nz, .loop
 	ret
 
-Jump_03f_55df:
+DebugFight_TryStartBattle:
+; c = Level
+; b = ID
+; Return to header if either are zero
 	ld a, b
 	and a
-	jp z, Jump_03f_5284
-
+	jp z, DebugFight_EnemyHeader
 	ld a, c
 	and a
-	jp z, Jump_03f_5284
+	jp z, DebugFight_EnemyHeader
 
 	ld a, [wBattleMode]
 	dec a
-	jr z, .asm_55f9
+	jr z, .wild
 
 	ld a, b
 	ld [wOtherTrainerClass], a
 	ld a, c
-	ld [wd10d], a
+	ld [wOtherTrainerID], a
 	jr .asm_5601
 
-.asm_55f9:
+.wild
 	ld a, c
 	ld [wCurPartyLevel], a
 	ld a, b
-	ld [wd109], a
+	ld [wTempWildMonSpecies], a
 
 .asm_5601:
 	call SetPalettes
 	ld a, $80
 	ld [wJohtoBadges], a
-	ld hl, unkData_03f_57cf
+	ld hl, DebugFight_GoldText
 	ld de, wPlayerName
 	ld bc, 6
 	call CopyBytes
@@ -1096,26 +1198,26 @@ Jump_03f_55df:
 	ld bc, $0005
 	call ByteFill
 	call LoadStandardFont
-	ld hl, $40a6
-	ld a, $3e
-	rst FarCall
+	callfar StatsScreen_LoadFont
 	call ClearTilemap
 	call ClearSprites
 	ld a, $e4
 	call DmgToCgbBGPals
 	ld de, $e4e4
 	call DmgToCgbObjPals
-	ld hl, wTilemap
+
+	hlcoord 0, 0
 	ld b, $01
 	ld c, $12
 	call Textbox
-	ld hl, $c3ba
+
+	hlcoord 6, 1
 	ld de, DebugFight_TestFightText
 	call PlaceString
-	ld hl, $c3f4
+	hlcoord 4, 4
 	ld de, DebugFight_PlayerPartyHeaderText
 	call PlaceString
-	ld hl, $c419
+	hlcoord 1, 6
 	ld de, DebugFight_DefaultPlayerPartyText
 	call PlaceString
 	ld de, wPartyCount
@@ -1123,7 +1225,7 @@ Jump_03f_55df:
 	ld [de], a
 	ld [wCurPartyMon], a
 	inc de
-	ld hl, $c41c
+	hlcoord 4, 6
 	push de
 	push hl
 
@@ -1139,7 +1241,7 @@ Jump_03f_5683:
 	cp $ff
 	jp z, Jump_03f_56e9
 
-	ld [wDeciramBuffer], a
+	ld [wTempByteValue], a
 	push hl
 	lb bc, PRINTNUM_LEADINGZEROS | 1, 3
 	call PrintNum
@@ -1150,12 +1252,12 @@ Jump_03f_5683:
 	call PlaceString
 	pop hl
 	push hl
-	ld bc, $000b
+	ld bc, 11
 	add hl, bc
 	push hl
 	ld a, [wCurPartyMon]
 	ld hl, wPartyMon1Level
-	ld bc, $0030
+	ld bc, $30
 	call AddNTimes
 	ld d, h
 	ld e, l
@@ -1177,7 +1279,7 @@ Jump_03f_5683:
 	ld a, [wCurPartyMon]
 	inc a
 	ld [wCurPartyMon], a
-	ld bc, $0028
+	ld bc, 2 * SCREEN_WIDTH
 	add hl, bc
 	jp Jump_03f_5683
 
@@ -1196,7 +1298,7 @@ DebugFight_TestFightText:
 	db "テスト ファイト@" ; Test Fight
 
 DebugFight_PlayerPartyHeaderText:
-     ; No.  Name    LVL
+    ;  No.  Name    LVL
 	db "№．  なまえ    レべル@"
 
 DebugFight_DefaultPlayerPartyText:
@@ -1228,18 +1330,18 @@ DebugFight_OpponentPartyHeaderText2:
 DebugFight_EmptyText2:
 	db "          @"
 
-unkData_03f_57cf:
+DebugFight_GoldText:
 	db "ゴールド@@" ; GOLD
 
-unkData_03f_57d4:
-	db $03, 99
-	db $04, 99
-	db $0B, 99
-	db $10, 99
-	db $11, 99
-	db $12, 99
-	db $13, 99
-	db $14, 99
+DebugFight_ItemData_Gen1:
+	db GREAT_BALL_RED,   99
+	db POKE_BALL_RED,    99
+	db ANTIDOTE_RED,     99
+	db FULL_RESTORE_RED, 99
+	db MAX_POTION_RED,   99
+	db HYPER_POTION_RED, 99
+	db SUPER_POTION_RED, 99
+	db POTION_RED,       99
 	db -1
 
 unk_03f_57e6:
@@ -1275,10 +1377,11 @@ jr_03f_581e:
 	jr c, Jump_03f_582b
 	ld a, 1
 	ld [wCurPartyLevel], a
+
 Jump_03f_582b:
-	ld hl, $c3dc
+	hlcoord 0, 3
 	ld [hl], " "
-	ld hl, $c3b4
+	hlcoord 0, 1
 	ld [hl], "▶"
 	call Call_03f_5868
 jr_03f_5838:
@@ -1331,11 +1434,11 @@ Call_03f_5868::
 	ret
 
 Jump_03f_5897:
-	ld hl, $c3b4
+	hlcoord 0, 1
 	ld [hl], " "
-	ld hl, $c3dc
+	hlcoord 0, 3
 	ld [hl], "▶"
-	ld hl, $c404
+	hlcoord 0, 5
 	ld [hl], " "
 	call Call_03f_58e3
 	call Call_03f_58f0
@@ -1391,7 +1494,7 @@ Call_03f_58f0:
 	ld de, wListMoves_MoveIndicesBuffer
 	ld a, $1b
 	call Predef
-	ld hl, $c405
+	hlcoord 1, 5
 	ld de, wListMoves_MoveIndicesBuffer
 	ld b, $04
 jr_03f_5918:
@@ -1410,7 +1513,7 @@ jr_03f_5918:
 	call GetMoveName
 	call PlaceString
 	pop hl
-	ld bc, $28
+	ld bc, 2 * SCREEN_WIDTH
 	add hl, bc
 	pop bc
 	pop de
@@ -1422,7 +1525,7 @@ jr_03f_593d:
 
 Jump_03f_593e:
 	ld de, wListMoves_MoveIndicesBuffer
-	ld hl, $c404
+	hlcoord 0, 5
 	ld b, $01
 
 Jump_03f_5946:
@@ -1475,7 +1578,7 @@ Jump_03f_5986:
 	jp z, Jump_03f_5897
 
 	push bc
-	ld bc, hBGMapAddress
+	ld bc, -2 * SCREEN_WIDTH
 	add hl, bc
 	pop bc
 	jr jr_03f_5946
@@ -1488,7 +1591,7 @@ Jump_03f_5993:
 	jp z, Jump_03f_59ee
 
 	push bc
-	ld bc, $0028
+	ld bc, 2 * SCREEN_WIDTH
 	add hl, bc
 	pop bc
 	jr jr_03f_5946
@@ -1499,7 +1602,7 @@ Call_03f_59a3:
 	push bc
 	push hl
 	push de
-	ld bc, hClockResetTrigger
+	ld bc, -1 * SCREEN_WIDTH + 1
 	add hl, bc
 	ld bc, $020b
 	call ClearBox
@@ -1507,7 +1610,7 @@ Call_03f_59a3:
 	pop hl
 	push hl
 	ld [hl], "▶"
-	ld bc, hBGMapAddress
+	ld bc, -2 * SCREEN_WIDTH
 	add hl, bc
 	ld [hl], " "
 	ld bc, $0050
@@ -1546,7 +1649,7 @@ jr_03f_59ed:
 
 Jump_03f_59ee:
 	ld de, wddee
-	ld hl, $c4a4
+	hlcoord 0, 13
 	ld b, $01
 
 jr_03f_59f6:
@@ -1588,14 +1691,14 @@ Jump_03f_5a2a:
 	dec b
 	jp z, Jump_03f_5a37
 	push bc
-	ld bc, hBGMapAddress
+	ld bc, -2 * SCREEN_WIDTH
 	add hl, bc
 	pop bc
 	jr jr_03f_59f6
 
 Jump_03f_5a37:
 	ld de, $d13e
-	ld hl, $c47c
+	hlcoord 0, 11
 	ld b, $04
 	jp Jump_03f_5946
 
@@ -1606,7 +1709,7 @@ Jump_03f_5a42:
 	inc b
 	inc de
 	push bc
-	ld bc, $28
+	ld bc, 2 * SCREEN_WIDTH
 	add hl, bc
 	pop bc
 	jr jr_03f_59f6
@@ -1617,7 +1720,7 @@ Call_03f_5a51:
 	push bc
 	push hl
 	ld [hl], "▶"
-	ld bc, hBGMapAddress
+	ld bc, -2 * SCREEN_WIDTH
 	add hl, bc
 	ld [hl], " "
 	ld bc, $50
@@ -1670,7 +1773,7 @@ Call_03f_5a77::
 	lb bc, PRINTNUM_LEADINGZEROS | 2, 3
 	call PrintNum
 	pop hl
-	ld bc, $28
+	ld bc, 2 * SCREEN_WIDTH
 	add hl, bc
 	pop de
 	inc de
@@ -1703,15 +1806,15 @@ Jump_03f_5ae4:
 	ld [hli], a
 	xor a
 	ld [wEnemyMonStatus], a
-	ld [$d0f0], a
+	ld [wEnemyMonStatus + 1], a
 	ld hl, wEnemyMonMoves
 	ld a, [wListMoves_MoveIndicesBuffer]
 	ld [hli], a
-	ld a, [$d13c]
+	ld a, [wListMoves_MoveIndicesBuffer + 1]
 	ld [hli], a
-	ld a, [$d13d]
+	ld a, [wListMoves_MoveIndicesBuffer + 2]
 	ld [hli], a
-	ld a, [$d13e]
+	ld a, [wListMoves_MoveIndicesBuffer + 3]
 	ld [hl], a
 	ld hl, wEnemyMonPP
 	xor a
@@ -1722,7 +1825,7 @@ Jump_03f_5ae4:
 	ld a, [wddee]
 	ld [wEnemyMonDVs], a
 	ld a, [wddef]
-	ld [$d0e8], a
+	ld [wEnemyMonDVs + 1], a
 	ld a, $09
 	call Predef
 	ld a, $01
@@ -1758,16 +1861,12 @@ Call_03f_5b65:
 	push af
 	call Call_03f_5b99
 	jr c, .asm_5b93
-	ld a, $10
-	ld hl, $692f
-	rst FarCall
+	farcall unk_010_692f
 	jr nc, .asm_5b88
 	call Call_03f_5b99
 	jr c, .asm_5b93
 
-	ld a, $10
-	ld hl, $692f
-	rst FarCall
+	farcall unk_010_692f
 	jr nc, .asm_5b88
 	call Call_03f_5b99
 	jr c, .asm_5b93
@@ -1826,17 +1925,17 @@ unkData_03f_5bc7:
 	db -1
 
 Call_03f_5be8:
-	ld hl, $7b07
+	ld hl, EggMovePointers
 	ld a, [wCurPartySpecies]
 	dec a
 	ld c, a
 	ld b, 0
 	add hl, bc
 	add hl, bc
-	ld a, $08
+	ld a, BANK(EggMovePointers)
 	call GetFarHalfword
 .asm_5bf9:
-	ld a, $08
+	ld a, BANK(EggMovePointers)
 	call GetFarByte
 	inc hl
 	cp $ff
@@ -1853,17 +1952,17 @@ Call_03f_5be8:
 	ret
 
 Call_03f_5c0e:
-	ld hl, $695f
+	ld hl, unk_010_695f
 	ld b, 0
 	ld a, [wCurPartySpecies]
 	dec a
 	ld c, a
 	add hl, bc
 	add hl, bc
-	ld a, $10
+	ld a, BANK(unk_010_695f)
 	call GetFarHalfword
 .asm_5c1f:
-	ld a, $10
+	ld a, BANK(unk_010_695f)
 	call GetFarByte
 	inc hl
 	and a

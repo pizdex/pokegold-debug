@@ -34,12 +34,12 @@ PredefPointers::
 	db $52, $73, $0f ; $18
 	db $91, $73, $0f
 	db $25, $66, $10
-	db $7f, $66, $10
+	add_predef unk_010_667f
 	db $57, $63, $10
 	db $28, $4e, $0a
 	add_predef TradeAnimation
-	db $70, $49, $14
-	db $7a, $54, $14 ; $20
+	add_predef unk_014_4970
+	add_predef unk_014_547a ; $20
 	db $3f, $54, $14
 	db $fb, $53, $14
 	db $7b, $53, $14

@@ -124,6 +124,9 @@
 	; needed for StatsScreen_PlaceShinyIcon and PrintPartyMonPage1
 	charmap "⁂",		$3f ; gfx/stats/stats_tiles.png, tile 14
 
+	; PP
+	charmap "P",		$3e
+
 ; Actual characters (from gfx/font/font.png)
 
 	charmap "?",         $e6
@@ -324,8 +327,3 @@
 	charmap "7",         $fd
 	charmap "8",         $fe
 	charmap "9",         $ff
-
-; ASCII charmap, for mobile functions
-pushc
-newcharmap ascii
-popc

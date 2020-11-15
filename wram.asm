@@ -2933,14 +2933,30 @@ wd104:: ds 1 ; d104
 wd105:: ds 1 ; d105
 wd106:: ds 1 ; d106
 wd107:: ds 1 ; d107
-wBattleMode:: ds 1 ; d108
-wd109:: ds 1 ; d109
 
-wOtherTrainerClass:: ds 1 ; d10a
+wBattleMode::
+; 0: overworld
+; 1: wild battle
+; 2: trainer battle
+	db
 
-wBattleType:: ds 1 ; d10b
-wd10c:: ds 1 ; d10c
-wd10d:: ds 1 ; d10d
+wTempWildMonSpecies:: db
+
+wOtherTrainerClass::
+; class (Youngster, Bug Catcher, etc.) of opposing trainer
+; 0 if opponent is a wild Pokémon, not a trainer
+	db
+
+; BATTLETYPE_* values
+wBattleType:: db
+
+	ds 1
+
+wOtherTrainerID::
+; which trainer of the class that you're fighting
+; (Joey, Mikey, Albert, etc.)
+	db
+
 wd10e:: ds 1 ; d10e
 
 wTrainerClass:: ds 1 ; d10f
