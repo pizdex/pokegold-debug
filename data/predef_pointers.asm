@@ -19,42 +19,42 @@ PredefPointers::
 	add_predef SendMonIntoBox
 	add_predef unk_003_6239
 	add_predef AnimateHPBar
-	add_predef unk_003_6415
+	add_predef CalcMonStats
 	add_predef unk_003_6429
-	db $f6, $59, $04
-	db $27, $5a, $04
-	db $8e, $4d, $0a ; $10
-	db $e3, $5c, $0b
-	db $a5, $5d, $0f
-	db $de, $7a, $11
-	db $06, $57, $0f
-	db $98, $5e, $0f
-	db $d6, $73, $0f
-	db $a5, $72, $0f
-	db $52, $73, $0f ; $18
-	db $91, $73, $0f
-	db $25, $66, $10
-	add_predef unk_010_667f
-	db $57, $63, $10
-	db $28, $4e, $0a
+	add_predef CanLearnTMHMMove
+	dwb $5a27, $04
+	dwb $4d8e, $0a ; $10
+	dwb $5ce3, $0b
+	dwb $5da5, $0f
+	dwb $7ade, $11
+	dwb $5706, $0f
+	dwb $5e98, $0f
+	dwb $73d6, $0f
+	dwb $72a5, $0f
+	dwb $7352, $0f ; $18
+	dwb $7391, $0f
+	dwb $6625, $10
+	add_predef FillMoves
+	dwb $6357, $10
+	dwb $4e28, $0a
 	add_predef TradeAnimation
-	add_predef unk_014_4970
+	add_predef CopyMonToTempMon
 	add_predef unk_014_547a ; $20
-	db $3f, $54, $14
-	db $fb, $53, $14
-	db $7b, $53, $14
-	db $08, $53, $14
-	db $79, $4c, $14
-	db $08, $4c, $14
-	db $0c, $4c, $14
-	db $b8, $52, $14 ; $28
-	db $8a, $4a, $14
-	db $60, $4a, $14
-	db $79, $4a, $14
-	db $33, $4a, $14
-	db $4b, $57, $14
-	db $06, $7c, $32
-	db $e4, $40, $32
+	dwb $543f, $14
+	dwb $53fb, $14
+	dwb $537b, $14
+	dwb $5308, $14
+	dwb $4c79, $14
+	dwb $4c08, $14
+	dwb $4c0c, $14
+	dwb $52b8, $14 ; $28
+	dwb $4a8a, $14
+	dwb $4a60, $14
+	dwb $4a79, $14
+	dwb $4a33, $14
+	dwb $574b, $14
+	dwb $7c06, $32
+	dwb $40e4, $32
 	add_predef unk_002_5f84 ; $30
 	add_predef LoadSGBLayout
 	add_predef unk_024_5da5
@@ -66,12 +66,12 @@ PredefPointers::
 	add_predef DummyPredef38 ; $38
 	add_predef DummyPredef39
 	add_predef DebugFightMenu
-	db $b1, $6d, $04
-	db $82, $57, $14
-	db $f0, $57, $14
-	db $8d, $58, $14
-	db $e7, $58, $14
-	db $28, $49, $0d ; $40
-	db $24, $7a, $3e
-	db $b9, $79, $3e
+	dwb $6db1, $04
+	dwb $5782, $14
+	dwb $57f0, $14
+	dwb $588d, $14
+	dwb $58e7, $14
+	dwb $4928, $0d ; $40
+	dwb $7a24, $3e
+	dwb $79b9, $3e
 	dbw -1, $2e83

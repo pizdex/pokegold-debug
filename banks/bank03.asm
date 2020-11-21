@@ -37,11 +37,14 @@ SendMonIntoBox:
 unk_003_6239:
 	dr $e239, $e415
 
-unk_003_6415:
+CalcMonStats:
 	dr $e415, $e429
 
 unk_003_6429:
-	dr $e429, $ea52
+	dr $e429, $e8a5
+
+CopyBoxmonToTempMon:
+	dr $e8a5, $ea52
 
 INCLUDE "engine/events/bug_contest/caught_mon.asm"
 

@@ -4,7 +4,7 @@ gold_obj := \
 home.o \
 main.o \
 wram.o \
-
+data/pokemon/evos_attacks.o \
 
 ### Build tools
 

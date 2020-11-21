@@ -69,6 +69,8 @@ LoadMapGroupRoof::
 SECTION "bank8",ROMX,BANK[$08]
 	dr $20000, $23b07
 
+SECTION "Egg Moves", ROMX
+
 EggMovePointers::
 	dr $23b07, $24000
 
@@ -120,14 +122,11 @@ INCLUDE "data/moves/moves.asm"
 unk_010_6349:
 	dr $42349, $4267f
 
-unk_010_667f:
+FillMoves:
 	dr $4267f, $4292f
 
-unk_010_692f:
+GetPreEvolution:
 	dr $4292f, $4295f
-
-unk_010_695f:
-	dr $4295f, $44000
 
 
 SECTION "bank11",ROMX,BANK[$11]
@@ -339,6 +338,7 @@ INCLUDE "engine/debug/debug_clock_menu.asm"
 INCLUDE "engine/debug/debug_menu.asm"
 INCLUDE "engine/debug/debug_menu_overworld.asm"
 INCLUDE "engine/debug/debug_fight_menu.asm"
+INCLUDE "engine/debug/debug_mon_builder.asm"
 INCLUDE "engine/debug/debug_sound_menu.asm"
 INCLUDE "engine/tilesets/tileset_anims.asm"
 INCLUDE "engine/debug/debug_toolgear_update.asm"

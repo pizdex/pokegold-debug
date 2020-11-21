@@ -97,7 +97,10 @@ Call_004_5998:
 	dr $11998, $119d0
 
 CopyDayHourMinSecToHL:
-	dr $119d0, $11a74
+	dr $119d0, $119f6
+
+CanLearnTMHMMove:
+	dr $119f6, $11a74
 
 _NamingScreen:
 	dr $11a74, $11a7e

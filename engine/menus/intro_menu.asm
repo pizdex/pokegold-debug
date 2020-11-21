@@ -571,8 +571,8 @@ OakSpeech:
 	call PrepMonFrontpic
 
 	xor a
-	ld [wd01a], a
-	ld [wd01a + 1], a
+	ld [wTempMonDVs], a
+	ld [wTempMonDVs + 1], a
 
 	ld b, SCGB_TRAINER_OR_MON_FRONTPIC_PALS
 	call GetSGBLayout

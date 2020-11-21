@@ -126,7 +126,7 @@ INCLUDE "engine/debug/overworld/otid.asm"
 
 QuickDebug_BuildOption:
 	call LoadStandardMenuHeader
-	farcall unk_03f_57e6
+	farcall DebugBuildMenu
 	call CloseWindow
 	ld a, QUICKMENU_UPDATE
 	ret

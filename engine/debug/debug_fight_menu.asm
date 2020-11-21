@@ -90,7 +90,6 @@ DebugFight_PlaceArrow:
 	ld a, " "
 	ld [hl], a
 	push de
-; Extra code?
 	pop de
 	pop bc
 	pop hl
@@ -583,7 +582,7 @@ DebugFight_StartButton:
 	and a
 	jr z, .display_level
 
-; Display species ID
+; Display species index
 	ld de, wTempSpecies
 	ld [de], a
 	hlcoord 1, 8
@@ -624,6 +623,7 @@ DebugFight_EnemyHeader:
 	call DelayFrame
 	call JoyTextDelay
 	pop bc
+
 	ldh a, [hJoyLast]
 	bit A_BUTTON_F, a
 	jp nz, .SwitchBattleMode
@@ -695,8 +695,8 @@ DebugFight_EnemyPartyJoypad:
 	call DelayFrame
 	call JoyTextDelay
 	pop bc
-	ldh a, [hJoyLast]
 
+	ldh a, [hJoyLast]
 	bit A_BUTTON_F, a
 	jp nz, .IncrementEnemyID
 	bit B_BUTTON_F, a
@@ -831,8 +831,8 @@ DebugFight_EnemyLevelJoypad:
 	call DelayFrame
 	call JoyTextDelay
 	pop bc
-	ldh a, [hJoyLast]
 
+	ldh a, [hJoyLast]
 	bit A_BUTTON_F, a
 	jp nz, .IncrementLevel
 	bit B_BUTTON_F, a
@@ -895,11 +895,11 @@ DebugFight_UpdateAllMoves:
 	xor a
 	ld [wFieldMoveJumptableIndex], a
 	ld hl, wListMoves_MoveIndicesBuffer
-	ld bc, 4
+	ld bc, NUM_MOVES
 	call ByteFill
 ; Load new moves based on level?
 	ld de, wListMoves_MoveIndicesBuffer
-	predef unk_010_667f
+	predef FillMoves
 	ld a, 40
 	ld [wFieldMoveJumptableIndex], a
 	hlcoord 5, 10
@@ -910,7 +910,7 @@ DebugFight_UpdateAllMoves:
 ; Print each move and its Max PP amount
 	hlcoord 1, 10
 	ld de, wListMoves_MoveIndicesBuffer
-	ld b, 4
+	ld b, NUM_MOVES
 .next_move:
 ; Check if reached end of the move list
 	ld a, [de]
@@ -974,6 +974,7 @@ DebugFight_EnemyMoves:
 DebugFight_EnemyMovesJoypad:
 	call DelayFrame
 	call JoyTextDelay
+
 	ldh a, [hJoyLast]
 	bit A_BUTTON_F, a
 	jp nz, .IncrementMove
@@ -1178,37 +1179,44 @@ DebugFight_TryStartBattle:
 
 .asm_5601:
 	call SetPalettes
-	ld a, $80
+; All pokemon will obey
+	ld a, 1 << RISINGBADGE
 	ld [wJohtoBadges], a
+; Set player name
 	ld hl, DebugFight_GoldText
 	ld de, wPlayerName
-	ld bc, 6
+	ld bc, PLAYER_NAME_LENGTH
 	call CopyBytes
+
 	ld a, $16
 	call Predef
-	ld a, $01
+
+	ld a, 1
 	ldh [hBGMapMode], a
 	ldh [hInMenu], a
+
 	xor a
 	ld [wd145], a
+
 	ld hl, wPlayerSubStatus1
-	ld bc, $0005
+	ld bc, 5
 	call ByteFill
 	ld hl, wEnemySubStatus1
-	ld bc, $0005
+	ld bc, 5
 	call ByteFill
+
 	call LoadStandardFont
 	callfar StatsScreen_LoadFont
 	call ClearTilemap
 	call ClearSprites
-	ld a, $e4
+	ld a, %11100100
 	call DmgToCgbBGPals
-	ld de, $e4e4
+	depixel 28, 28, 4, 4
 	call DmgToCgbObjPals
 
 	hlcoord 0, 0
-	ld b, $01
-	ld c, $12
+	ld b, 1
+	ld c, 18
 	call Textbox
 
 	hlcoord 6, 1
@@ -1220,6 +1228,7 @@ DebugFight_TryStartBattle:
 	hlcoord 1, 6
 	ld de, DebugFight_DefaultPlayerPartyText
 	call PlaceString
+
 	ld de, wPartyCount
 	xor a
 	ld [de], a
@@ -1229,7 +1238,7 @@ DebugFight_TryStartBattle:
 	push de
 	push hl
 
-Jump_03f_5683:
+.Function_5683:
 	ld a, [wCurPartyMon]
 	ld de, wPartySpecies
 	add e
@@ -1238,8 +1247,8 @@ Jump_03f_5683:
 	inc d
 .asm_568e:
 	ld a, [de]
-	cp $ff
-	jp z, Jump_03f_56e9
+	cp -1
+	jp z, .Function_56e9
 
 	ld [wTempByteValue], a
 	push hl
@@ -1251,13 +1260,14 @@ Jump_03f_5683:
 	call GetPokemonName
 	call PlaceString
 	pop hl
+
 	push hl
 	ld bc, 11
 	add hl, bc
 	push hl
 	ld a, [wCurPartyMon]
 	ld hl, wPartyMon1Level
-	ld bc, $30
+	ld bc, 48
 	call AddNTimes
 	ld d, h
 	ld e, l
@@ -1266,6 +1276,7 @@ Jump_03f_5683:
 	pop hl
 	lb bc, PRINTNUM_LEADINGZEROS | 1, 3
 	call PrintNum
+
 	ld a, [wCurPartyMon]
 	ld de, wDebugFightMonLevel
 	add e
@@ -1281,9 +1292,9 @@ Jump_03f_5683:
 	ld [wCurPartyMon], a
 	ld bc, 2 * SCREEN_WIDTH
 	add hl, bc
-	jp Jump_03f_5683
+	jp .Function_5683
 
-Jump_03f_56e9:
+.Function_56e9:
 	pop hl
 	pop de
 	ld a, [wPartyMon1]
@@ -1343,628 +1354,3 @@ DebugFight_ItemData_Gen1:
 	db SUPER_POTION_RED, 99
 	db POTION_RED,       99
 	db -1
-
-unk_03f_57e6:
-	ld a, 1
-	call OpenSRAM
-	ld a, [s1_ad10]
-	cp $1e
-	call CloseSRAM
-	jp nc, Jump_03f_5b51
-	call ClearTilemap
-	call UpdateSprites
-	ld a, [wOptions]
-	push af
-	set 4, a
-	ld [wOptions], a
-	xor a
-	ld hl, wddee
-	ld [hli], a
-	ld [hli], a
-	ld [hl], a
-	inc a
-	ldh [hInMenu], a
-	ld [wCurItem], a
-	ld a, [wCurPartySpecies]
-	cp $fc
-	jr c, jr_03f_581e
-	ld a, 1
-	ld [wCurPartySpecies], a
-jr_03f_581e:
-	ld a, [wCurPartyLevel]
-	dec a
-	cp 100
-	jr c, Jump_03f_582b
-	ld a, 1
-	ld [wCurPartyLevel], a
-
-Jump_03f_582b:
-	hlcoord 0, 3
-	ld [hl], " "
-	hlcoord 0, 1
-	ld [hl], "▶"
-	call Call_03f_5868
-jr_03f_5838:
-	call DelayFrame
-	call JoyTextDelay
-	ldh a, [hJoyLast]
-	bit 0, a
-	jp nz, Jump_03f_5851
-	bit 1, a
-	jp nz, Jump_03f_585e
-	bit 7, a
-	jp nz, Jump_03f_5897
-	jr jr_03f_5838
-
-Jump_03f_5851:
-	ld hl, wCurPartySpecies
-	inc [hl]
-	ld a, [hl]
-	cp $fc
-	jr c, Jump_03f_582b
-	ld [hl], 1
-	jr Jump_03f_582b
-
-Jump_03f_585e:
-	ld hl, wCurPartySpecies
-	dec [hl]
-	jr nz, Jump_03f_582b
-	ld [hl], $fb
-	jr Jump_03f_582b
-
-Call_03f_5868::
-	hlcoord 1, 0
-	ld b, 2
-	ld c, 9
-	call ClearBox
-	hlcoord 1, 1
-	ld de, wCurPartySpecies
-	lb bc, PRINTNUM_LEADINGZEROS | 1, 3
-	call PrintNum
-	inc hl
-	push hl
-	ld a, [wCurPartySpecies]
-	ld [wTempSpecies], a
-	call GetPokemonName
-	pop hl
-	call PlaceString
-	ld a, [wTempSpecies]
-	ld [wCurSpecies], a
-	call GetBaseData
-	ret
-
-Jump_03f_5897:
-	hlcoord 0, 1
-	ld [hl], " "
-	hlcoord 0, 3
-	ld [hl], "▶"
-	hlcoord 0, 5
-	ld [hl], " "
-	call Call_03f_58e3
-	call Call_03f_58f0
-jr_03f_58ac:
-	call DelayFrame
-	call JoyTextDelay
-	ld hl, wCurPartyLevel
-	ldh a, [hJoyLast]
-	bit 0, a
-	jp nz, Jump_03f_58d2
-	bit 1, a
-	jp nz, Jump_03f_58dc
-	bit 3, a
-	jp nz, Jump_03f_5ae4
-	bit 6, a
-	jp nz, Jump_03f_582b
-	bit 7, a
-	jp nz, Jump_03f_593e
-	jr jr_03f_58ac
-
-Jump_03f_58d2:
-	inc [hl]
-	ld a, [hl]
-	cp 101
-	jr c, Jump_03f_5897
-	ld [hl], 1
-	jr Jump_03f_5897
-
-Jump_03f_58dc:
-	dec [hl]
-	jr nz, Jump_03f_5897
-	ld [hl], 100
-	jr Jump_03f_5897
-
-Call_03f_58e3:
-	hlcoord 1, 3
-	ld de, wCurPartyLevel
-	lb bc, PRINTNUM_LEADINGZEROS | 1, 3
-	call PrintNum
-	ret
-
-Call_03f_58f0:
-	hlcoord 1, 4
-	ld b, $08
-	ld c, $0b
-	call ClearBox
-	ld hl, wListMoves_MoveIndicesBuffer
-	ld bc, 4
-	xor a
-	call ByteFill
-	xor a
-	ld [wDebugClockCurrentOption], a
-	ld de, wListMoves_MoveIndicesBuffer
-	ld a, $1b
-	call Predef
-	hlcoord 1, 5
-	ld de, wListMoves_MoveIndicesBuffer
-	ld b, $04
-jr_03f_5918:
-	ld a, [de]
-	inc de
-	and a
-	jr z, jr_03f_593d
-	push de
-	push bc
-	push hl
-	ld [wApplyStatLevelMultipliersToEnemy], a
-	ld de, wApplyStatLevelMultipliersToEnemy
-	lb bc, PRINTNUM_LEADINGZEROS | 1, 3
-	call PrintNum
-	inc hl
-	call GetMoveName
-	call PlaceString
-	pop hl
-	ld bc, 2 * SCREEN_WIDTH
-	add hl, bc
-	pop bc
-	pop de
-	dec b
-	jr nz, jr_03f_5918
-
-jr_03f_593d:
-	ret
-
-Jump_03f_593e:
-	ld de, wListMoves_MoveIndicesBuffer
-	hlcoord 0, 5
-	ld b, $01
-
-Jump_03f_5946:
-jr_03f_5946:
-	call Call_03f_59a3
-
-jr_03f_5949:
-	call DelayFrame
-	push de
-	push bc
-	call JoyTextDelay
-	pop bc
-	pop de
-	ldh a, [hJoyLast]
-	bit 0, a
-	jp nz, Jump_03f_5970
-	bit 1, a
-	jp nz, Jump_03f_597c
-	bit 3, a
-	jp nz, Jump_03f_5ae4
-	bit 6, a
-	jp nz, Jump_03f_5986
-	bit 7, a
-	jp nz, Jump_03f_5993
-	jr jr_03f_5949
-
-Jump_03f_5970:
-	ld a, [de]
-	inc a
-	ld [de], a
-	cp $fc
-	jr c, jr_03f_5946
-	ld a, $01
-	ld [de], a
-	jr jr_03f_5946
-
-Jump_03f_597c:
-	ld a, [de]
-	dec a
-	ld [de], a
-	jr nz, jr_03f_5946
-
-	ld a, $fb
-	ld [de], a
-	jr jr_03f_5946
-
-Jump_03f_5986:
-	dec de
-	dec b
-	jp z, Jump_03f_5897
-
-	push bc
-	ld bc, -2 * SCREEN_WIDTH
-	add hl, bc
-	pop bc
-	jr jr_03f_5946
-
-Jump_03f_5993:
-	inc de
-	inc b
-	ld a, b
-	cp $05
-	jp z, Jump_03f_59ee
-
-	push bc
-	ld bc, 2 * SCREEN_WIDTH
-	add hl, bc
-	pop bc
-	jr jr_03f_5946
-
-Call_03f_59a3:
-	push hl
-	push de
-	push bc
-	push hl
-	push de
-	ld bc, -1 * SCREEN_WIDTH + 1
-	add hl, bc
-	ld bc, $020b
-	call ClearBox
-	pop de
-	pop hl
-	push hl
-	ld [hl], "▶"
-	ld bc, -2 * SCREEN_WIDTH
-	add hl, bc
-	ld [hl], " "
-	ld bc, $0050
-	add hl, bc
-	ld [hl], " "
-	pop hl
-	inc hl
-	ld a, [de]
-	ld de, wApplyStatLevelMultipliersToEnemy
-	ld [de], a
-	lb bc, PRINTNUM_LEADINGZEROS | 1, 3
-	call PrintNum
-	ld a, [wApplyStatLevelMultipliersToEnemy]
-	and a
-	jr z, jr_03f_59e0
-
-	call Call_03f_59e4
-	inc hl
-	call GetMoveName
-	call PlaceString
-
-jr_03f_59e0:
-	pop bc
-	pop de
-	pop hl
-	ret
-
-Call_03f_59e4:
-	push hl
-	call Call_03f_5b65
-	pop hl
-	jr c, jr_03f_59ed
-	ld [hl], $f1
-jr_03f_59ed:
-	ret
-
-Jump_03f_59ee:
-	ld de, wddee
-	hlcoord 0, 13
-	ld b, $01
-
-jr_03f_59f6:
-	call Call_03f_5a51
-jr_03f_59f9:
-	call DelayFrame
-	push de
-	push bc
-	call JoyTextDelay
-	pop bc
-	pop de
-	ldh a, [hJoyLast]
-	bit 0, a
-	jp nz, Jump_03f_5a20
-	bit 1, a
-	jp nz, Jump_03f_5a25
-	bit 3, a
-	jp nz, Jump_03f_5ae4
-	bit 6, a
-	jp nz, Jump_03f_5a2a
-	bit 7, a
-	jp nz, Jump_03f_5a42
-	jr jr_03f_59f9
-
-Jump_03f_5a20:
-	ld a, [de]
-	inc a
-	ld [de], a
-	jr jr_03f_59f6
-
-Jump_03f_5a25:
-	ld a, [de]
-	dec a
-	ld [de], a
-	jr jr_03f_59f6
-
-Jump_03f_5a2a:
-	dec de
-	dec b
-	jp z, Jump_03f_5a37
-	push bc
-	ld bc, -2 * SCREEN_WIDTH
-	add hl, bc
-	pop bc
-	jr jr_03f_59f6
-
-Jump_03f_5a37:
-	ld de, $d13e
-	hlcoord 0, 11
-	ld b, $04
-	jp Jump_03f_5946
-
-Jump_03f_5a42:
-	ld a, b
-	cp 3
-	jr z, jr_03f_59f6
-	inc b
-	inc de
-	push bc
-	ld bc, 2 * SCREEN_WIDTH
-	add hl, bc
-	pop bc
-	jr jr_03f_59f6
-
-Call_03f_5a51:
-	push hl
-	push de
-	push bc
-	push hl
-	ld [hl], "▶"
-	ld bc, -2 * SCREEN_WIDTH
-	add hl, bc
-	ld [hl], " "
-	ld bc, $50
-	add hl, bc
-	ld [hl], " "
-	pop hl
-	inc hl
-	ld a, [de]
-	ld de, wApplyStatLevelMultipliersToEnemy
-	ld [de], a
-	lb bc, PRINTNUM_LEADINGZEROS | 1, 3
-	call PrintNum
-	call Call_03f_5a77
-	pop bc
-	pop de
-	pop hl
-	ret
-
-Call_03f_5a77::
-	hlcoord 12, 0
-	ld b, 18
-	ld c, 8
-	call ClearBox
-	hlcoord 13, 1
-	ld de, unkData_03f_5ac9
-	call PlaceString
-	ld b, $a
-	ld hl, wd010
-	ld a, [wddf0]
-.asm_5a92
-	ld [hli], a
-	dec b
-	jr nz, .asm_5a92
-	ld a, [wddee]
-	ld [hli], a
-	ld a, [wddef]
-	ld [hl], a
-	ld hl, wd00f
-	ld de, wd029
-	ld b, 1
-	ld a, 12
-	call Predef
-	hlcoord 17, 1
-	ld de, wd029
-	ld b, 6
-.asm_5ab3
-	push bc
-	push de
-	push hl
-	lb bc, PRINTNUM_LEADINGZEROS | 2, 3
-	call PrintNum
-	pop hl
-	ld bc, 2 * SCREEN_WIDTH
-	add hl, bc
-	pop de
-	inc de
-	inc de
-	pop bc
-	dec b
-	jr nz, .asm_5ab3
-	ret
-
-unkData_03f_5ac9:
-	db "たいリき"
-	next "<KOUGEKI>"
-	next "ぼうぎょ"
-	next "すばやさ"
-	next "とくこう"
-	next "とくぼう@"
-
-Jump_03f_5ae4:
-	ld a, [wCurPartyLevel]
-	ld [wEnemyMonLevel], a
-	ld a, [wCurPartySpecies]
-	ld [wCurSpecies], a
-	call GetBaseData
-	ld a, [wCurPartySpecies]
-	ld [wEnemyMon], a
-	ld hl, wEnemyMonHP
-	ld a, [wd029]
-	ld [hli], a
-	ld a, [wd02a]
-	ld [hli], a
-	xor a
-	ld [wEnemyMonStatus], a
-	ld [wEnemyMonStatus + 1], a
-	ld hl, wEnemyMonMoves
-	ld a, [wListMoves_MoveIndicesBuffer]
-	ld [hli], a
-	ld a, [wListMoves_MoveIndicesBuffer + 1]
-	ld [hli], a
-	ld a, [wListMoves_MoveIndicesBuffer + 2]
-	ld [hli], a
-	ld a, [wListMoves_MoveIndicesBuffer + 3]
-	ld [hl], a
-	ld hl, wEnemyMonPP
-	xor a
-	ld [hli], a
-	ld [hli], a
-	ld [hli], a
-	ld [hl], a
-	ld a, [wddee]
-	ld [wEnemyMonDVs], a
-	ld a, [wddef]
-	ld [wEnemyMonDVs + 1], a
-	ld a, $09
-	call Predef
-	ld a, $01
-	call OpenSRAM
-	ld b, $0a
-	ld hl, s1_ad3b
-	ld a, [wddf0]
-
-jr_03f_5b44:
-	ld [hli], a
-	dec b
-	jr nz, jr_03f_5b44
-
-	call CloseSRAM
-	pop af
-	ld [wOptions], a
-	jr jr_03f_5b57
-
-Jump_03f_5b51:
-	ld hl, unkData_03f_5b58
-	call PrintText
-
-jr_03f_5b57:
-	ret
-
-unkData_03f_5b58:
-; The BOX is full!
-	text "ボックスが いっぱい!"
-	done
-
-Call_03f_5b65:
-	ld a, [wCurPartySpecies]
-	push af
-	call Call_03f_5b99
-	jr c, .asm_5b93
-	farcall unk_010_692f
-	jr nc, .asm_5b88
-	call Call_03f_5b99
-	jr c, .asm_5b93
-
-	farcall unk_010_692f
-	jr nc, .asm_5b88
-	call Call_03f_5b99
-	jr c, .asm_5b93
-
-.asm_5b88:
-	call Call_03f_5be8
-	jr c, .asm_5b93
-	pop af
-	ld [wCurPartySpecies], a
-	and a
-	ret
-
-.asm_5b93:
-	pop af
-	ld [wCurPartySpecies], a
-	scf
-	ret
-
-Call_03f_5b99:
-	ld a, [wApplyStatLevelMultipliersToEnemy]
-	ld [wTMHMMove], a
-	ld a, $0e
-	call Predef
-	ld a, c
-	and a
-	jr nz, .asm_5bc5
-	ld a, [wApplyStatLevelMultipliersToEnemy]
-	ld d, a
-	call Call_03f_5c0e
-.asm_5baf:
-	ld a, $10
-	call GetFarByte
-	inc hl
-	and a
-	jr z, .asm_5bc3
-	ld a, $10
-	call GetFarByte
-	inc hl
-	cp d
-	jr z, .asm_5bc5
-	jr .asm_5baf
-
-.asm_5bc3:
-	and a
-	ret
-
-.asm_5bc5:
-	scf
-	ret
-
-unkData_03f_5bc7:
-	db 007, 009, 010, 014, 016, 020, 022, 028
-	db 049, 066, 083, 089, 091, 099, 100, 103
-	db 104, 105, 114, 125, 126, 139, 142, 149
-	db 152, 154, 155, 178, 179, 180, 187, 190
-	db -1
-
-Call_03f_5be8:
-	ld hl, EggMovePointers
-	ld a, [wCurPartySpecies]
-	dec a
-	ld c, a
-	ld b, 0
-	add hl, bc
-	add hl, bc
-	ld a, BANK(EggMovePointers)
-	call GetFarHalfword
-.asm_5bf9:
-	ld a, BANK(EggMovePointers)
-	call GetFarByte
-	inc hl
-	cp $ff
-	jr z, .asm_5c0c
-	ld b, a
-	ld a, [wApplyStatLevelMultipliersToEnemy]
-	cp b
-	jr nz, .asm_5bf9
-	scf
-	ret
-
-.asm_5c0c:
-	and a
-	ret
-
-Call_03f_5c0e:
-	ld hl, unk_010_695f
-	ld b, 0
-	ld a, [wCurPartySpecies]
-	dec a
-	ld c, a
-	add hl, bc
-	add hl, bc
-	ld a, BANK(unk_010_695f)
-	call GetFarHalfword
-.asm_5c1f:
-	ld a, BANK(unk_010_695f)
-	call GetFarByte
-	inc hl
-	and a
-	jr nz, .asm_5c1f
-	ret

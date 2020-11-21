@@ -180,7 +180,7 @@ LoadSGBLayout:
 	ld [wcca3], a
 
 	ld a, [wCurPartySpecies]
-	ld bc, wd01a
+	ld bc, wTempMonDVs
 	call GetPlayerOrMonPalettePointer
 
 	ld a, [hli]
@@ -242,7 +242,7 @@ LoadSGBLayout:
 	inc hl
 	ld [hl], $19
 	ld a, [wCurPartySpecies]
-	ld bc, wd01a
+	ld bc, wTempMonDVs
 	call GetPlayerOrMonPalettePointer
 	ld a, [hli]
 	ld [wSGBPals + 9], a
@@ -483,7 +483,7 @@ endr
 	ld bc, $0010
 	call CopyBytes
 	ld a, [wCurPartySpecies]
-	ld bc, wd01a
+	ld bc, wTempMonDVs
 	call GetPlayerOrMonPalettePointer
 	ld a, [hli]
 	ld [wcca0], a
@@ -508,7 +508,7 @@ endr
 	ld bc, $0010
 	call CopyBytes
 	ld a, [wCurPartySpecies]
-	ld bc, wd01a
+	ld bc, wTempMonDVs
 	call GetFrontpicPalettePointer
 	ld a, [hli]
 	ld [wcca0], a

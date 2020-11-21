@@ -137,106 +137,103 @@ endr
 	jp PrintNum
 
 SoundMenu_Layout:
-	db "おんがく"
-	db "<NEXT>"
-	db "じょうげ エー"
-	db "<NEXT>"
-	db "<NEXT>"
-	db "こうかおん"
-	db "<NEXT>"
-	db "さゆう  スタート@"
+	db "おんがく" ; Music
+	next "じょうげ エー" ; UP/DOWN and A
+	next ""
+	next "こうかおん" ; Sound Effect
+	next "さゆう  スタート@" ; LEFT/RIGHT and START
 
 SoundMenu_MusicNames:
-	db "ストップ "
-	db "タイトル "
-	db "どうろ1 "
-	db "どうろ3 "
-	db "どうろ4 "
-	db "りニア  "
-	db "バトル1 "
-	db "バトル3 "
-	db "バトル4 "
-	db "ポケセン "
-	db "しせん1 "
-	db "しせん2 "
-	db "しせん3 "
-	db "あさ   "
-	db "シオン  "
-	db "ちか2  "
-	db "ちか3  "
-	db "つれてく2"
-	db "カジノ  "
-	db "じてんしゃ"
-	db "でんどう "
-	db "タウン1 "
-	db "タウン3 "
-	db "かち1  "
-	db "かち2  "
-	db "かち3  "
-	db "かち4  "
-	db "ジム   "
-	db "マイホーム"
-	db "ラボ   "
-	db "オーキド "
-	db "ライバル1"
-	db "ライバル2"
-	db "なみのり "
-	db "しんか  "
-	db "こうえん "
-	db "おしまい "
-	db "キキョウ "
-	db "タウン12"
-	db "まいこ  "
-	db "ちか17 "
-	db "バトル11"
-	db "バトル13"
-	db "どうろ13"
-	db "ヒワダ  "
-	db "ヨシノ  "
-	db "バトル12"
-	db "バトル14"
-	db "バトル15"
-	db "バトル16"
-	db "ラボ11 "
-	db "ちか112"
-	db "どうろ15"
-	db "どうろ18"
-	db "こうそく "
-	db "しょうねん"
-	db "しょうじょ"
-	db "ロケット "
-	db "あやしい "
-	db "ぼうさん "
-	db "ワカバ  "
-	db "コガネ  "
-	db "クチバ  "
-	db "ラジオ  "
-	db "ふえ   "
-	db "とう11 "
-	db "とう11ー"
-	db "とう12 "
-	db "とう14 "
-	db "みち111"
-	db "みち112"
-	db "みち113"
-	db "ちか12ー"
-	db "ちか113"
-	db "バト112"
-	db "アンノーン"
-	db "かち22 "
-	db "ごうロード"
-	db "つれてく1"
-	db "とう15 "
-	db "こもり  "
-	db "マーチ  "
-	db "タイトル1"
-	db "タイトル2"
-	db "スタート "
-	db "いせき  "
-	db "せんきょ "
-	db "ぶよう  "
-	db "たいまい "
-	db "たいかい "
-	db "かいでんぱ"
-	db "プりンタ "
-	db "エンド2 "
+	db "ストップ " ; STOP
+	db "タイトル " ; TITLE
+	db "どうろ1 " ; ROUTE 1
+	db "どうろ3 " ; ROUTE 3
+	db "どうろ4 " ; ROUTE 4
+	db "りニア  " ; LINEAR
+	db "バトル1 " ; BATTLE 1
+	db "バトル3 " ; BATTLE 3
+	db "バトル4 " ; BATTLE 4
+	db "ポケセン " ; POKECENTER
+	db "しせん1 " ; GAZE 1
+	db "しせん2 " ; GAZE 2
+	db "しせん3 " ; GAZE 3
+	db "あさ   " ; MORNING
+	db "シオン  " ; LAVENDER TOWN
+	db "ちか2  " ; UNDERGROUND 2
+	db "ちか3  " ; UNDERGROUND 3
+	db "つれてく2" ; BRING ALONG 2
+	db "カジノ  " ; CASINO
+	db "じてんしゃ" ; BICYCLE
+	db "でんどう " ; HALL OF FAME
+	db "タウン1 " ; TOWN 1
+	db "タウン3 " ; TOWN 3
+	db "かち1  " ; VICTORY 1
+	db "かち2  " ; VICTORY 2
+	db "かち3  " ; VICTORY 3
+	db "かち4  " ; VICTORY 4
+	db "ジム   " ; GYM
+	db "マイホーム" ; MY HOME
+	db "ラボ   " ; LAB
+	db "オーキド " ; OAK
+	db "ライバル1" ; RIVAL 1
+	db "ライバル2" ; RIVAL 2
+	db "なみのり " ; SURFING
+	db "しんか  " ; EVOLUTION
+	db "こうえん " ; PARK
+	db "おしまい " ; THE END
+	db "キキョウ " ; VIOLET CITY
+	db "タウン12" ; TOWN 12
+	db "まいこ  " ; KIMONO GIRL
+	db "ちか17 " ; UNDERGROUND 17
+	db "バトル11" ; BATTLE 11
+	db "バトル13" ; BATTLE 13
+	db "どうろ13" ; ROUTE 13
+	db "ヒワダ  " ; AZALEA TOWN
+	db "ヨシノ  " ; CHERRYGROVE CITY
+	db "バトル12" ; BATTLE 12
+	db "バトル14" ; BATTLE 14
+	db "バトル15" ; BATTLE 15
+	db "バトル16" ; BATTLE 16
+	db "ラボ11 " ; LAB 11
+	db "ちか112" ; UNDERGROUND 112
+	db "どうろ15" ; ROUTE 15
+	db "どうろ18" ; ROUTE 18
+	db "こうそく " ; HIGH-SPEED
+	db "しょうねん" ; BOY
+	db "しょうじょ" ; GIRL
+	db "ロケット " ; ROCKET
+	db "あやしい " ; SUSPICIOUS
+	db "ぼうさん " ; MONK
+	db "ワカバ  " ; NEW BARK TOWN
+	db "コガネ  " ; GOLDENROD CITY
+	db "クチバ  " ; VERMILION CITY
+	db "ラジオ  " ; RADIO
+	db "ふえ   " ; FLUTE
+	db "とう11 " ; TOWER 11
+	db "とう11ー" ; TOWER 11-
+	db "とう12 " ; TOWER 12
+	db "とう14 " ; TOWER 14
+	db "みち111" ; ROAD 111
+	db "みち112" ; ROAD 112
+	db "みち113" ; ROAD 113
+	db "ちか12ー" ; UNDERGROUND 12-
+	db "ちか113" ; UNDERGROUND 113
+	db "バト112" ; BATTLE 112
+	db "アンノーン" ; UNOWN
+	db "かち22 " ; VICTORY 22
+	db "ごうロード" ; ? ROAD
+	db "つれてく1" ; BRING ALONG 1
+	db "とう15 " ; TOWER 15
+	db "こもり  " ; NURSE
+	db "マーチ  " ; MARCH
+	db "タイトル1" ; TITLE 1
+	db "タイトル2" ; TITLE 2
+	db "スタート " ; START
+	db "いせき  " ; HISTORIC RUINS
+	db "せんきょ " ; WAR SITUATION
+	db "ぶよう  " ; DANCER
+	db "たいまい " ; ?
+	db "たいかい " ; ?
+	db "かいでんぱ" ; STRANGE RADIO WAVE
+	db "プりンタ " ; PRINTER
+	db "エンド2 " ; END 2

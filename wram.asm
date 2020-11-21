@@ -2483,15 +2483,22 @@ wTextDelayFrames:: ds 1 ; cf1d
 wVBlankOccurred:: ds 1 ; cf1e
 
 wcf1f:: ds 1 ; cf1f
+
 wDefaultSpawnpoint:: ds 1 ; cf20
 
 UNION ; cf21
+; mon buffer
+wBufferMonNick:: ds MON_NAME_LENGTH
+wBufferMonOT:: ds NAME_LENGTH
+wBufferMon:: party_struct wBufferMon
+
+NEXTU
 ; movement buffer data
 wMovementBufferCount:: db
 wMovementBufferObject:: db
 wUnusedMovementBufferBank:: db
 wUnusedMovementBufferPointer:: dw
-wMovementBuffer:: ds 1; cf26
+wMovementBuffer:: ds 55
 
 NEXTU ; cf21
 ; bug-catching contest
@@ -2529,6 +2536,7 @@ wcf29:: ds 1 ; cf29
 wcf2a:: ds 1 ; cf2a
 wcf2b:: ds 1 ; cf2b
 wcf2c:: ds 1 ; cf2c
+
 wcf2d:: ds 1 ; cf2d
 wcf2e:: ds 1 ; cf2e
 wcf2f:: ds 1 ; cf2f
@@ -2543,10 +2551,8 @@ wcf37:: ds 1 ; cf37
 wcf38:: ds 1 ; cf38
 wcf39:: ds 1 ; cf39
 wcf3a:: ds 1 ; cf3a
-
-ENDU
-
 wcf3b:: ds 1 ; cf3b
+
 wcf3c:: ds 1 ; cf3c
 wcf3d:: ds 1 ; cf3d
 wcf3e:: ds 1 ; cf3e
@@ -2612,9 +2618,10 @@ ENDU
 
 	ds 2
 
-wBoxAlignment:: ds 1 ; cf65
+wBoxAlignment:: db
 wcf66:: ds 2 ; cf66
 wcf68:: ds 2 ; cf68
+ENDU
 
 wcf6a:: ds 1 ; cf6a
 wcf6b:: ds 1 ; cf6b
@@ -2626,7 +2633,9 @@ wOBP0:: db
 wOBP1:: db
 
 wcf70:: ds 1 ; cf70
+
 wcf71:: ds 1 ; cf71
+
 wMonOrItemNameBuffer:: ds 1 ; cf72
 wcf73:: ds 1 ; cf73
 wcf74:: ds 1 ; cf74
@@ -2721,73 +2730,44 @@ wcff2:: ds 1 ; cff2
 wcff3:: ds 1 ; cff3
 wcff4:: ds 1 ; cff4
 wcff5:: ds 1 ; cff5
+
 wcff6:: ds 1 ; cff6
 wcff7:: ds 1 ; cff7
 wUnusedNamesPointer:: dw
+
 wcffa:: ds 1 ; cffa
 wcffb:: ds 1 ; cffb
-wCurItem:: ds 1 ; cffc
-wcffd:: ds 1 ; cffd
 
-wCurPartySpecies:: ds 1 ; cffe
-wCurPartyMon:: ds 1 ; cfff
+wCurItem:: db
+wCurItemQuantity::
+wMartItemID::
+	db
+
+wCurPartySpecies:: db
+
+wCurPartyMon::
+; contains which monster in a party
+; is being dealt with at the moment
+; 0-5
+	db
 
 SECTION "WRAM 1", WRAMX, BANK[$1]
+
 wd000:: ds 1 ; d000
 wd001:: ds 1 ; d001
-wPokemonWithdrawDepositParameter:: ds 1 ; d002
-wItemQuantityChangeBuffer:: ds 1 ; d003
-wd004:: ds 1 ; d004
-wd005:: ds 1 ; d005
-wd006:: ds 1 ; d006
-wd007:: ds 1 ; d007
-wd008:: ds 1 ; d008
-wd009:: ds 1 ; d009
-wd00a:: ds 1 ; d00a
-wd00b:: ds 1 ; d00b
-wd00c:: ds 1 ; d00c
-wd00d:: ds 1 ; d00d
-wd00e:: ds 1 ; d00e
-wd00f:: ds 1 ; d00f
-wd010:: ds 1 ; d010
-wd011:: ds 1 ; d011
-wd012:: ds 1 ; d012
-wd013:: ds 1 ; d013
-wd014:: ds 1 ; d014
-wd015:: ds 1 ; d015
-wd016:: ds 1 ; d016
-wd017:: ds 1 ; d017
-wd018:: ds 1 ; d018
-wd019:: ds 1 ; d019
-wd01a:: ds 1 ; d01a
-wd01b:: ds 1 ; d01b
-wd01c:: ds 1 ; d01c
-wd01d:: ds 1 ; d01d
-wd01e:: ds 1 ; d01e
-wd01f:: ds 1 ; d01f
-wd020:: ds 1 ; d020
-wd021:: ds 1 ; d021
-wd022:: ds 1 ; d022
-wd023:: ds 1 ; d023
 
-wTempMonLevel:: ds 1 ; d024
+wPokemonWithdrawDepositParameter::
+; 0: Take from PC
+; 1: Put into PC
+; 2: Take from Day-Care
+; 3: Put into Day-Care
+	db
 
-wd025:: ds 1 ; d025
-wd026:: ds 1 ; d026
-wd027:: ds 1 ; d027
-wd028:: ds 1 ; d028
-wd029:: ds 1 ; d029
-wd02a:: ds 1 ; d02a
-wd02b:: ds 1 ; d02b
-wd02c:: ds 1 ; d02c
-wd02d:: ds 1 ; d02d
-wd02e:: ds 1 ; d02e
-wd02f:: ds 1 ; d02f
-wd030:: ds 1 ; d030
-wd031:: ds 1 ; d031
-wd032:: ds 1 ; d032
-wd033:: ds 1 ; d033
-wd034:: ds 1 ; d034
+wItemQuantityChangeBuffer:: db
+wItemQuantityBuffer:: db
+
+wTempMon:: party_struct wTempMon
+
 wd035:: ds 1 ; d035
 wd036:: ds 1 ; d036
 wd037:: ds 1 ; d037
@@ -3002,19 +2982,19 @@ wd131:: ds 1 ; d131
 wCurBaseDataEnd::
 
 wd132:: ds 1 ; d132
-wCurDamage:: ds 1 ; d133
-wd134:: ds 1 ; d134
+wCurDamage:: dw
 wd135:: ds 1 ; d135
 wd136:: ds 1 ; d136
-wd137:: ds 1 ; d137
-wd138:: ds 1 ; d138
-wd139:: ds 1 ; d139
-wd13a:: ds 1 ; d13a
-wListMoves_MoveIndicesBuffer:: ds NUM_MOVES ; d13b
-wTMHMMove:: ds 1 ; d13f
-wd140:: ds 1 ; d140
-wd141:: ds 1 ; d141
-wd142:: ds 1 ; d142
+
+wMornEncounterRate::  db
+wDayEncounterRate::   db
+wNiteEncounterRate::  db
+wWaterEncounterRate:: db
+wListMoves_MoveIndicesBuffer:: ds NUM_MOVES
+wTMHMMove:: db
+wInitListType:: db
+wWildMon:: db
+wBattleHasJustStarted:: db
 
 ; d143 has many different short-term uses
 wNamedObjectIndexBuffer::
@@ -4172,16 +4152,25 @@ ENDU
 
 ; ot party mons
 wOTPartyMons::
-wOTPartyMon1:: party_struct wOTPartyMon1 ; dcce
-wOTPartyMon2:: party_struct wOTPartyMon2 ; dcfe
-wOTPartyMon3:: party_struct wOTPartyMon3 ; dd2e
-wOTPartyMon4:: party_struct wOTPartyMon4 ; dd5e
-wOTPartyMon5:: party_struct wOTPartyMon5 ; dd8e
-wOTPartyMon6:: party_struct wOTPartyMon6 ; ddbe
+wOTPartyMon1:: party_struct wOTPartyMon1
+wOTPartyMon2:: party_struct wOTPartyMon2
+wOTPartyMon3:: party_struct wOTPartyMon3
+wOTPartyMon4:: party_struct wOTPartyMon4
+wOTPartyMon5:: party_struct wOTPartyMon5
+wOTPartyMon6:: party_struct wOTPartyMon6
+wOTPartyMonsEnd::
 
+UNION
 wddee:: ds 1 ; ddee
 wddef:: ds 1 ; ddef
 wddf0:: ds 1 ; ddf0
+
+NEXTU
+wDebugBuilderStats::
+wDebugBuilderDVs:: dw
+wDebugBuilderStatExp:: db
+ENDU
+
 wddf1:: ds 1 ; ddf1
 wddf2:: ds 1 ; ddf2
 wddf3:: ds 1 ; ddf3
