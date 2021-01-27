@@ -2296,28 +2296,31 @@ wDaysSince:: db
 
 	ds 12
 
-wce75:: ds 1 ; ce75
-wce76:: ds 1 ; ce76
+wPlayerBGMapOffsetX:: db ; used in FollowNotExact; unit is pixels
+wPlayerBGMapOffsetY:: db ; used in FollowNotExact; unit is pixels
 
-wPlayerStepVectorX:: ds 1 ; ce77
-wPlayerStepVectorY:: ds 1 ; ce78
-wPlayerStepFlags:: ds 1 ; ce79
-wPlayerStepDirection:: ds 1 ; ce7a
+wPlayerStepVectorX:: db ; ce77
+wPlayerStepVectorY:: db ; ce78
+wPlayerStepFlags:: db ; ce79
+wPlayerStepDirection:: db ; ce7a
 
 wce7b:: ds 1 ; ce7b
 wce7c:: ds 1 ; ce7c
+
 wce7d:: ds 1 ; ce7d
 wce7e:: ds 1 ; ce7e
 
 wMovementObject:: ds 1 ; ce7f
 wMovementDataBank:: ds 1 ; ce80
 wMovementDataAddress:: ds 2 ; ce81
-
 wce83:: ds 1 ; ce83
 wce84:: ds 1 ; ce84
+
 wce85:: ds 1 ; ce85
 wce86:: ds 1 ; ce86
+
 wce87:: ds 1 ; ce87
+
 wce88:: ds 1 ; ce88
 wce89:: ds 1 ; ce89
 wce8a:: ds 1 ; ce8a
@@ -2770,8 +2773,11 @@ wItemQuantity:: db
 wTempMon:: party_struct wTempMon
 
 wd035:: ds 1 ; d035
-wd036:: ds 1 ; d036
+
+wHandlePlayerStep:: db ; d036
+
 wd037:: ds 1 ; d037
+
 wd038:: ds 1 ; d038
 
 wItemAttributeValue:: db ; d039

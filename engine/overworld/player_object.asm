@@ -454,7 +454,7 @@ CopyTempObjectToObjectStruct:
 	sub [hl]
 	and $f
 	swap a
-	ld hl, wce76
+	ld hl, wPlayerBGMapOffsetY
 	sub [hl]
 	ld hl, OBJECT_SPRITE_Y
 	add hl, de
@@ -472,7 +472,7 @@ CopyTempObjectToObjectStruct:
 	sub [hl]
 	and $f
 	swap a
-	ld hl, wce75
+	ld hl, wPlayerBGMapOffsetX
 	sub [hl]
 	ld hl, OBJECT_SPRITE_X
 	add hl, de

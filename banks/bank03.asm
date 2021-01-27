@@ -1,6 +1,3 @@
-unk_003_5773:
-	dr $d773, $d8fc
-
 _AnimateHPBar:
 	dr $d8fc, $db39
 
