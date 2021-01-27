@@ -233,7 +233,7 @@ Debug_LoadItemData:
 	inc de
 	ld a, [de] ; Quantity
 	inc de
-	ld [wItemQuantityChangeBuffer], a
+	ld [wItemQuantityChange], a
 	call ReceiveItem
 	jr .loop
 	ret

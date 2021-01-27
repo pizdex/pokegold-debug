@@ -38,7 +38,7 @@ DebugItem_GiveSelectedItem:
 	ld [wCurItem], a
 ; Load selected item quantity
 	ld a, [wDebugItemQuantity]
-	ld [wItemQuantityChangeBuffer], a
+	ld [wItemQuantityChange], a
 	call ReceiveItem
 	jr c, .success
 ; Failed to receive item

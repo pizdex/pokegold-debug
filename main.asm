@@ -43,6 +43,9 @@ INCLUDE "engine/events/engine_flags.asm"
 INCLUDE "engine/overworld/variables.asm"
 INCLUDE "engine/events/specials.asm"
 INCLUDE "engine/smallflag.asm"
+INCLUDE "engine/pokemon/health.asm"
+INCLUDE "engine/events/overworld.asm"
+INCLUDE "engine/items/items.asm"
 
 INCLUDE "banks/bank03.asm"
 

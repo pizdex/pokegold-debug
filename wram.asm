@@ -2681,11 +2681,12 @@ wcfc8:: ds 1 ; cfc8
 wcfc9:: ds 1 ; cfc9
 wcfca:: ds 1 ; cfca
 wcfcb:: ds 1 ; cfcb
-wcfcc:: ds 1 ; cfcc
+wTMHMPocketScrollPosition:: db ; cfcc
 
 wcfcd:: ds 1 ; cfcd
 
 wMenuScrollPosition:: ds 1 ; cfce
+
 wcfcf:: ds 1 ; cfcf
 wcfd0:: ds 1 ; cfd0
 wcfd1:: ds 1 ; cfd1
@@ -2763,8 +2764,8 @@ wPokemonWithdrawDepositParameter::
 ; 3: Put into Day-Care
 	db
 
-wItemQuantityChangeBuffer:: db
-wItemQuantityBuffer:: db
+wItemQuantityChange:: db
+wItemQuantity:: db
 
 wTempMon:: party_struct wTempMon
 
@@ -2772,7 +2773,8 @@ wd035:: ds 1 ; d035
 wd036:: ds 1 ; d036
 wd037:: ds 1 ; d037
 wd038:: ds 1 ; d038
-wd039:: ds 1 ; d039
+
+wItemAttributeValue:: db ; d039
 
 wCurPartyLevel:: db
 

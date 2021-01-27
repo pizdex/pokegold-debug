@@ -157,7 +157,7 @@ GetMysteryGiftItem:
 	ld a, [s1_ab50]
 	ld [wCurItem], a
 	ld a, $01
-	ld [wItemQuantityChangeBuffer], a
+	ld [wItemQuantityChange], a
 	ld hl, wNumItems
 	call ReceiveItem
 	jr nc, .no_room
@@ -403,7 +403,7 @@ SelectApricornForKurt:
 	ret z
 	ld [wCurItem], a
 	ld a, $01
-	ld [wItemQuantityChangeBuffer], a
+	ld [wItemQuantityChange], a
 	ld hl, wNumItems
 	call TossItem
 	ret
