@@ -268,7 +268,8 @@ INCBIN "baserom.gbc",$c0000,$4000
 
 
 SECTION "bank31",ROMX,BANK[$31]
-INCBIN "baserom.gbc",$c4000,$4000
+
+INCLUDE "banks/bank31.asm"
 
 
 SECTION "bank32",ROMX,BANK[$32]

@@ -370,7 +370,7 @@ Debug_SetPlayerAndRivalNames:
 	add hl, bc
 	add hl, bc
 	ld a, BANK(TrainerGroups)
-	call GetFarHalfword
+	call GetFarWord
 	ld de, wPlayerName
 	ld bc, NAME_LENGTH
 	ld a, BANK(TrainerGroups)

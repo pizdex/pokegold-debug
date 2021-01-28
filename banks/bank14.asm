@@ -13,7 +13,16 @@ GetGender::
 	dr $51308, $5147a
 
 unk_014_547a:
-	dr $5147a, $5188d
+	dr $5147a, $51526
+
+CalcLevel:
+	dr $51526, $51552
+
+CalcExpAtLevel:
+	dr $51552, $5174b
+
+GetUnownLetter:
+	dr $5174b, $5188d
 
 unk_014_588d:
 	dr $5188d, $51aac

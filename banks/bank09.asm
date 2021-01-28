@@ -50,4 +50,7 @@ SetAllDecorationFlags:
 	ret
 
 DecorationIDs:
-	dr $27462, $28000
+	dr $27462, $27620
+
+GetTrainerDVs:
+	dr $27620, $28000

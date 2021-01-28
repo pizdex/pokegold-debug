@@ -1,7 +1,7 @@
 DebugPasswordMenu:
 	ld b, 1
 	ld de, wMovementBufferCount
-	farcall unk_004_5a7e
+	farcall NamingScreen
 	call DebugPasswordMenu_EnterTID
 	call Call_002_47ea
 

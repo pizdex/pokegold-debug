@@ -156,7 +156,7 @@ DebugItem_PrintTextbox:
 	ldh [hBGMapMode], a
 ; Get the name of the selected item
 	ld a, [wDebugItem]
-	ld [wNamedObjectIndexBuffer], a
+	ld [wNamedObjectIndex], a
 	call GetItemName
 ; Print the data into a textbox
 	ld hl, .ItemNameAndQuantityText

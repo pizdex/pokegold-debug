@@ -1,7 +1,7 @@
 DebugBuildMenu::
-	ld a, BANK(s1_ad10)
+	ld a, BANK(sBoxCount)
 	call OpenSRAM
-	ld a, [s1_ad10]
+	ld a, [sBoxCount]
 	cp MONS_PER_BOX
 	call CloseSRAM
 	jp nc, DebugBuilder_FullBox
@@ -532,10 +532,10 @@ DebugBuilder_SendMonToBox:
 
 	predef SendMonIntoBox
 
-	ld a, BANK(s1_ad3b)
+	ld a, BANK(sBoxMon1StatExp)
 	call OpenSRAM
 	ld b, 10
-	ld hl, s1_ad3b
+	ld hl, sBoxMon1StatExp
 	ld a, [wDebugBuilderStatExp]
 .copy
 	ld [hli], a
@@ -571,14 +571,14 @@ DebugBuilder_CanLearnMove:
 ; Is there a pre-evolved form? (either second or first stage)
 	farcall GetPreEvolution
 	jr nc, .egg_move
-; Can the pre-evolved form learn it?
+
 	call DebugBuilder_CheckLevelUpOrTMMoves
 	jr c, .valid_move
 
 ; We might be on the second stage, check for another pre-evolved form.
 	farcall GetPreEvolution
 	jr nc, .egg_move
-; Can this pre-evolved form learn it?
+
 	call DebugBuilder_CheckLevelUpOrTMMoves
 	jr c, .valid_move
 
@@ -649,7 +649,7 @@ DebugBuilder_CheckEggMoves:
 	add hl, bc
 	add hl, bc
 	ld a, BANK(EggMovePointers)
-	call GetFarHalfword
+	call GetFarWord
 .next_move:
 	ld a, BANK("Egg Moves")
 	call GetFarByte
@@ -679,7 +679,7 @@ DebugBuilder_GetLearnsetPointer:
 	add hl, bc
 	add hl, bc
 	ld a, BANK(EvosAttacksPointers)
-	call GetFarHalfword
+	call GetFarWord
 .skip_evos
 	ld a, BANK(EvosAttacksPointers)
 	call GetFarByte

@@ -105,7 +105,7 @@ CanLearnTMHMMove:
 _NamingScreen:
 	dr $11a74, $11a7e
 
-unk_004_5a7e:
+NamingScreen:
 	dr $11a7e, $125a4
 
 HealMachineAnim::

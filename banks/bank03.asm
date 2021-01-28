@@ -1,35 +1,25 @@
 _AnimateHPBar:
-	dr $d8fc, $db39
+	dr $d8fc, $d9b7
 
-TryAddMonToParty:
-	dr $db39, $dbb3
+ShortAnim_UpdateVariables:
+	dr $d9b7, $da89
 
-GeneratePartyMonStats:
-	dr $dbb3, $dd1a
+HPBarAnim_PaletteUpdate:
+	dr $da89, $db39
 
-unk_003_5d1a:
-	dr $dd1a, $dd43
+INCLUDE "engine/pokemon/move_mon.asm"
 
-unk_003_5d43:
-	dr $dd43, $ddec
-
-unk_003_5dec:
-	dr $ddec, $e11b
-
-SendMonIntoBox:
-	dr $e11b, $e239
-
-unk_003_6239:
-	dr $e239, $e415
-
-CalcMonStats:
-	dr $e415, $e429
-
-unk_003_6429:
-	dr $e429, $e8a5
+unk_003_6692:
+	dr $e692, $e8a5
 
 CopyBoxmonToTempMon:
-	dr $e8a5, $ea52
+	dr $e8a5, $e973
+
+GetBreedMon1LevelGrowth:
+	dr $e973, $e98e
+
+GetBreedMon2LevelGrowth:
+	dr $e98e, $ea52
 
 INCLUDE "engine/events/bug_contest/caught_mon.asm"
 
@@ -40,4 +30,7 @@ unkData_003_6ac8:
 	dr $eac8, $fe58
 
 RestoreAllPP:
-	dr $fe58, $10000
+	dr $fe58, $fe8b
+
+GetMaxPPOfMove:
+	dr $fe8b, $10000

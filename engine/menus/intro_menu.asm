@@ -81,9 +81,9 @@ _ResetWRAM:
 
 	call SetDefaultBoxNames
 
-	ld a, BANK(s1_ad10)
+	ld a, BANK(sBoxCount)
 	call OpenSRAM
-	ld hl, s1_ad10
+	ld hl, sBoxCount
 	call .InitList
 	call CloseSRAM
 

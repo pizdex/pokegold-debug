@@ -23,7 +23,7 @@ GetName::
 	jr nz, .NotPokeName
 
 	ld a, [wCurSpecies]
-	ld [wNamedObjectIndexBuffer], a
+	ld [wNamedObjectIndex], a
 	call GetPokemonName
 	ld hl, MON_NAME_LENGTH
 	add hl, de
@@ -110,7 +110,7 @@ GetBasePokemonName::
 	ret
 
 GetPokemonName::
-; Get Pokemon name for wNamedObjectIndexBuffer.
+; Get Pokemon name for wNamedObjectIndex.
 
 	ldh a, [hROMBank]
 	push af
@@ -119,7 +119,7 @@ GetPokemonName::
 	rst Bankswitch
 
 ; Each name is six characters
-	ld a, [wNamedObjectIndexBuffer]
+	ld a, [wNamedObjectIndex]
 	dec a
 	ld hl, $7a0c
 	ld e, a
@@ -144,11 +144,11 @@ endr
 	ret
 
 GetItemName::
-; Get item name for wNamedObjectIndexBuffer.
+; Get item name for wNamedObjectIndex.
 
 	push hl
 	push bc
-	ld a, [wNamedObjectIndexBuffer]
+	ld a, [wNamedObjectIndex]
 
 	cp TM01
 	jr nc, .TM
@@ -167,12 +167,12 @@ GetItemName::
 	ret
 
 GetTMHMName::
-; Get TM/HM name for item wNamedObjectIndexBuffer.
+; Get TM/HM name for item wNamedObjectIndex.
 
 	push hl
 	push de
 	push bc
-	ld a, [wNamedObjectIndexBuffer]
+	ld a, [wNamedObjectIndex]
 	push af
 
 ; TM/HM prefix
@@ -194,7 +194,7 @@ GetTMHMName::
 
 ; TM/HM number
 	push de
-	ld a, [wNamedObjectIndexBuffer]
+	ld a, [wNamedObjectIndex]
 	ld c, a
 	ld hl, $56e3
 	ld a, $03
@@ -234,7 +234,7 @@ GetTMHMName::
 	ld [de], a
 
 	pop af
-	ld [wNamedObjectIndexBuffer], a
+	ld [wNamedObjectIndex], a
 	pop bc
 	pop de
 	pop hl
@@ -258,7 +258,7 @@ GetMoveName::
 	ld a, MOVE_NAME
 	ld [wNamedObjectTypeBuffer], a
 
-	ld a, [wNamedObjectIndexBuffer] ; move id
+	ld a, [wNamedObjectIndex] ; move id
 	ld [wCurSpecies], a
 
 	call GetName

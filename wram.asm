@@ -2514,16 +2514,21 @@ wBugContestWinnersEnd::
 	ds 4
 wBugContestWinnerName:: ds NAME_LENGTH
 
-NEXTU ; cf21
-wDebugMusicTrack:: db
-	ds 2
-wDebugSFXTrack:: db
-
 NEXTU
 ; trade
 wCurTradePartyMon:: db
 wCurOTTradePartyMon:: db
 wBufferTrademonNick:: ds MON_NAME_LENGTH
+
+NEXTU
+; miscellaneous
+wTempDayOfWeek::
+wPrevPartyLevel::
+
+NEXTU ; cf21
+wDebugMusicTrack:: db
+	ds 2
+wDebugSFXTrack:: db
 
 NEXTU ; cf21
 wcf21:: ds 1 ; cf21
@@ -2907,6 +2912,10 @@ wStrengthSpecies::
 wFishingResult:: db
 	ds 1
 wFieldMoveDataEnd::
+
+NEXTU
+; miscellaneous bytes
+wSkipMovesBeforeLevelUp::
 ENDU
 
 wTempEnemyMonSpecies:: ds 1 ; d0df
@@ -2953,14 +2962,16 @@ wUnownLetter:: ds 1 ; d110
 
 wd111:: ds 1 ; d111
 
+; corresponds to the data/pokemon/base_stats/*.asm contents
 wCurBaseData::
-wBaseDexNo:: ds 1 ; d112
-wd113:: ds 1 ; d113
-wd114:: ds 1 ; d114
-wd115:: ds 1 ; d115
-wd116:: ds 1 ; d116
-wd117:: ds 1 ; d117
-wd118:: ds 1 ; d118
+wBaseDexNo:: db
+wBaseStats::
+wBaseHP:: db
+wBaseAttack:: db
+wBaseDefense:: db
+wBaseSpeed:: db
+wBaseSpecialAttack:: db
+wBaseSpecialDefense:: db
 wBaseType::
 wBaseType1:: db
 wBaseType2:: db
@@ -2970,7 +2981,7 @@ wd11d:: ds 1 ; d11d
 wd11e:: ds 1 ; d11e
 wd11f:: ds 1 ; d11f
 wd120:: ds 1 ; d120
-wd121:: ds 1 ; d121
+wBaseEggSteps:: db ; d121
 wd122:: ds 1 ; d122
 wBasePicSize:: ds 1 ; d123
 wBaseUnusedFrontpic:: ds 1 ; d124
@@ -3005,8 +3016,8 @@ wWildMon:: db
 wBattleHasJustStarted:: db
 
 ; d143 has many different short-term uses
-wNamedObjectIndexBuffer::
-wDeciramBuffer::
+wNamedObjectIndex::
+wTextDecimalByte::
 wTempByteValue::
 wNumSetBits::
 wTypeMatchup::
@@ -4150,6 +4161,7 @@ wDebugFightMonLevel:: db
 
 NEXTU
 ; enemy party
+wOTPartyData::
 wOTPlayerName:: ds NAME_LENGTH
 wOTPlayerID:: dw
 	ds 13
@@ -4169,9 +4181,9 @@ wOTPartyMon6:: party_struct wOTPartyMon6
 wOTPartyMonsEnd::
 
 UNION
-wddee:: ds 1 ; ddee
-wddef:: ds 1 ; ddef
-wddf0:: ds 1 ; ddf0
+wOTPartyMonOT:: ds NAME_LENGTH * PARTY_LENGTH
+wOTPartyMonNicknames:: ds MON_NAME_LENGTH * PARTY_LENGTH
+wOTPartyDataEnd::
 
 NEXTU
 wDebugBuilderStats::
@@ -4179,75 +4191,6 @@ wDebugBuilderDVs:: dw
 wDebugBuilderStatExp:: db
 ENDU
 
-wddf1:: ds 1 ; ddf1
-wddf2:: ds 1 ; ddf2
-wddf3:: ds 1 ; ddf3
-wddf4:: ds 1 ; ddf4
-wddf5:: ds 1 ; ddf5
-wddf6:: ds 1 ; ddf6
-wddf7:: ds 1 ; ddf7
-wddf8:: ds 1 ; ddf8
-wddf9:: ds 1 ; ddf9
-wddfa:: ds 1 ; ddfa
-wddfb:: ds 1 ; ddfb
-wddfc:: ds 1 ; ddfc
-wddfd:: ds 1 ; ddfd
-wddfe:: ds 1 ; ddfe
-wddff:: ds 1 ; ddff
-wde00:: ds 1 ; de00
-wde01:: ds 1 ; de01
-wde02:: ds 1 ; de02
-wde03:: ds 1 ; de03
-wde04:: ds 1 ; de04
-wde05:: ds 1 ; de05
-wde06:: ds 1 ; de06
-wde07:: ds 1 ; de07
-wde08:: ds 1 ; de08
-wde09:: ds 1 ; de09
-wde0a:: ds 1 ; de0a
-wde0b:: ds 1 ; de0b
-wde0c:: ds 1 ; de0c
-wde0d:: ds 1 ; de0d
-wde0e:: ds 1 ; de0e
-wde0f:: ds 1 ; de0f
-wde10:: ds 1 ; de10
-wde11:: ds 1 ; de11
-wde12:: ds 1 ; de12
-wde13:: ds 1 ; de13
-wde14:: ds 1 ; de14
-wde15:: ds 1 ; de15
-wde16:: ds 1 ; de16
-wde17:: ds 1 ; de17
-wde18:: ds 1 ; de18
-wde19:: ds 1 ; de19
-wde1a:: ds 1 ; de1a
-wde1b:: ds 1 ; de1b
-wde1c:: ds 1 ; de1c
-wde1d:: ds 1 ; de1d
-wde1e:: ds 1 ; de1e
-wde1f:: ds 1 ; de1f
-wde20:: ds 1 ; de20
-wde21:: ds 1 ; de21
-wde22:: ds 1 ; de22
-wde23:: ds 1 ; de23
-wde24:: ds 1 ; de24
-wde25:: ds 1 ; de25
-wde26:: ds 1 ; de26
-wde27:: ds 1 ; de27
-wde28:: ds 1 ; de28
-wde29:: ds 1 ; de29
-wde2a:: ds 1 ; de2a
-wde2b:: ds 1 ; de2b
-wde2c:: ds 1 ; de2c
-wde2d:: ds 1 ; de2d
-wde2e:: ds 1 ; de2e
-wde2f:: ds 1 ; de2f
-wde30:: ds 1 ; de30
-wde31:: ds 1 ; de31
-wde32:: ds 1 ; de32
-wde33:: ds 1 ; de33
-wde34:: ds 1 ; de34
-wde35:: ds 1 ; de35
 wde36:: ds 1 ; de36
 wde37:: ds 1 ; de37
 wde38:: ds 1 ; de38

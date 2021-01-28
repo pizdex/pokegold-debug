@@ -338,10 +338,10 @@ DebugColor_InitScreen:
 	ld a, [wce5a]
 	inc a
 	ld [wCurPartySpecies], a
-	ld [wDeciramBuffer], a
+	ld [wTextDecimalByte], a
 
 	hlcoord 0, 1
-	ld de, wDeciramBuffer
+	ld de, wTextDecimalByte
 	lb bc, PRINTNUM_LEADINGZEROS | 1, 3
 	call PrintNum
 
@@ -393,7 +393,7 @@ DebugColor_InitScreen:
 	jr .asm_7788
 
 .Trainer:
-	ld a, [wDeciramBuffer]
+	ld a, [wTextDecimalByte]
 	ld [wTrainerClass], a
 	callfar unk_00e_555f
 	ld de, wStringBuffer1

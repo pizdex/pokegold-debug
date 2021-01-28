@@ -12,15 +12,15 @@ PredefPointers::
 	add_predef HealParty
 	add_predef SmallFarFlagAction
 	add_predef ComputeHPBarPixels
-	add_predef unk_003_5d1a
+	add_predef FillPP
 	add_predef TryAddMonToParty
-	add_predef unk_003_5d43
-	add_predef unk_003_5dec ; $8
+	add_predef AddTempmonToParty
+	add_predef SendGetMonIntoFromBox ; $8
 	add_predef SendMonIntoBox
-	add_predef unk_003_6239
+	add_predef GiveEgg
 	add_predef AnimateHPBar
 	add_predef CalcMonStats
-	add_predef unk_003_6429
+	add_predef CalcMonStatC
 	add_predef CanLearnTMHMMove
 	dwb $5a27, $04
 	dwb $4d8e, $0a ; $10
@@ -52,7 +52,7 @@ PredefPointers::
 	dwb $4a60, $14
 	dwb $4a79, $14
 	dwb $4a33, $14
-	dwb $574b, $14
+	add_predef GetUnownLetter
 	dwb $7c06, $32
 	dwb $40e4, $32
 	add_predef unk_002_5f84 ; $30

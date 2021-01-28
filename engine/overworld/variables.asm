@@ -105,9 +105,9 @@ _GetVarAction::
 	jp .loadstringbuffer2
 
 .BoxFreeSpace:
-	ld a, BANK(s1_ad10)
+	ld a, BANK(sBoxCount)
 	call OpenSRAM
-	ld hl, s1_ad10
+	ld hl, sBoxCount
 	ld a, MONS_PER_BOX
 	sub [hl]
 	ld b, a
