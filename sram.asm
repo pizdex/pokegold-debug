@@ -1,10 +1,15 @@
 SECTION "Scratch", SRAM, BANK[0]
+
 sScratch:: ds $188 ; a000
 
+
 SECTION "Decompress Buffer", SRAM, BANK[0]
+
 sDecompressBuffer:: ds 7 * 7 * $10 ; a188
 
+
 SECTION "SRAM0", SRAM, BANK[0]
+
 s0_a498:: ds 1 ; 0:a498
 s0_a499:: ds 1 ; 0:a499
 s0_a49a:: ds 1 ; 0:a49a
@@ -13874,20 +13879,18 @@ s1_bffd:: ds 1 ; 1:bffd
 s1_bffe:: ds 1 ; 1:bffe
 s1_bfff:: ds 1 ; 1:bfff
 
-SECTION "SRAM2", SRAM, BANK[$2]
-;	box sBox1
-;	box sBox2
-;	box sBox3
-;	box sBox4
-;	box sBox5
-;	box sBox6
-;	box sBox7
+SECTION "Boxes 1-6", SRAM
 
-SECTION "SRAM3", SRAM, BANK[$3]
-;	box sBox8
-;	box sBox9
-;	box sBox10
-;	box sBox11
-;	box sBox12
-;	box sBox13
-;	box sBox14
+sBox1::  box sBox1
+sBox2::  box sBox2
+sBox3::  box sBox3
+sBox4::  box sBox4
+sBox5::  box sBox5
+sBox6::  box sBox6
+
+
+SECTION "Boxes 7-9", SRAM
+
+sBox7::  box sBox7
+sBox8::  box sBox8
+sBox9::  box sBox9

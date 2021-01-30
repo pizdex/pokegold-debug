@@ -71,7 +71,7 @@ DebugToolgear_DisplayMenu:
 	ld hl, DebugToolgear_MenuHeader
 	call LoadMenuHeader
 	call .PlaceCursor
-	ld [wMenuCursorBuffer], a
+	ld [wMenuCursorPosition], a
 	call VerticalMenu
 	call CloseWindow
 	ret

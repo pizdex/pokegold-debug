@@ -134,10 +134,15 @@ GetPreEvolution:
 
 
 SECTION "bank11",ROMX,BANK[$11]
-	dr $44000, $48000
+
+	dr $44000, $47d22
+
+IsAnyMonHoldingMail::
+	dr $47d22, $48000
 
 
 SECTION "bank12",ROMX,BANK[$12]
+
 	dr $48000, $4c000
 
 

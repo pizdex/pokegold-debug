@@ -76,7 +76,7 @@ _ResetWRAM:
 	call .InitList
 
 	xor a
-	ld [wd8af], a
+	ld [wCurBox], a
 	ld [wSavedAtLeastOnce], a
 
 	call SetDefaultBoxNames

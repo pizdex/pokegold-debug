@@ -420,6 +420,13 @@ UNION
 wSurroundingTiles:: ds SURROUNDING_WIDTH * SURROUNDING_HEIGHT
 
 NEXTU
+; box save buffer
+; SaveBoxAddress uses this buffer in three steps because it
+; needs more space than the buffer can hold.
+wBoxPartialData:: ds 480
+wBoxPartialDataEnd::
+
+NEXTU
 ; 20x18 grid of 8x8 tiles
 wTempTilemap::
 	ds SCREEN_WIDTH * SCREEN_HEIGHT
@@ -2417,8 +2424,8 @@ wMenuBorderLeftCoord:: db
 wMenuBorderBottomCoord:: db
 wMenuBorderRightCoord:: db
 wMenuDataPointer:: dw
-wMenuCursorBuffer:: dw
-	ds 7
+wMenuCursorPosition:: db
+	ds 8
 wMenuHeaderEnd::
 
 wMenuData::
@@ -2975,11 +2982,12 @@ wBaseSpecialDefense:: db
 wBaseType::
 wBaseType1:: db
 wBaseType2:: db
-wd11b:: ds 1 ; d11b
-wd11c:: ds 1 ; d11c
-wd11d:: ds 1 ; d11d
-wd11e:: ds 1 ; d11e
-wd11f:: ds 1 ; d11f
+wBaseCatchRate:: db ; d11b
+wBaseExp:: db ; d11c
+wBaseItems::
+wBaseItem1:: db ; d11d
+wBaseItem2:: db ; d11e
+wBaseGender:: db ; d11f
 wd120:: ds 1 ; d120
 wBaseEggSteps:: db ; d121
 wd122:: ds 1 ; d122
@@ -3734,7 +3742,8 @@ wJoypadDisable::
 
 	ds 1
 
-wd8af:: ds 1 ; d8af
+wCurBox:: db ; d8af
+
 wd8b0:: ds 1 ; d8b0
 wd8b1:: ds 1 ; d8b1
 wd8b2:: ds 1 ; d8b2

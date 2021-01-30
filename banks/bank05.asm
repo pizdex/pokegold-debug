@@ -35,7 +35,10 @@ CheckWarpCollision::
 	dr $149ea, $149ff
 
 CheckDirectionalWarp::
-	dr $149ff, $14e28
+	dr $149ff, $14ba7
+
+StartMoveMonWOMail_SaveGame::
+	dr $14ba7, $14e28
 
 TryLoadSaveFile::
 	dr $14e28, $15301

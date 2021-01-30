@@ -76,4 +76,16 @@ CardFlip_InitTilemap:
 	dr $e0d2e, $e267a
 
 _MemoryGame:
-	dr $e267a, $e4000
+	dr $e267a, $e2bb6
+
+_DepositPKMN::
+	dr $e2bb6, $e2d81
+
+_WithdrawPKMN::
+	dr $e2d81, $e2f4e
+
+_MovePKMNWithoutMail::
+	dr $e2f4e, $e3ce3
+
+_ChangeBox::
+	dr $e3ce3, $e4000

@@ -16,11 +16,11 @@ QuickDebug_Update:
 	call UpdateTimePals
 	call UpdateSprites
 	ld a, [wcfbf]
-	ld [wMenuCursorBuffer], a
+	ld [wMenuCursorPosition], a
 	call DoNthMenu
 	jr c, .exit_menu_window
 ; Player made selection
-	ld a, [wMenuCursorBuffer]
+	ld a, [wMenuCursorPosition]
 	ld [wcfbf], a
 	call PlaceHollowCursor
 ; Run selected option if A_BUTTON is pressed

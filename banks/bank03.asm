@@ -8,12 +8,7 @@ HPBarAnim_PaletteUpdate:
 	dr $da89, $db39
 
 INCLUDE "engine/pokemon/move_mon.asm"
-
-unk_003_6692:
-	dr $e692, $e8a5
-
-CopyBoxmonToTempMon:
-	dr $e8a5, $e973
+INCLUDE "engine/pokemon/bills_pc_top.asm"
 
 GetBreedMon1LevelGrowth:
 	dr $e973, $e98e
