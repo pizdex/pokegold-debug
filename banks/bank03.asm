@@ -9,13 +9,8 @@ HPBarAnim_PaletteUpdate:
 
 INCLUDE "engine/pokemon/move_mon.asm"
 INCLUDE "engine/pokemon/bills_pc_top.asm"
-
-GetBreedMon1LevelGrowth:
-	dr $e973, $e98e
-
-GetBreedMon2LevelGrowth:
-	dr $e98e, $ea52
-
+INCLUDE "engine/pokemon/breedmon_level_growth.asm"
+INCLUDE "engine/pokemon/search2.asm"
 INCLUDE "engine/events/bug_contest/caught_mon.asm"
 
 _DoItemEffect::
