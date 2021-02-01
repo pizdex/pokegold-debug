@@ -2784,7 +2784,12 @@ wCurPartyMon::
 SECTION "WRAM 1", WRAMX, BANK[$1]
 
 wd000:: ds 1 ; d000
-wd001:: ds 1 ; d001
+
+wWhichHPBar::
+; 0: Enemy
+; 1: Player
+; 2: Party Menu
+	db
 
 wPokemonWithdrawDepositParameter::
 ; 0: Take from PC
@@ -2918,6 +2923,18 @@ wd0db:: ds 1 ; d0db
 wd0dc:: ds 1 ; d0dc
 wd0dd:: ds 1 ; d0dd
 wd0de:: ds 1 ; d0de
+
+NEXTU
+; HP bar animations
+wCurHPAnimMaxHP::   dw
+wCurHPAnimOldHP::   dw
+wCurHPAnimNewHP::   dw
+wCurHPAnimPal::     db
+wCurHPBarPixels::   db
+wNewHPBarPixels::   db
+wCurHPAnimDeltaHP:: dw
+wCurHPAnimLowHP::   db
+wCurHPAnimHighHP::  db
 
 NEXTU
 ; thrown ball data

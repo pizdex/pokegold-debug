@@ -12,7 +12,10 @@ unk_002_5391:
 	dr $9391, $93f8
 
 SGB_ApplyPartyMenuHPPals:
-	dr $93f8, $9630
+	dr $93f8, $952a
+
+ApplyHPBarPals:
+	dr $952a, $9630
 
 CheckCGB:
 	dr $9630, $9634
