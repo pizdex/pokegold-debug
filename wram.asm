@@ -2716,17 +2716,31 @@ wPredefAddress:: dw ; cfd8
 wFarCallBCBuffer:: ds 1 ; cfda
 wcfdb:: ds 1 ; cfdb
 wcfdc:: ds 1 ; cfdc
-wNumMoves:: ds 1 ; cfdd
 
-wcfde:: ds 1 ; cfde
+wNumMoves:: db
 
-wVramState:: ds 1 ; cfdf
+wFieldMoveSucceeded::
+wItemEffectSucceeded::
+wBattlePlayerAction::
+; 0 - use move
+; 1 - use item
+; 2 - switch
+wSolvedUnownPuzzle::
+	db
 
-wcfe0:: ds 1 ; cfe0
-wcfe1:: ds 1 ; cfe1
-wcfe2:: ds 1 ; cfe2
+wVramState::
+; bit 0: overworld sprite updating on/off
+; bit 6: something to do with text
+; bit 7: on when surf initiates
+;        flickers when climbing waterfall
+	db
 
-wBattleResult:: ds 1 ; cfe3
+	ds 3
+
+wBattleResult::
+; WIN, LOSE, or DRAW
+; bit 7: box full
+	db
 
 wcfe4:: ds 1 ; cfe4
 wcfe5:: ds 1 ; cfe5
@@ -2906,6 +2920,11 @@ wd0dd:: ds 1 ; d0dd
 wd0de:: ds 1 ; d0de
 
 NEXTU
+; thrown ball data
+wFinalCatchRate:: db
+wThrownBallWobbleCount:: db
+
+NEXTU
 ; field move data
 wFieldMoveData::
 wFieldMoveJumptableIndex:: db
@@ -3009,7 +3028,9 @@ wd131:: ds 1 ; d131
 wCurBaseDataEnd::
 
 wd132:: ds 1 ; d132
+
 wCurDamage:: dw
+
 wd135:: ds 1 ; d135
 wd136:: ds 1 ; d136
 

@@ -224,7 +224,7 @@ UnownPuzzle:
 	ld a, $38
 	ld hl, $5995
 	rst FarCall
-	ld a, [wcfde]
+	ld a, [wItemEffectSucceeded]
 	ld [wScriptVar], a
 	call ExitAllMenus
 	ret

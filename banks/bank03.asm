@@ -12,15 +12,30 @@ INCLUDE "engine/pokemon/bills_pc_top.asm"
 INCLUDE "engine/pokemon/breedmon_level_growth.asm"
 INCLUDE "engine/pokemon/search2.asm"
 INCLUDE "engine/events/bug_contest/caught_mon.asm"
+INCLUDE "engine/items/item_effects.asm"
+INCLUDE "engine/battle_anims/pokeball_wobble.asm"
 
-_DoItemEffect::
-	dr $eaae, $eac8
+unk_003_7f75:
+	ld a, $02
+	call GetPartyParamLocation
+	ld a, [wTMHMMove]
+	ld b, a
+	ld c, $04
 
-unkData_003_6ac8:
-	dr $eac8, $fe58
+jr_003_7f80:
+	ld a, [hli]
+	cp b
+	jr z, jr_003_7f89
+	dec c
+	jr nz, jr_003_7f80
+	and a
+	ret
 
-RestoreAllPP:
-	dr $fe58, $fe8b
+jr_003_7f89:
+	ld hl, unkText_003_7f91
+	call PrintText
+	scf
+	ret
 
-GetMaxPPOfMove:
-	dr $fe8b, $10000
+unkText_003_7f91:
+	dr $ff91, $10000
